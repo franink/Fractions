@@ -26,7 +26,7 @@ ListenChar(2);
 load FracStim;
 
 %Setup experiment parameters
-p.practice_time = 1; % Need to figure out how much practice I need
+p.ramp_up = 4; % added to the 6s of first fixation gives 10s to delete 8
 p.fixation = 6;
 p.consider = 2;
 p.decision = 3;
@@ -133,7 +133,7 @@ end
 % simulates going through the whole run and kees track of time and catch
 % events
 for jj = 1:p.runs
-    end_practice = p.practice_time; %practice time might include ramp_up
+    end_practice = p.ramp_up; %practice time might include ramp_up
     current_time = end_practice; %keeps track of time, starts with time after practice
     for ii = 1:length(p.nMatchResults(:,1,1))-1;
         p.nMatchResults(ii+1,13,jj) = {current_time}; %fixation onset
@@ -148,7 +148,7 @@ end
 
 % and now for numberline
 for jj = 1:p.runs
-    end_practice = p.practice_time; %practice time might include ramp_up
+    end_practice = p.ramp_up; %practice time might include ramp_up
     current_time = end_practice; %keeps track of time, starts with time after practice
     for ii = 1:length(p.numlineResults(:,1,1))-1;
         p.numlineResults(ii+1,13,jj) = {current_time}; %fixation onset
@@ -188,11 +188,6 @@ try
         % Don't have the function WaitTrigger probably works with WaitTill('5')
         start_t = GetSecs;
             
-        %This needs to be fixed but is the beginning of the fixation code
-        %Here probably there will be something about ramp_up time and fixation time
-%       fixation = ['X', 'X'];
-%       DrawCenteredFrac(fixation,win,color);
-%       Screen('Flip', win);
         for ii = 1:(p.nRepeats/p.runs);
             blockNbr_Match = blockNbr_Match+1;
             for jj = 1:p.nStim;
@@ -258,14 +253,6 @@ try
         %startSecs=WaitTrigger; %Use this only if used in a scanner that sends 5
         start_t = GetSecs;
     
-    
-        %This needs to be fixed but is the beginning of the fixation code
-        %Here probably there will be something about practice and fixation time
-%       fixation = ['X', 'X'];
-%       DrawCenteredFrac(fixation,win,color);
-%       Screen('Flip', win);
-
-        
         for ii = 1:(p.nRepeats/p.runs);
             blockNbr_NLine = blockNbr_NLine+1;
             for jj = 1:p.nStim;

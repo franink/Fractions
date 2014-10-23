@@ -301,8 +301,8 @@ end
 
 %save results
 save(filename, 'p')
-ListenChar(0);
-ShowCursor;
+ListenChar(0)
+ShowCursor
 %Show characters on matlab screen again
 sca;
 close all;

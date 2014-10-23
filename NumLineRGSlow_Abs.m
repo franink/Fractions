@@ -31,7 +31,6 @@ time_fix = 0.05;
 
 trialResponse = {mouse_pos correct response RT error points};
 
-ctch
 
 if ctch;
 

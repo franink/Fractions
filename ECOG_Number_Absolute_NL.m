@@ -213,6 +213,7 @@ try
         end
         end_t = GetSecs - start_t;
         p.time_Runs(kk+1,1) = {end_t};
+        DisplayInstructs2;
     end
     
     end_t = GetSecs - start_t0;
@@ -282,6 +283,7 @@ try
         end
         end_t = GetSecs - start_t;
         p.time_Runs(kk+1,2) = {end_t};
+        DisplayInstructs2;
     end
 
     end_t = GetSecs - start_t0;
@@ -304,5 +306,5 @@ save(filename, 'p')
 ListenChar(0)
 ShowCursor
 %Show characters on matlab screen again
-sca;
 close all;
+sca;

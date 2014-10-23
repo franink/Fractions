@@ -1,4 +1,5 @@
 
+Instruct = {};
 
 Instruct{1} = {'The following experiment has 2 sections. Each section is',
                'reasonably short. In total, the experiment should last',

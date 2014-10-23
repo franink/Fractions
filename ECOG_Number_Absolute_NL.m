@@ -30,12 +30,12 @@ p.practice_time = 1; % Need to figure out how much practice I need
 p.fixation = 6;
 p.consider = 2;
 p.decision = 3;
-p.pct_catch = 0.6; % proportion of trials that have a test (decision) phase
+p.pct_catch = 0.3; % proportion of trials that have a test (decision) phase
 %Make sure that repeats is divisible by runs
 p.runs = 2; %within a single task
 p.tasks = 2;
-p.nRepeats = 4; %repeats per run. Divisivle by p.runs 
-p.nStim = 4;
+p.nRepeats = 6; %repeats per run. Divisivle by p.runs 
+p.nStim = 2;
 p.tasks = {'NumMatch', 'NumLine'};
 p.trialSecs = p.fixation + p.consider + (p.decision*p.pct_catch);
 
@@ -45,25 +45,32 @@ p.trialSecs = p.fixation + p.consider + (p.decision*p.pct_catch);
 rng shuffle;
 
 %assign randomly catch trials to each stim
-ctch_nbr = round(p.nRepeats*p.pct_catch);
-ctch = [ones(ctch_nbr,1); zeros(p.nRepeats - ctch_nbr,1)];
+%Only for one block. This will then be replicated ofr every other block 
+%to insure they all have the same time length
+ctch_nbr = round((p.nRepeats/p.runs)*p.pct_catch); 
+ctch = [ones(ctch_nbr,1); zeros((p.nRepeats/p.runs) - ctch_nbr,1)];
 %ctch_temp = ctch(tmp(randperm(p.nRepeats)));
 TestNumMatch = zeros(p.nRepeats*p.nStim,3);
 TestFracsLine = zeros(p.nRepeats*p.nStim,3);
 
+% First components task
 for ii = 1:p.nStim;
-    ctch_temp = ctch(randperm(p.nRepeats));
-    for jj = 1:p.nRepeats
-        TestNumMatch(ii+((jj - 1)*p.nStim), 1:2) = FracStim(ii,:);
-        TestNumMatch(ii+((jj - 1)*p.nStim), 3) = ctch_temp(jj);
+    for kk = 1:p.runs;
+        ctch_temp = ctch(randperm(p.nRepeats/p.runs)); %Just one block
+        for jj = 1:p.nRepeats/p.runs;
+            TestNumMatch(ii+((kk-1)*(p.nStim*(p.nRepeats/p.runs))+((jj-1)*(p.nStim))), 1:2) = FracStim(ii,:);
+            TestNumMatch(ii+((kk-1)*(p.nStim*(p.nRepeats/p.runs))+((jj-1)*(p.nStim))), 3) = ctch_temp(jj);
+        end
     end
 end
-
+%Now for fraction task
 for ii = 1:p.nStim;
-    ctch_temp = ctch(randperm(p.nRepeats));
-    for jj = 1:p.nRepeats
-        TestFracsLine(ii+((jj - 1)*p.nStim), 1:2) = FracStim(ii,:);
-        TestFracsLine(ii+((jj - 1)*p.nStim), 3) = ctch_temp(jj);
+    for kk = 1:p.runs;
+        ctch_temp = ctch(randperm(p.nRepeats/p.runs)); %Just one block
+        for jj = 1:p.nRepeats/p.runs;
+            TestFracsLine(ii+((kk-1)*(p.nStim*(p.nRepeats/p.runs))+((jj-1)*(p.nStim))), 1:2) = FracStim(ii,:);
+            TestFracsLine(ii+((kk-1)*(p.nStim*(p.nRepeats/p.runs))+((jj-1)*(p.nStim))), 3) = ctch_temp(jj);
+        end
     end
 end
     

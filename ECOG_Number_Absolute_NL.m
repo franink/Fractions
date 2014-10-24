@@ -331,8 +331,4 @@ ListenChar(0)
 ShowCursor
 %Show characters on matlab screen again
 close all;
-<<<<<<< HEAD
 sca
-=======
-sca;
->>>>>>> FETCH_HEAD

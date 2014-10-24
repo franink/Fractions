@@ -1,4 +1,4 @@
-function [ compResults ] = Consider(Fract, win, color, task, time)
+function [ compResults ] = ConsiderSlow(Fract, win, color, task, time)
 %Consider the numbers on the screen and when ready to move on press 'z' or '/' 
 %logs the fraction used, RT task is iether 'keyb' or 'mouse' and tells the program what needs to log
 
@@ -29,7 +29,7 @@ if strcmp(task,'keyb')
                 keyResp = 1;
             else
                 compResults{4} = secs - t_start; %Make sure I know what position goes fo what pieces of data
-                keyResp = 1;
+                %keyResp = 1;
             end
         end
     end
@@ -53,7 +53,7 @@ if strcmp(task,'mouse')
                 click = sum(click);
                 if click == 1;
                     compResults{4} = GetSecs - t_start;
-                    mouseResp = 1;
+                    %mouseResp = 1;
                 end
             end
         end

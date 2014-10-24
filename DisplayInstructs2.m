@@ -4,8 +4,14 @@ pts_txt = sprintf('You have earned %d points', points);
 
 Instruct{1} = {'REST BREAK',
                ' ',
+<<<<<<< HEAD
                pts_txt,
                ' ',
+=======
+               ' ';
+               pts_txt,
+               ' '
+>>>>>>> FETCH_HEAD
                'Please click MOUSE when you are ready to continue'};
 
 

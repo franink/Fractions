@@ -1,4 +1,4 @@
-function trialResponse = FractLineRG(fract, win, lineLength, jitter, color, time)
+function trialResponse = FractLineRGSlow(fract, win, lineLength, jitter, color, time)
 
 %plots a line starting at x1, finishing at x2, with cursor starting on
 %either left (lrStart = 0) or right (lrStart = 1) side.
@@ -25,7 +25,7 @@ response = -1;
 RT = -1;
 error = -2;
 time_left = 1;
-time_fix = 0.1;
+time_fix = 0.0;
 time_on = time - time_fix;
 
 
@@ -92,7 +92,7 @@ while ~mouseResp;
                 trialResponse{4} = GetSecs - t_start;
                 trialResponse{3} = (xPos - x1)/(x2-x1);
                 trialResponse{5} = trialResponse{3} - correct;
-                mouseResp = 1;
+                %mouseResp = 1;
             end
 
 
@@ -114,8 +114,8 @@ while ~mouseResp;
     end
 end
 
-fix_on = time_fix + time_left*(time_on - trialResponse{4});
-DrawCenteredNum('X',win,color,fix_on);
-Screen('Flip', win);
+% fix_on = time_fix + time_left*(time_on - trialResponse{4});
+% DrawCenteredNum('X',win,color,fix_on);
+% Screen('Flip', win);
 
 end

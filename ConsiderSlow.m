@@ -6,7 +6,7 @@ fractMag = Fract(1)/Fract(2);
 correct = fractMag;
 compResults = {Fract(1) Fract(2) correct 0}; %I still need to think about what I will log and if I can put names
 
-time_fix = 0.15;
+time_fix = 0.0;
 time_on = time - time_fix;
 time_left = 1;
 
@@ -33,9 +33,9 @@ if strcmp(task,'keyb')
             end
         end
     end
-    fix_on = time_fix + time_left*(time_on - compResults{4});
-    DrawCenteredNum('X',win,color,fix_on);
-    Screen('Flip', win);
+%     fix_on = time_fix + time_left*(time_on - compResults{4});
+%     DrawCenteredNum('X',win,color,fix_on);
+%     Screen('Flip', win);
 end
 
 if strcmp(task,'mouse')
@@ -48,7 +48,7 @@ if strcmp(task,'mouse')
             if GetSecs >= t_end;
                 compResults{4} = 0;
                 time_left = 0;
-                mouseResp = 1
+                mouseResp = 1;
             else
                 click = sum(click);
                 if click == 1;
@@ -58,9 +58,9 @@ if strcmp(task,'mouse')
             end
         end
     end
-    fix_on = time_fix + time_left*(time_on - compResults{4});
-    DrawCenteredNum('X',win,color,fix_on);
-    Screen('Flip', win); 
+%     fix_on = time_fix + time_left*(time_on - compResults{4});
+%     DrawCenteredNum('X',win,color,fix_on);
+%     Screen('Flip', win); 
 end
 
 end

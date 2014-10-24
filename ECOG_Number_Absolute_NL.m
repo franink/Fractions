@@ -26,16 +26,16 @@ ListenChar(2);
 load FracStim;
 
 %Setup experiment parameters
-p.practice_time = 1; % Need to figure out how much practice I need
+p.ramp_up = 4; % added to the 6s of first fixation gives 10s to delete 8
 p.fixation = 6;
 p.consider = 2;
 p.decision = 3;
-p.pct_catch = 0.6; % proportion of trials that have a test (decision) phase
+p.pct_catch = 0.3; % proportion of trials that have a test (decision) phase
 %Make sure that repeats is divisible by runs
 p.runs = 2; %within a single task
 p.tasks = 2;
-p.nRepeats = 4; %repeats per run. Divisivle by p.runs 
-p.nStim = 4;
+p.nRepeats = 6; %repeats per run. Divisivle by p.runs 
+p.nStim = 2;
 p.tasks = {'NumMatch', 'NumLine'};
 p.trialSecs = p.fixation + p.consider + (p.decision*p.pct_catch);
 
@@ -45,25 +45,32 @@ p.trialSecs = p.fixation + p.consider + (p.decision*p.pct_catch);
 rng shuffle;
 
 %assign randomly catch trials to each stim
-ctch_nbr = round(p.nRepeats*p.pct_catch);
-ctch = [ones(ctch_nbr,1); zeros(p.nRepeats - ctch_nbr,1)];
+%Only for one block. This will then be replicated ofr every other block 
+%to insure they all have the same time length
+ctch_nbr = round((p.nRepeats/p.runs)*p.pct_catch); 
+ctch = [ones(ctch_nbr,1); zeros((p.nRepeats/p.runs) - ctch_nbr,1)];
 %ctch_temp = ctch(tmp(randperm(p.nRepeats)));
 TestNumMatch = zeros(p.nRepeats*p.nStim,3);
 TestFracsLine = zeros(p.nRepeats*p.nStim,3);
 
+% First components task
 for ii = 1:p.nStim;
-    ctch_temp = ctch(randperm(p.nRepeats));
-    for jj = 1:p.nRepeats
-        TestNumMatch(ii+((jj - 1)*p.nStim), 1:2) = FracStim(ii,:);
-        TestNumMatch(ii+((jj - 1)*p.nStim), 3) = ctch_temp(jj);
+    for kk = 1:p.runs;
+        ctch_temp = ctch(randperm(p.nRepeats/p.runs)); %Just one block
+        for jj = 1:p.nRepeats/p.runs;
+            TestNumMatch(ii+((kk-1)*(p.nStim*(p.nRepeats/p.runs))+((jj-1)*(p.nStim))), 1:2) = FracStim(ii,:);
+            TestNumMatch(ii+((kk-1)*(p.nStim*(p.nRepeats/p.runs))+((jj-1)*(p.nStim))), 3) = ctch_temp(jj);
+        end
     end
 end
-
+%Now for fraction task
 for ii = 1:p.nStim;
-    ctch_temp = ctch(randperm(p.nRepeats));
-    for jj = 1:p.nRepeats
-        TestFracsLine(ii+((jj - 1)*p.nStim), 1:2) = FracStim(ii,:);
-        TestFracsLine(ii+((jj - 1)*p.nStim), 3) = ctch_temp(jj);
+    for kk = 1:p.runs;
+        ctch_temp = ctch(randperm(p.nRepeats/p.runs)); %Just one block
+        for jj = 1:p.nRepeats/p.runs;
+            TestFracsLine(ii+((kk-1)*(p.nStim*(p.nRepeats/p.runs))+((jj-1)*(p.nStim))), 1:2) = FracStim(ii,:);
+            TestFracsLine(ii+((kk-1)*(p.nStim*(p.nRepeats/p.runs))+((jj-1)*(p.nStim))), 3) = ctch_temp(jj);
+        end
     end
 end
     
@@ -126,7 +133,7 @@ end
 % simulates going through the whole run and kees track of time and catch
 % events
 for jj = 1:p.runs
-    end_practice = p.practice_time; %practice time might include ramp_up
+    end_practice = p.ramp_up; %practice time might include ramp_up
     current_time = end_practice; %keeps track of time, starts with time after practice
     for ii = 1:length(p.nMatchResults(:,1,1))-1;
         p.nMatchResults(ii+1,13,jj) = {current_time}; %fixation onset
@@ -141,7 +148,7 @@ end
 
 % and now for numberline
 for jj = 1:p.runs
-    end_practice = p.practice_time; %practice time might include ramp_up
+    end_practice = p.ramp_up; %practice time might include ramp_up
     current_time = end_practice; %keeps track of time, starts with time after practice
     for ii = 1:length(p.numlineResults(:,1,1))-1;
         p.numlineResults(ii+1,13,jj) = {current_time}; %fixation onset
@@ -163,7 +170,21 @@ try
     
     %DisplayInstructsNComp;
     DisplayInstructs1; %Need to change instructions
+    %practice trials
+    fix = 'X';
+    prac1 = [1 2];
+    prac2 = [1 3];
+    prac3 = [16 24];
+    DrawCenteredNum(fix, win, color, p.fixation);
+    ConsiderSlow(prac1, win, color, task, p.consider);
+    NumLineRGSlow(prac1, win, 600, 1, color, p.decision, 1); %Top example
+    DrawCenteredNum(fix, win, color, p.fixation);
+    ConsiderSlow(prac2, win, color, task, p.consider); %No answer example
+    DrawCenteredNum(fix, win, color, p.fixation);
+    ConsiderSlow(prac3, win, color, task, p.consider);
+    NumLineRGSlow(prac3, win, 600, 1, color, p.decision, 2); % Bottom example
     
+    DisplayInstructs4 %End of practice ask question and get ready to start   
     
     points = 0; %This initializes points for accuracy calculation
     blockNbr_Match = 0;
@@ -181,11 +202,6 @@ try
         % Don't have the function WaitTrigger probably works with WaitTill('5')
         start_t = GetSecs;
             
-        %This needs to be fixed but is the beginning of the fixation code
-        %Here probably there will be something about ramp_up time and fixation time
-%       fixation = ['X', 'X'];
-%       DrawCenteredFrac(fixation,win,color);
-%       Screen('Flip', win);
         for ii = 1:(p.nRepeats/p.runs);
             blockNbr_Match = blockNbr_Match+1;
             for jj = 1:p.nStim;
@@ -213,6 +229,7 @@ try
         end
         end_t = GetSecs - start_t;
         p.time_Runs(kk+1,1) = {end_t};
+        DisplayInstructs2;
     end
     
     end_t = GetSecs - start_t0;
@@ -234,6 +251,22 @@ try
     %DisplayInstructs;
     DisplayInstructs3;
     
+    %practice trials
+    fix = 'X';
+    prac1 = [1 2];
+    prac2 = [1 3];
+    prac3 = [16 24];
+    DrawCenteredNum(fix, win, color, p.fixation);
+    ConsiderSlow(prac1, win, color, task, p.consider);
+    FractLineRGSlow(prac1, win, 600, 1, color, p.decision); %Top example
+    DrawCenteredNum(fix, win, color, p.fixation);
+    ConsiderSlow(prac2, win, color, task, p.consider); %No answer example
+    DrawCenteredNum(fix, win, color, p.fixation);
+    ConsiderSlow(prac3, win, color, task, p.consider);
+    FractLineRGSlow(prac3, win, 600, 1, color, p.decision); % Bottom example
+    
+    DisplayInstructs4 %End of practice ask question and get ready to start
+    
     blockNbr_NLine = 0;
     
     % Need to implement this correctly. The idea is the kk will signal
@@ -250,14 +283,6 @@ try
         %startSecs=WaitTrigger; %Use this only if used in a scanner that sends 5
         start_t = GetSecs;
     
-    
-        %This needs to be fixed but is the beginning of the fixation code
-        %Here probably there will be something about practice and fixation time
-%       fixation = ['X', 'X'];
-%       DrawCenteredFrac(fixation,win,color);
-%       Screen('Flip', win);
-
-        
         for ii = 1:(p.nRepeats/p.runs);
             blockNbr_NLine = blockNbr_NLine+1;
             for jj = 1:p.nStim;
@@ -282,6 +307,7 @@ try
         end
         end_t = GetSecs - start_t;
         p.time_Runs(kk+1,2) = {end_t};
+        DisplayInstructs2;
     end
 
     end_t = GetSecs - start_t0;
@@ -301,8 +327,8 @@ end
 
 %save results
 save(filename, 'p')
-ListenChar(0);
-ShowCursor;
+ListenChar(0)
+ShowCursor
 %Show characters on matlab screen again
-sca;
 close all;
+sca

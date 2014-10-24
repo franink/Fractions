@@ -29,7 +29,8 @@ time_fix = 0.05;
 %time_on = end_decision - time_fix;
 
 
-trialResponse = {mouse_pos correct response RT error};
+trialResponse = {mouse_pos correct response RT error points};
+
 
 if ctch;
 
@@ -97,6 +98,7 @@ if ctch;
                     trialResponse{5} = trialResponse{3} - correct;
                     if trialResponse{5} <= 0.1;
                         trialResponse{6} = trialResponse{6} + 1;
+                    end
                     mouseResp = 1;
                 end
 

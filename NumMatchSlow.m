@@ -1,4 +1,4 @@
-function [ compResults ] = NumMatch(Fract, Window, color, time)
+function [ compResults ] = NumMatchSlow(Fract, Window, color, time)
 %Decide if second number matches one of the original numbers
 
 

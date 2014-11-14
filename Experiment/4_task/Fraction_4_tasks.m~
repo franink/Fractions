@@ -43,12 +43,12 @@ load FracStim;
 p.ramp_up = 8; %This number needs to be changed once we know TR (this should be TR*4)
 p.fixation = 2.5;
 p.consider = 2;
-p.decision = 2.5;
-p.pct_catch = 0.33; % proportion of trials that have a test (decision) phase
+p.decision = 2;
+p.pct_catch = 0.4; % proportion of trials that have a test (decision) phase
 %Make sure that repeats is divisible by runs
 p.runs = 2; %within a single task
 p.tasks = 3; %This will potentially be 4 tasks
-p.nRepeats = 12; %repeats per run. Divisivle by p.runs 
+p.nRepeats = 10; %repeats per run. Divisivle by p.runs 
 p.nStim = 16;
 p.tasks = {'NumMatch', 'FracComp', 'NumLine'}; %This will potentially be 4 tasks
 p.trialSecs = p.fixation + p.consider + (p.decision*p.pct_catch);
@@ -108,8 +108,8 @@ end
 
 %Now for Fraction Comparison
 TestFracsComp(:,4:5) = -1;
-probes = 1:ctch_nbr*p.runs;
-IndStim = 0:p.nStim:p.nStim*(p.nRepeats-1);
+probes = 1:4;
+IndStim = 0:16:159;
 for ii = 1:p.nStim;
     probes = probes(randperm(length(probes)));
     IndStimTmp = IndStim + ii;
@@ -120,8 +120,8 @@ end
 
 %Now for Fraction NumberLine
 TestFracsLine(:,4:5) = -1;
-probes = 1:ctch_nbr*p.runs;
-IndStim = 0:p.nStim:p.nStim*(p.nRepeats-1);
+probes = 1:4;
+IndStim = 0:16:159;
 for ii = 1:p.nStim;
     probes = probes(randperm(length(probes)));
     IndStimTmp = IndStim + ii;
@@ -160,7 +160,7 @@ for ii = 1:p.runs
     p.numlineResults(1,:,ii) = {'Num','Denom','Value','Num_Probe','Denom_Probe','Value_Probe','Correct','Response','RT','Acc','Points','Trial','Block','fix_onset','cons_onset','decision_onset','decision_end','catch','fix_onset_real','cons_onset_real','decision_onset_real'};
 end
 
-p.time_Runs(1,:) ={'Time_Match', 'Time_Comparison', 'Time_NumLine'}; %this might change if number of runs changes
+    p.time_Runs(1,:) ={'Time_Match', 'Time_Comparison', 'Time_NumLine'}; %this might change if number of runs changes
 
 %Add catch information (needed to construct timing)
 ctr = 0;
@@ -175,8 +175,8 @@ end
 
 % Separate runs into different 3D matrices
 TestSum = zeros(p.nStim*(p.nRepeats/p.runs),3,p.runs);
-TestFComp = zeros(p.nStim*(p.nRepeats/p.runs),5,p.runs);
-TestNLine = zeros(p.nStim*(p.nRepeats/p.runs),5,p.runs);
+TestFComp = zeros(p.nStim*(p.nRepeats/p.runs),3,p.runs);
+TestNLine = zeros(p.nStim*(p.nRepeats/p.runs),3,p.runs);
 
 for ii = 1:p.runs
     TestSum(:,:,ii) = TestNumMatch(1+((ii-1)*p.nStim*(p.nRepeats/p.runs)):(p.nStim*(p.nRepeats/p.runs))+((ii-1)*(p.nStim*(p.nRepeats/p.runs))),:);
@@ -218,14 +218,14 @@ end
 for jj = 1:p.runs
     end_ramp_up = p.ramp_up; %practice time might include ramp_up
     current_time = end_ramp_up; %keeps track of time, starts with time after practice
-    for ii = 1:length(p.compResults(:,1,1))-1;
-        p.compResults(ii+1,14,jj) = {current_time}; %fixation onset
+    for ii = 1:length(p.numlineResults(:,1,1))-1;
+        p.numlineResults(ii+1,13,jj) = {current_time}; %fixation onset
         current_time = current_time + p.fixation; %end of fixation
-        p.compResults(ii+1,15,jj) = {current_time}; %consider onset
+        p.numlineResults(ii+1,14,jj) = {current_time}; %consider onset
         current_time = current_time + p.consider; %end of consider
-        p.compResults(ii+1,16,jj) = {current_time}; %decision onset
-        current_time = current_time + (p.decision * p.compResults{ii+1,18,jj}); %end of decision if ctch 1 = 0 current time does not move
-        p.compResults(ii+1,17,jj) = {current_time}; %end of decision
+        p.numlineResults(ii+1,15,jj) = {current_time}; %decision onset
+        current_time = current_time + (p.decision * p.numlineResults{ii+1,17,jj}); %end of decision if ctch 1 = 0 current time does not move
+        p.numlineResults(ii+1,16,jj) = {current_time}; %end of decision
     end
 end
 
@@ -235,13 +235,13 @@ for jj = 1:p.runs
     end_ramp_up = p.ramp_up; %practice time might include ramp_up
     current_time = end_ramp_up; %keeps track of time, starts with time after practice
     for ii = 1:length(p.numlineResults(:,1,1))-1;
-        p.numlineResults(ii+1,14,jj) = {current_time}; %fixation onset
+        p.numlineResults(ii+1,13,jj) = {current_time}; %fixation onset
         current_time = current_time + p.fixation; %end of fixation
-        p.numlineResults(ii+1,15,jj) = {current_time}; %consider onset
+        p.numlineResults(ii+1,14,jj) = {current_time}; %consider onset
         current_time = current_time + p.consider; %end of consider
-        p.numlineResults(ii+1,16,jj) = {current_time}; %decision onset
-        current_time = current_time + (p.decision * p.numlineResults{ii+1,18,jj}); %end of decision if ctch 1 = 0 current time does not move
-        p.numlineResults(ii+1,17,jj) = {current_time}; %end of decision
+        p.numlineResults(ii+1,15,jj) = {current_time}; %decision onset
+        current_time = current_time + (p.decision * p.numlineResults{ii+1,17,jj}); %end of decision if ctch 1 = 0 current time does not move
+        p.numlineResults(ii+1,16,jj) = {current_time}; %end of decision
     end
 end
 

@@ -40,8 +40,8 @@ ListenChar(2);
 load FracStim;
 
 %Setup experiment parameters
-p.ramp_up = 4; % added to the 6s of first fixation gives 10s to delete 8
-p.fixation = 4;
+p.ramp_up = 8; %This number needs to be changed once we know TR (this should be TR*4)
+p.fixation = 2.5;
 p.consider = 2;
 p.decision = 2;
 p.pct_catch = 0.4; % proportion of trials that have a test (decision) phase
@@ -64,79 +64,130 @@ rng shuffle;
 ctch_nbr = round((p.nRepeats/p.runs)*p.pct_catch); 
 ctch = [ones(ctch_nbr,1); zeros((p.nRepeats/p.runs) - ctch_nbr,1)];
 %ctch_temp = ctch(tmp(randperm(p.nRepeats)));
-TestNumMatch = zeros(p.nRepeats*p.nStim,3);
-TestFracsComp = zeros(p.nRepeats*p.nStim,3);
-TestFracsLine = zeros(p.nRepeats*p.nStim,3);
+TestNumMatch = zeros(p.nRepeats*p.nStim,3); %This is not 3 depending on the task I need to include the probes
+TestFracsComp = zeros(p.nRepeats*p.nStim,5); %num, denom, catch, n probe, d probe 
+TestFracsLine = zeros(p.nRepeats*p.nStim,5); %num, denom, catch, n probe, d probe 
 
-% First components task
+% First match (summation?) task
 for ii = 1:p.nStim;
     for kk = 1:p.runs;
         ctch_temp = ctch(randperm(p.nRepeats/p.runs)); %Just one block
         for jj = 1:p.nRepeats/p.runs;
-            TestNumMatch(ii+((kk-1)*(p.nStim*(p.nRepeats/p.runs))+((jj-1)*(p.nStim))), 1:2) = FracStim(ii,:);
+            TestNumMatch(ii+((kk-1)*(p.nStim*(p.nRepeats/p.runs))+((jj-1)*(p.nStim))), 1:2) = FracStim(ii,1:2);
             TestNumMatch(ii+((kk-1)*(p.nStim*(p.nRepeats/p.runs))+((jj-1)*(p.nStim))), 3) = ctch_temp(jj);
         end
     end
 end
-%Now for fraction task
+
+%Now for fraction comparison task
 for ii = 1:p.nStim;
     for kk = 1:p.runs;
         ctch_temp = ctch(randperm(p.nRepeats/p.runs)); %Just one block
         for jj = 1:p.nRepeats/p.runs;
-            TestFracsLine(ii+((kk-1)*(p.nStim*(p.nRepeats/p.runs))+((jj-1)*(p.nStim))), 1:2) = FracStim(ii,:);
+            TestFracsComp(ii+((kk-1)*(p.nStim*(p.nRepeats/p.runs))+((jj-1)*(p.nStim))), 1:2) = FracStim(ii,1:2);
+            TestFracsComp(ii+((kk-1)*(p.nStim*(p.nRepeats/p.runs))+((jj-1)*(p.nStim))), 3) = ctch_temp(jj);
+        end
+    end
+end
+
+%Now for fraction NL task
+for ii = 1:p.nStim;
+    for kk = 1:p.runs;
+        ctch_temp = ctch(randperm(p.nRepeats/p.runs)); %Just one block
+        for jj = 1:p.nRepeats/p.runs;
+            TestFracsLine(ii+((kk-1)*(p.nStim*(p.nRepeats/p.runs))+((jj-1)*(p.nStim))), 1:2) = FracStim(ii,1:2);
             TestFracsLine(ii+((kk-1)*(p.nStim*(p.nRepeats/p.runs))+((jj-1)*(p.nStim))), 3) = ctch_temp(jj);
         end
     end
 end
     
+% Now add the probes for all catch trials and add '-1' to non catch trials
+
+% Match task (missing until we decide what to do)
+
+
+%Now for Fraction Comparison
+TestFracsComp(:,4:5) = -1;
+probes = 1:4;
+IndStim = 0:16:159;
+for ii = 1:p.nStim;
+    probes = probes(randperm(length(probes)));
+    IndStimTmp = IndStim + ii;
+    IndCatch = find(TestFracsComp(IndStimTmp,3) == 1);
+    TestFracsComp(IndStimTmp(IndCatch),4) = FracStim(ii,((probes*2)+1));
+    TestFracsComp(IndStimTmp(IndCatch),5) = FracStim(ii,((probes*2)+2));
+end
+
+%Now for Fraction NumberLine
+TestFracsLine(:,4:5) = -1;
+probes = 1:4;
+IndStim = 0:16:159;
+for ii = 1:p.nStim;
+    probes = probes(randperm(length(probes)));
+    IndStimTmp = IndStim + ii;
+    IndCatch = find(TestFracsLine(IndStimTmp,3) == 1);
+    TestFracsLine(IndStimTmp(IndCatch),4) = FracStim(ii,((probes*2)+1));
+    TestFracsLine(IndStimTmp(IndCatch),5) = FracStim(ii,((probes*2)+2));
+end
+
 
 %Shuffle trials within block
 for ii = 1:p.nRepeats
     TestNumMatch(((ii-1)*p.nStim)+1:((ii-1)*p.nStim)+p.nStim,:) = TestNumMatch(randperm(p.nStim)+(p.nStim*(ii-1)),:);
 end
-
+% Now for fraction comparison
+for ii = 1:p.nRepeats
+    TestFracsComp(((ii-1)*p.nStim)+1:((ii-1)*p.nStim)+p.nStim,:) = TestFracsLine(randperm(p.nStim)+(p.nStim*(ii-1)),:);
+end
+% Now for fraction number line
 for ii = 1:p.nRepeats
     TestFracsLine(((ii-1)*p.nStim)+1:((ii-1)*p.nStim)+p.nStim,:) = TestFracsLine(randperm(p.nStim)+(p.nStim*(ii-1)),:);
 end
 
-%Results files
+
+% Create Results files
 p.nMatchResults = cell(p.nStim*(p.nRepeats/p.runs)+1,20,p.runs);
-p.numlineResults = cell(p.nStim*(p.nRepeats/p.runs)+1,20,p.runs);
+p.compResults = cell(p.nStim*(p.nRepeats/p.runs)+1,21,p.runs);
+p.numlineResults = cell(p.nStim*(p.nRepeats/p.runs)+1,21,p.runs);
 p.time_Runs = cell((p.runs+1),length(p.tasks));
 
 
 %Get Labels
 for ii = 1:p.runs
-    p.nMatchResults(1,:,ii) = {'Num','Denom','Value','Cons_RT','Mouse_Pos','Correct','Response','RT','Error','Points','Trial','Block','fix_onset','cons_onset','decision_onset','decision_end','catch','fix_onset_real','cons_onset_real','decision_onset_real'};    
-    %fCompResults(1,:) = {'Num','Denom','Value','Cons_RT','Target','Correct','Response','RT','Acc'};
-    p.numlineResults(1,:,ii) = {'Num','Denom','Value','Cons_RT','Mouse_Pos','Correct','Response','RT','Error','Points','Trial','Block','fix_onset','cons_onset','decision_onset','decision_end','catch','fix_onset_real','cons_onset_real','decision_onset_real'};
+    % Match needs to be corrected once the task is decided
+    p.nMatchResults(1,:,ii) = {'Num','Denom','Value','Sum_Fraction','Sum_Probe','Correct','Response','RT','Acc','Points','Trial','Block','fix_onset','cons_onset','decision_onset','decision_end','catch','fix_onset_real','cons_onset_real','decision_onset_real'};    
+    p.compResults(1,:,ii) = {'Num','Denom','Value','Num_Probe','Denom_Probe','Value_Probe','Correct','Response','RT', 'Acc', 'Points','Trial','Block','fix_onset','cons_onset','decision_onset','decision_end','catch','fix_onset_real','cons_onset_real','decision_onset_real'};
+    p.numlineResults(1,:,ii) = {'Num','Denom','Value','Num_Probe','Denom_Probe','Value_Probe','Correct','Response','RT','Acc','Points','Trial','Block','fix_onset','cons_onset','decision_onset','decision_end','catch','fix_onset_real','cons_onset_real','decision_onset_real'};
 end
 
-    p.time_Runs(1,:) ={'Time_Match', 'Time_NumLine'}; %this might change if number of runs changes
+    p.time_Runs(1,:) ={'Time_Match', 'Time_Comparison', 'Time_NumLine'}; %this might change if number of runs changes
 
-%Add catch information
+%Add catch information (needed to construct timing)
 ctr = 0;
 for jj = 1:p.runs
     for ii = 2:length(p.nMatchResults(:,1,1));
         ctr = ctr + 1;
         p.nMatchResults(ii,17,jj) = {TestNumMatch(ctr,3)};
-        p.numlineResults(ii,17,jj) = {TestFracsLine(ctr,3)};
+        p.compResults(ii,18,jj) = {TestFracsComp(ctr,3)};
+        p.numlineResults(ii,18,jj) = {TestFracsLine(ctr,3)};
     end
 end
 
 % Separate runs into different 3D matrices
-Testcomponents = zeros(p.nStim*(p.nRepeats/p.runs),3,p.runs);
-Testfractions = zeros(p.nStim*(p.nRepeats/p.runs),3,p.runs);
+TestSum = zeros(p.nStim*(p.nRepeats/p.runs),3,p.runs);
+TestFComp = zeros(p.nStim*(p.nRepeats/p.runs),3,p.runs);
+TestNLine = zeros(p.nStim*(p.nRepeats/p.runs),3,p.runs);
 
 for ii = 1:p.runs
-    Testcomponents(:,:,ii) = TestNumMatch(1+((ii-1)*p.nStim*(p.nRepeats/p.runs)):(p.nStim*(p.nRepeats/p.runs))+((ii-1)*(p.nStim*(p.nRepeats/p.runs))),:);
-    Testfractions(:,:,ii) = TestFracsLine(1+((ii-1)*p.nStim*(p.nRepeats/p.runs)):(p.nStim*(p.nRepeats/p.runs))+((ii-1)*(p.nStim*(p.nRepeats/p.runs))),:);
+    TestSum(:,:,ii) = TestNumMatch(1+((ii-1)*p.nStim*(p.nRepeats/p.runs)):(p.nStim*(p.nRepeats/p.runs))+((ii-1)*(p.nStim*(p.nRepeats/p.runs))),:);
+    TestFComp(:,:,ii) = TestFracsComp(1+((ii-1)*p.nStim*(p.nRepeats/p.runs)):(p.nStim*(p.nRepeats/p.runs))+((ii-1)*(p.nStim*(p.nRepeats/p.runs))),:);
+    TestNLine(:,:,ii) = TestFracsLine(1+((ii-1)*p.nStim*(p.nRepeats/p.runs)):(p.nStim*(p.nRepeats/p.runs))+((ii-1)*(p.nStim*(p.nRepeats/p.runs))),:);
 end
 
 
 % Open a PTB Window on our screen
 try
-    screenid = min(Screen('Screens')); %Originally it was max instead of min changed it for testing purposes (max corresponds to secondary display)
+    screenid = max(Screen('Screens')); %Originally it was max instead of min changed it for testing purposes (max corresponds to secondary display)
     
     [win, winRect] = Screen('OpenWindow', screenid, WhiteIndex(screenid)/2);
     
@@ -148,8 +199,8 @@ end
 % simulates going through the whole run and kees track of time and catch
 % events
 for jj = 1:p.runs
-    end_practice = p.ramp_up; %practice time might include ramp_up
-    current_time = end_practice; %keeps track of time, starts with time after practice
+    end_ramp_up = p.ramp_up; % after ramp_up the first fixation begins
+    current_time = end_ramp_up; %keeps track of time, starts with time after ramp_up
     for ii = 1:length(p.nMatchResults(:,1,1))-1;
         p.nMatchResults(ii+1,13,jj) = {current_time}; %fixation onset
         current_time = current_time + p.fixation; %end of fixation
@@ -163,8 +214,8 @@ end
 
 % and now for numberline
 for jj = 1:p.runs
-    end_practice = p.ramp_up; %practice time might include ramp_up
-    current_time = end_practice; %keeps track of time, starts with time after practice
+    end_ramp_up = p.ramp_up; %practice time might include ramp_up
+    current_time = end_ramp_up; %keeps track of time, starts with time after practice
     for ii = 1:length(p.numlineResults(:,1,1))-1;
         p.numlineResults(ii+1,13,jj) = {current_time}; %fixation onset
         current_time = current_time + p.fixation; %end of fixation
@@ -231,11 +282,11 @@ try
                 %%% I need to pass end_time to the functions so that they can
                 %%% use it to figure when to exit from the script
                 p.nMatchResults(trialNbr+1,19,kk) = {GetSecs - start_t}; %Real onset of consider
-                p.nMatchResults(trialNbr+1,1:4,kk) = ConsiderSlow_Abs(Testcomponents(trialNbr,:,kk), win, color, task,end_cons);
+                p.nMatchResults(trialNbr+1,1:4,kk) = ConsiderSlow_Abs(TestSum(trialNbr,:,kk), win, color, task,end_cons);
                 %Screen('Flip',win);
                 WaitTill(end_cons);
                 p.nMatchResults(trialNbr+1,20,kk) = {GetSecs - start_t}; %Real onset of deciison
-                p.nMatchResults(trialNbr+1,5:10,kk) = NumLineRGSlow_Abs(Testcomponents(trialNbr,:,kk), win, 600, 1, color,end_decision, p.nMatchResults{trialNbr+1,17,kk}, points);
+                p.nMatchResults(trialNbr+1,5:10,kk) = NumLineRGSlow_Abs(TestSum(trialNbr,:,kk), win, 600, 1, color,end_decision, p.nMatchResults{trialNbr+1,17,kk}, points);
                 WaitTill(end_decision);
                 p.nMatchResults(trialNbr+1,11,kk) = {trialNbr_Match};
                 p.nMatchResults(trialNbr+1,12,kk) = {blockNbr_Match};
@@ -310,10 +361,10 @@ try
                 p.numlineResults(trialNbr+1,18,kk) = {GetSecs - start_t}; %Real onset of fixation
                 WaitTill(end_fix);
                 p.numlineResults(trialNbr+1,19,kk) = {GetSecs - start_t}; %Real onset of consider
-                p.numlineResults(trialNbr+1,1:4,kk) = ConsiderSlow_Abs(Testfractions(trialNbr,:,kk), win, color, task, end_cons);
+                p.numlineResults(trialNbr+1,1:4,kk) = ConsiderSlow_Abs(TestNLine(trialNbr,:,kk), win, color, task, end_cons);
                 WaitTill(end_cons);
                 p.numlineResults(trialNbr+1,20,kk) = {GetSecs - start_t}; %Real onset of decision
-                p.numlineResults(trialNbr+1,5:10,kk) = FractLineRGSlow_Abs(Testfractions(trialNbr,:,kk), win, 600, 1, color, end_decision, p.numlineResults{trialNbr+1,17,kk}, points);
+                p.numlineResults(trialNbr+1,5:10,kk) = FractLineRGSlow_Abs(TestNLine(trialNbr,:,kk), win, 600, 1, color, end_decision, p.numlineResults{trialNbr+1,17,kk}, points);
                 WaitTill(end_decision);
                 p.numlineResults(trialNbr+1,11,kk) = {trialNbr_NLine};
                 p.numlineResults(trialNbr+1,12,kk) = {blockNbr_NLine};

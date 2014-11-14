@@ -246,7 +246,7 @@ for jj = 1:p.runs
 end
 
 
-% Stage 1 - Component NL
+% Stage 1 - Component NL (this is now summation need to correct)
 
 try
        
@@ -326,10 +326,14 @@ catch
 
 end
 
-% Stage 2 Fraction numberline task:
+% Stage 2 Fraction Comparison task:
+
+%Need to do
+
+% Stage 3 Fraction numberline task:
 
 try
-    task = 'mouse';
+    task = 'keyb';
     
     %A neat little script that displays instructions for section two
     %DisplayInstructs;
@@ -364,7 +368,7 @@ try
     
         
         % wait for scanner trigger '5'
-        %startSecs=WaitTrigger; %Use this only if used in a scanner that sends 5
+        %[~, startSecs]=WaitTill('5'); %Use this only if used in a scanner that sends 5
         start_t = GetSecs;
     
         for ii = 1:(p.nRepeats/p.runs);
@@ -372,25 +376,25 @@ try
             for jj = 1:p.nStim;
                 trialNbr_NLine = (p.nStim * (blockNbr_NLine-1)) + jj; % This counts across blocks
                 trialNbr = (p.nStim * (ii-1)) + jj; %This counts within block
-                end_fix = p.numlineResults{trialNbr+1,14,kk} + start_t;
-                end_cons = p.numlineResults{trialNbr+1,15,kk} + start_t;
-                end_decision = p.numlineResults{trialNbr+1,16,kk} + start_t;
+                end_fix = p.numlineResults{trialNbr+1,15,kk} + start_t;
+                end_cons = p.numlineResults{trialNbr+1,16,kk} + start_t;
+                end_decision = p.numlineResults{trialNbr+1,17,kk} + start_t;
                 DrawCenteredNum_Abs('X', win, color);
-                p.numlineResults(trialNbr+1,18,kk) = {GetSecs - start_t}; %Real onset of fixation
+                p.numlineResults(trialNbr+1,19,kk) = {GetSecs - start_t}; %Real onset of fixation
                 WaitTill(end_fix);
-                p.numlineResults(trialNbr+1,19,kk) = {GetSecs - start_t}; %Real onset of consider
-                p.numlineResults(trialNbr+1,1:4,kk) = ConsiderSlow_Abs(TestNLine(trialNbr,:,kk), win, color, task, end_cons);
+                p.numlineResults(trialNbr+1,20,kk) = {GetSecs - start_t}; %Real onset of consider
+                p.numlineResults(trialNbr+1,1:6,kk) = ConsiderSlow_Abs(TestNLine(trialNbr,:,kk), win, color, task, end_cons);
                 WaitTill(end_cons);
-                p.numlineResults(trialNbr+1,20,kk) = {GetSecs - start_t}; %Real onset of decision
-                p.numlineResults(trialNbr+1,5:10,kk) = FractLineRGSlow_Abs(TestNLine(trialNbr,:,kk), win, 600, 1, color, end_decision, p.numlineResults{trialNbr+1,17,kk}, points);
+                p.numlineResults(trialNbr+1,21,kk) = {GetSecs - start_t}; %Real onset of decision
+                p.numlineResults(trialNbr+1,7:11,kk) = FractLineRGSlow_Abs(TestNLine(trialNbr,:,kk), win, 600, 1, color, end_decision, p.numlineResults{trialNbr+1,18,kk}, points);
                 WaitTill(end_decision);
-                p.numlineResults(trialNbr+1,11,kk) = {trialNbr_NLine};
-                p.numlineResults(trialNbr+1,12,kk) = {blockNbr_NLine};
+                p.numlineResults(trialNbr+1,12,kk) = {trialNbr_NLine};
+                p.numlineResults(trialNbr+1,13,kk) = {blockNbr_NLine};
                 points = p.numlineResults{trialNbr+1,10,kk};
             end
         end
         end_t = GetSecs - start_t;
-        p.time_Runs(kk+1,2) = {end_t};
+        p.time_Runs(kk+1,2) = {end_t}; %This needs to be modified becaus task order is variable now (Need to change the '2')
         DisplayInstructs2;
     end
 

@@ -346,12 +346,12 @@ try
     prac3 = [16 24 1 13 20];
     DrawCenteredNum(fix, win, color, p.fixation);
     ConsiderSlow(prac1, win, color, task, p.consider);
-    FractLineRGSlow(prac1, win, 600, 1, color, p.decision); %Large example
+    FractLineRGSlow(prac1, win, 600, 1, color, p.decision); %Top example
     DrawCenteredNum(fix, win, color, p.fixation);
     ConsiderSlow(prac2, win, color, task, p.consider); %No answer example
     DrawCenteredNum(fix, win, color, p.fixation);
     ConsiderSlow(prac3, win, color, task, p.consider);
-    FractLineRGSlow(prac3, win, 600, 1, color, p.decision); % Small example
+    FractLineRGSlow(prac3, win, 600, 1, color, p.decision); % Bottom example
     
     DisplayInstructs4 %End of practice ask question and get ready to start
     
@@ -408,7 +408,7 @@ catch
     sca
     ple
     ShowCursor
-    save([filename '_catch4']);
+    save([filename '_catch3']);
     Screen('Flip', win);
 
 end

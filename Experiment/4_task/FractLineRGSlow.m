@@ -13,26 +13,28 @@ rng shuffle
 jitter = jitter*randi([-300 300]);
 jitter = round(jitter*ppc_adjust);% Here position of line is jittered
 
-clearMouseInput
-
-FlushEvents;
-click = 0;
-
 %set variables
-mouse_pos = -1;
 correct =-1;
 response = -1;
 RT = -1;
-error = -2;
-time_left = 1;
-time_fix = 0.0;
+Acc = -1;
+time_fix = 0;
 time_on = time - time_fix;
 
-
-trialResponse = {mouse_pos correct response RT error};
+trialResponse = {correct response RT Acc points};
 
 fractMag = fract(1)/fract(2);
-correct = fractMag;
+probeMag = fract(4)/fract(5);
+
+if probeMag > fractMag;
+    correct = 1;
+end;
+if probeMag < fractMag;
+    correct = 0;
+end;
+
+trialResponse{1} = correct;
+
 trialResponse{2} = correct;
 
 lineSZ = round(20*ppc_adjust);
@@ -47,12 +49,6 @@ x2 = round(center + lineLength/2 + jitter);% Here position of line is jittered
 
 HideCursor;
 
-trialResponse{1} = 0.8*rand + 0.1; %If rand 0 cursonr starts at 0.1 if rand 1 starts at 0.9
-    
-MouseStartPosX = round(trialResponse{1}*(x2-x1) + x1);
-
-SetMouse(MouseStartPosX,y,win);
-
 Screen('TextSize',win, 25);
 Screen('TextStyle',win, 1);
 
@@ -65,57 +61,41 @@ oneBox = CenterRectOnPoint(oneBox, x2, y + yTextPos*40);
 
 zX=zeroBox(RectLeft); oX = oneBox(RectLeft); yNum=oneBox(RectTop);
 
+%Draw number line
+Screen('Drawline', win,color, x1, y, x2, y, round(5*ppc_adjust)); %instead of color he had [0 0 200 255]
+Screen('Drawline', win, color, x1, y - lineSZ, x1, y + lineSZ, round(5*ppc_adjust));
+Screen('Drawline', win, color, x2, y - lineSZ, x2, y + lineSZ, round(5*ppc_adjust));
+%Add '0' and '1' to endpoints
+Screen('DrawText', win, '0', zX, yNum, color);
+Screen('DrawText', win, '1', oX, yNum, color);
+
+
+% Draw line mark at probe position
+probe_XPos = x1 + (x2-x1)*probe;
+Screen('Drawline', win, [0 0 0 0], probe_XPos, y - lineSZ/1.5, probe_XPos, y + lineSZ/1.5, round(5*ppc_adjust));
+
+Screen('Flip', win);
+
 t_start = GetSecs;
-t_end = t_start + time_on;
-mouseResp = 0;
-
-while ~mouseResp;
-    [xPos, yPos, click] = GetMouse(win);
-    if ~isempty(click) || GetSecs >= t_end;
-       if GetSecs >= t_end;
-            %sprintf('timeout');
-            time_left = 0;
-            mouseResp = 1;
-       else
-            
-            if xPos < x1
-                xPos = x1;
-            end
-
-            if xPos > x2
-                xPos = x2;
-            end
-
-            click = sum(click);
-
-            if click == 1
-                trialResponse{4} = GetSecs - t_start;
-                trialResponse{3} = (xPos - x1)/(x2-x1);
-                trialResponse{5} = trialResponse{3} - correct;
-                %mouseResp = 1;
-            end
-
-
-            Screen('Drawline', win,color, x1, y, x2, y, round(5*ppc_adjust)); %instead of color he had [0 0 200 255]
-            Screen('Drawline', win, color, x1, y - lineSZ, x1, y + lineSZ, round(5*ppc_adjust));
-            Screen('Drawline', win, color, x2, y - lineSZ, x2, y + lineSZ, round(5*ppc_adjust));
-
-            Screen('DrawText', win, '0', zX, yNum, color);
-            Screen('DrawText', win, '1', oX, yNum, color);
-
-
-
-
-            Screen('Drawline', win, [0 0 0 0], xPos, y - lineSZ/1.5, xPos, y + lineSZ/1.5, round(5*ppc_adjust));
-
-            Screen('Flip', win);
-       end
-
+time = time+t_start
+KbReleaseWait;
+[key, secs] = WaitTill(time, {'1' '2' '3' '4' '6' '7' '8' '9'}, 0); %wait seconds even if there is a press
+if~isempty(key);
+    trialResponse{2} = key;
+    trialResponse{3} = secs - t_start;
+    left = {'1' '2' '3' '4'};
+    right = {'6' '7' '8' '9'};
+    if ismember(key, left);
+        response = 0;
+    end
+    if ismember(key, right);
+        response = 1;
+    end
+    trialResponse{4} = correct==response;
+    if trialResponse{4} == 1;
+        trialResponse{5} = trialResponse{5} + 1;
     end
 end
 
-% fix_on = time_fix + time_left*(time_on - trialResponse{4});
-% DrawCenteredNum('X',win,color,fix_on);
-% Screen('Flip', win);
 
 end

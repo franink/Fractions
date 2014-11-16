@@ -1,4 +1,4 @@
-function trialResponse = SumSlow(fract, win, color, time)
+function trialResponse = SumSlow(fract, win, color, time, points)
 
 %plots a line starting at x1, finishing at x2, and ac ursor in 'probe' location
 %only appears if the trial has catch = 1
@@ -15,15 +15,17 @@ RT = -1;
 Acc = -1;
 time_fix = 0;
 
-fractSum = fract(1) + fract(2);
-probeSum = fract(4);
+
 
 trialResponse = {fractSum probeSum correct response RT Acc points};
 
-if probeMag > fractMag;
+fractSum = fract(1) + fract(2);
+probeSum = fract(4);
+
+if probeSum > fractSum;
     correct = 1;
 end;
-if probeMag < fractMag;
+if probeSum < fractSum;
     correct = 0;
 end;
 
@@ -31,8 +33,8 @@ trialResponse{1} = fractSum;
 trialResponse{2} = probeSum;
 trialResponse{3} = correct;
 
-DrawCenteredNum(probeSum,win, color);
-Screen('Flip', win);
+
+DrawCenteredNum_Abs(num2str(probeSum),win, color);
 
 t_start = GetSecs;
 time = time+t_start;

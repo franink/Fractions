@@ -20,7 +20,7 @@ Instruct{2} = {'In this section, two numbers will appear on the screen.',
                 'This means you DO NOT need to do anything in this trial.',
                 ' ',
                 'On other trials, after the 2 seconds you will see',
-                'another number in he middle of the screen.',
+                'another number in the middle of the screen.',
                 ' ',
                 'If you see a number, then your job is to decide',
                 'if the number shown is smaller or greater than',
@@ -53,10 +53,10 @@ Instruct{4} = {'We are now ready to begin.',
               ' ',
               'In the following screens there will be 3 practice trials',
               ' ',
-              'Please CLICK MOUSE to begin the experiment.'};
+              'Please PRESS ANY BUTTON to begin the experiment.'};
             
 
-for ii = 1:length(Instruct)
+for ii = 1:length(Instruct);
 %     %This is the code if we want to use mouse instead of keyboard
 %     clearMouseInput;
 %     TextDisplay(Instruct{ii}, win, color);

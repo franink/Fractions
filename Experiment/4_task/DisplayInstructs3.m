@@ -46,7 +46,7 @@ Instruct{4} = {'We are now ready to begin.',
               'Please PRESS ANY BUTTON to begin the experiment.'};
                                
 
-for ii = 1:length(Instruct)
+for ii = 1:length(Instruct);
     KbReleaseWait;
     keyResp = 0;
     TextDisplay(Instruct{ii}, win, color);

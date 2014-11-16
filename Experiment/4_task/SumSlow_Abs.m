@@ -35,28 +35,28 @@ if ctch;
     trialResponse{2} = probeSum;
     trialResponse{3} = correct;
     
-    DrawCenteredNum(probeSum,win, color)
-    Screen('Flip', win);
+    DrawCenteredNum_Abs(num2str(probeSum),win, color);
     
     t_start = GetSecs;
-        KbReleaseWait;
-        [key, secs] = WaitTill((end_decision-time_fix), {'1' '2' '3' '4' '6' '7' '8' '9'}, 0); %wait seconds even if there is a press
-        if~isempty(key);
-            trialResponse{4} = key;
-            trialResponse{5} = secs - t_start;
-            left = {'1' '2' '3' '4'};
-            right = {'6' '7' '8' '9'};
-            if ismember(key, left);
-                response = 0;
-            end
-            if ismember(key, right);
-                response = 1;
-            end
-            trialResponse{6} = correct==response;
-            if trialResponse{6} == 1;
-                trialResponse{7} = trialResponse{7} + 1;
-            end
-        end
+    KbReleaseWait;
+    time = end_decision-time_fix;
+    [key, secs] = WaitTill(time, {'1' '2' '3' '4' '6' '7' '8' '9'}, 0); %wait seconds even if there is a press
+    if~isempty(key);
+        trialResponse{4} = str2double(key);
+        trialResponse{5} = secs - t_start;
+        left = {'1' '2' '3' '4'};
+        right = {'6' '7' '8' '9'};
+        if ismember(key, left);
+            response = 0;
+        end;
+        if ismember(key, right);
+            response = 1;
+        end;
+        trialResponse{6} = correct==response;
+        if trialResponse{6} == 1;
+            trialResponse{7} = trialResponse{7} + 1;
+        end;
+    end;
 
 end
 

@@ -45,11 +45,11 @@ Instruct{4} = {'We are now ready to begin.',
               'Please PRESS ANY BUTTON to begin the experiment.'};
 
 
-for ii = 1:length(Instruct)
+for ii = 1:length(Instruct);
     KbReleaseWait;
     keyResp = 0;
     TextDisplay(Instruct{ii}, win, color);
     Screen('Flip', win);
-    waitsecs(0.5);
+    WaitSecs(0.5);
     WaitTill({'1' '2' '3' '4' '6' '7' '8' '9'});
 end

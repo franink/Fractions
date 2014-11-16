@@ -1,4 +1,4 @@
-function [] = DrawCenteredFrac(Fract, Window, color)
+function [] = DrawCenteredNum_Abs(Fract, Window, color)
 %TextDisplay displays text on the screen, eg, to give user instructions in
 %an experiment. Each line of text must be stored in a cell. Importantly,
 %Psychtoolbox must already be initialized and the Window must be open. Also

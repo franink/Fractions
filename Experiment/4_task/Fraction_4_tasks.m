@@ -48,8 +48,8 @@ p.pct_catch = 0.4; % proportion of trials that have a test (decision) phase
 %Make sure that repeats is divisible by runs
 p.runs = 2; %within a single task
 p.tasks = 3; %This will potentially be 4 tasks
-p.nRepeats = 10; %repeats per run. Divisivle by p.runs 
-p.nStim = 16;
+p.nRepeats = 4; %repeats per run. Divisivle by p.runs 
+p.nStim = 3;
 p.tasks = {'Sum', 'FracComp', 'NumLine'}; %This will potentially be 4 tasks
 p.trialSecs = p.fixation + p.consider + (p.decision*p.pct_catch);
 
@@ -64,8 +64,8 @@ rng shuffle;
 ctch_nbr = round((p.nRepeats/p.runs)*p.pct_catch); 
 ctch = [ones(ctch_nbr,1); zeros((p.nRepeats/p.runs) - ctch_nbr,1)];
 %ctch_temp = ctch(tmp(randperm(p.nRepeats)));
-TestSum = zeros(p.nRepeats*p.nStim,5); %num, denom, catch, sum probe
-TestFracsComp = zeros(p.nRepeats*p.nStim,4); %num, denom, catch, n probe, d probe 
+TestFracSum = zeros(p.nRepeats*p.nStim,4); %num, denom, catch, sum probe
+TestFracsComp = zeros(p.nRepeats*p.nStim,5); %num, denom, catch, n probe, d probe 
 TestFracsLine = zeros(p.nRepeats*p.nStim,5); %num, denom, catch, n probe, d probe 
 
 % First summation task
@@ -73,8 +73,8 @@ for ii = 1:p.nStim;
     for kk = 1:p.runs;
         ctch_temp = ctch(randperm(p.nRepeats/p.runs)); %Just one block
         for jj = 1:p.nRepeats/p.runs;
-            TestSum(ii+((kk-1)*(p.nStim*(p.nRepeats/p.runs))+((jj-1)*(p.nStim))), 1:2) = FracStim(ii,1:2);
-            TestSum(ii+((kk-1)*(p.nStim*(p.nRepeats/p.runs))+((jj-1)*(p.nStim))), 3) = ctch_temp(jj);
+            TestFracSum(ii+((kk-1)*(p.nStim*(p.nRepeats/p.runs))+((jj-1)*(p.nStim))), 1:2) = FracStim(ii,1:2);
+            TestFracSum(ii+((kk-1)*(p.nStim*(p.nRepeats/p.runs))+((jj-1)*(p.nStim))), 3) = ctch_temp(jj);
         end
     end
 end
@@ -104,14 +104,14 @@ end
 % Now add the probes for all catch trials and add '-1' to non catch trials
 
 % Summation task (missing until we decide what to do)
-TestSum(:,4:5) = -1;
+TestFracSum(:,4) = -1;
 probes = 1:ctch_nbr*p.runs;
 IndStim = 0:p.nStim:p.nStim*(p.nRepeats-1);
 for ii = 1:p.nStim;
     probes = probes(randperm(length(probes)));
     IndStimTmp = IndStim + ii;
-    IndCatch = find(TestSum(IndStimTmp,3) == 1);
-    TestSum(IndStimTmp(IndCatch),4) = FracStim(ii,(probes+10));
+    IndCatch = find(TestFracSum(IndStimTmp,3) == 1);
+    TestFracSum(IndStimTmp(IndCatch),4) = FracStim(ii,(probes+10));
 end
 
 %Now for Fraction Comparison
@@ -141,7 +141,7 @@ end
 
 %Shuffle trials within block
 for ii = 1:p.nRepeats
-    TestSum(((ii-1)*p.nStim)+1:((ii-1)*p.nStim)+p.nStim,:) = TestSum(randperm(p.nStim)+(p.nStim*(ii-1)),:);
+    TestFracSum(((ii-1)*p.nStim)+1:((ii-1)*p.nStim)+p.nStim,:) = TestFracSum(randperm(p.nStim)+(p.nStim*(ii-1)),:);
 end
 % Now for fraction comparison
 for ii = 1:p.nRepeats
@@ -175,7 +175,7 @@ ctr = 0;
 for jj = 1:p.runs
     for ii = 2:length(p.sumResults(:,1,1));
         ctr = ctr + 1;
-        p.sumResults(ii,17,jj) = {TestSum(ctr,3)};
+        p.sumResults(ii,17,jj) = {TestFracSum(ctr,3)};
         p.compResults(ii,18,jj) = {TestFracsComp(ctr,3)};
         p.numlineResults(ii,18,jj) = {TestFracsLine(ctr,3)};
     end
@@ -187,7 +187,7 @@ TestFComp = zeros(p.nStim*(p.nRepeats/p.runs),5,p.runs);
 TestNLine = zeros(p.nStim*(p.nRepeats/p.runs),5,p.runs);
 
 for ii = 1:p.runs
-    TestSum(:,:,ii) = TestSum(1+((ii-1)*p.nStim*(p.nRepeats/p.runs)):(p.nStim*(p.nRepeats/p.runs))+((ii-1)*(p.nStim*(p.nRepeats/p.runs))),:);
+    TestSum(:,:,ii) = TestFracSum(1+((ii-1)*p.nStim*(p.nRepeats/p.runs)):(p.nStim*(p.nRepeats/p.runs))+((ii-1)*(p.nStim*(p.nRepeats/p.runs))),:);
     TestFComp(:,:,ii) = TestFracsComp(1+((ii-1)*p.nStim*(p.nRepeats/p.runs)):(p.nStim*(p.nRepeats/p.runs))+((ii-1)*(p.nStim*(p.nRepeats/p.runs))),:);
     TestNLine(:,:,ii) = TestFracsLine(1+((ii-1)*p.nStim*(p.nRepeats/p.runs)):(p.nStim*(p.nRepeats/p.runs))+((ii-1)*(p.nStim*(p.nRepeats/p.runs))),:);
 end
@@ -218,7 +218,7 @@ for jj = 1:p.runs
         current_time = current_time + p.consider; %end of consider
         p.sumResults(ii+1,15,jj) = {current_time}; %decision onset
         current_time = current_time + (p.decision * p.sumResults{ii+1,17,jj}); %end of decision if ctch 1 = 0 current time does not move
-        p.sumhResults(ii+1,16,jj) = {current_time}; %end of decision
+        p.sumResults(ii+1,16,jj) = {current_time}; %end of decision
     end
 end
 
@@ -254,7 +254,7 @@ for jj = 1:p.runs
 end
 
 
-% Stage 1 - Component NL (this is now summation need to correct)
+% Stage 1 - Summation task
 
 try
        
@@ -269,12 +269,12 @@ try
     prac3 = [16 24 1 37];
     DrawCenteredNum(fix, win, color, p.fixation);
     ConsiderSlow(prac1, win, color, task, p.consider);
-    SumSlow(prac1, win, color, p.decision); 
+    SumSlow(prac1, win, color, p.decision, 0); 
     DrawCenteredNum(fix, win, color, p.fixation);
     ConsiderSlow(prac2, win, color, task, p.consider); %No answer example
     DrawCenteredNum(fix, win, color, p.fixation);
     ConsiderSlow(prac3, win, color, task, p.consider);
-    SumSlow(prac3, win, color, p.decision); 
+    SumSlow(prac3, win, color, p.decision, 0); 
     
     DisplayInstructs4 %End of practice ask question and get ready to start   
     
@@ -350,12 +350,12 @@ try
     prac3 = [16 24 1 13 20];
     DrawCenteredNum(fix, win, color, p.fixation);
     ConsiderSlow(prac1, win, color, task, p.consider);
-    FCompSlow(prac1, win, 600, 1, color, p.decision); %Large example
+    FCompSlow(prac1, win, color, p.decision); %Large example
     DrawCenteredNum(fix, win, color, p.fixation);
     ConsiderSlow(prac2, win, color, task, p.consider); %No answer example
     DrawCenteredNum(fix, win, color, p.fixation);
     ConsiderSlow(prac3, win, color, task, p.consider);
-    FCompSlow(prac3, win, 600, 1, color, p.decision); % Small example
+    FCompSlow(prac3, win, color, p.decision); % Small example
     
     DisplayInstructs4 %End of practice ask question and get ready to start
     
@@ -410,8 +410,7 @@ catch
     ple
     ShowCursor
     save([filename '_catch3']);
-    Screen('Flip', win);
-
+    
 end
 
 % Stage 3 Fraction numberline task:
@@ -493,7 +492,7 @@ catch
     ple
     ShowCursor
     save([filename '_catch4']);
-    Screen('Flip', win);
+    %Screen('Flip', win);
 
 end
 

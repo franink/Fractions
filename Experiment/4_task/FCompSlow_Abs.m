@@ -45,7 +45,7 @@ if ctch;
         KbReleaseWait;
         [key, secs] = WaitTill((end_decision-time_fix), {'1' '2' '3' '4' '6' '7' '8' '9'}, 0); %wait seconds even if there is a press
         if~isempty(key);
-            trialResponse{5} = key;
+            trialResponse{5} = str2double(key);
             trialResponse{6} = secs - t_start;
             left = {'1' '2' '3' '4'};
             right = {'6' '7' '8' '9'};

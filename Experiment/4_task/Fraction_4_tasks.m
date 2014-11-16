@@ -44,13 +44,13 @@ p.ramp_up = 8; %This number needs to be changed once we know TR (this should be 
 p.fixation = 3;
 p.consider = 2;
 p.decision = 2.5;
-p.pct_catch = 0.33; % proportion of trials that have a test (decision) phase
+p.pct_catch = 0.4; % proportion of trials that have a test (decision) phase
 %Make sure that repeats is divisible by runs
 p.runs = 2; %within a single task
 p.tasks = 3; %This will potentially be 4 tasks
 p.nRepeats = 10; %repeats per run. Divisivle by p.runs 
 p.nStim = 16;
-p.tasks = {'NumMatch', 'FracComp', 'NumLine'}; %This will potentially be 4 tasks
+p.tasks = {'Sum', 'FracComp', 'NumLine'}; %This will potentially be 4 tasks
 p.trialSecs = p.fixation + p.consider + (p.decision*p.pct_catch);
 
 
@@ -64,17 +64,17 @@ rng shuffle;
 ctch_nbr = round((p.nRepeats/p.runs)*p.pct_catch); 
 ctch = [ones(ctch_nbr,1); zeros((p.nRepeats/p.runs) - ctch_nbr,1)];
 %ctch_temp = ctch(tmp(randperm(p.nRepeats)));
-TestNumMatch = zeros(p.nRepeats*p.nStim,3); %This is not 3 depending on the task I need to include the probes
-TestFracsComp = zeros(p.nRepeats*p.nStim,5); %num, denom, catch, n probe, d probe 
+TestSum = zeros(p.nRepeats*p.nStim,5); %num, denom, catch, sum probe
+TestFracsComp = zeros(p.nRepeats*p.nStim,4); %num, denom, catch, n probe, d probe 
 TestFracsLine = zeros(p.nRepeats*p.nStim,5); %num, denom, catch, n probe, d probe 
 
-% First match (summation?) task
+% First summation task
 for ii = 1:p.nStim;
     for kk = 1:p.runs;
         ctch_temp = ctch(randperm(p.nRepeats/p.runs)); %Just one block
         for jj = 1:p.nRepeats/p.runs;
-            TestNumMatch(ii+((kk-1)*(p.nStim*(p.nRepeats/p.runs))+((jj-1)*(p.nStim))), 1:2) = FracStim(ii,1:2);
-            TestNumMatch(ii+((kk-1)*(p.nStim*(p.nRepeats/p.runs))+((jj-1)*(p.nStim))), 3) = ctch_temp(jj);
+            TestSum(ii+((kk-1)*(p.nStim*(p.nRepeats/p.runs))+((jj-1)*(p.nStim))), 1:2) = FracStim(ii,1:2);
+            TestSum(ii+((kk-1)*(p.nStim*(p.nRepeats/p.runs))+((jj-1)*(p.nStim))), 3) = ctch_temp(jj);
         end
     end
 end
@@ -103,8 +103,16 @@ end
     
 % Now add the probes for all catch trials and add '-1' to non catch trials
 
-% Match task (missing until we decide what to do)
-
+% Summation task (missing until we decide what to do)
+TestSum(:,4:5) = -1;
+probes = 1:ctch_nbr*p.runs;
+IndStim = 0:p.nStim:p.nStim*(p.nRepeats-1);
+for ii = 1:p.nStim;
+    probes = probes(randperm(length(probes)));
+    IndStimTmp = IndStim + ii;
+    IndCatch = find(TestSum(IndStimTmp,3) == 1);
+    TestSum(IndStimTmp(IndCatch),4) = FracStim(ii,(probes+10));
+end
 
 %Now for Fraction Comparison
 TestFracsComp(:,4:5) = -1;
@@ -133,7 +141,7 @@ end
 
 %Shuffle trials within block
 for ii = 1:p.nRepeats
-    TestNumMatch(((ii-1)*p.nStim)+1:((ii-1)*p.nStim)+p.nStim,:) = TestNumMatch(randperm(p.nStim)+(p.nStim*(ii-1)),:);
+    TestSum(((ii-1)*p.nStim)+1:((ii-1)*p.nStim)+p.nStim,:) = TestSum(randperm(p.nStim)+(p.nStim*(ii-1)),:);
 end
 % Now for fraction comparison
 for ii = 1:p.nRepeats
@@ -146,7 +154,7 @@ end
 
 
 % Create Results files
-p.nMatchResults = cell(p.nStim*(p.nRepeats/p.runs)+1,20,p.runs);
+p.sumResults = cell(p.nStim*(p.nRepeats/p.runs)+1,20,p.runs);
 p.compResults = cell(p.nStim*(p.nRepeats/p.runs)+1,21,p.runs);
 p.numlineResults = cell(p.nStim*(p.nRepeats/p.runs)+1,21,p.runs);
 p.time_Runs = cell((p.runs+1),length(p.tasks));
@@ -155,31 +163,31 @@ p.time_Runs = cell((p.runs+1),length(p.tasks));
 %Get Labels
 for ii = 1:p.runs
     % Match needs to be corrected once the task is decided
-    p.nMatchResults(1,:,ii) = {'Num','Denom','Value','Sum_Fraction','Sum_Probe','Correct','Response','RT','Acc','Points','Trial','Block','fix_onset','cons_onset','decision_onset','decision_end','catch','fix_onset_real','cons_onset_real','decision_onset_real'};    
+    p.sumResults(1,:,ii) = {'Num','Denom','Value','Sum_Fraction','Sum_Probe','Correct','Response','RT','Acc','Points','Trial','Block','fix_onset','cons_onset','decision_onset','decision_end','catch','fix_onset_real','cons_onset_real','decision_onset_real'};    
     p.compResults(1,:,ii) = {'Num','Denom','Value','Num_Probe','Denom_Probe','Value_Probe','Correct','Response','RT', 'Acc', 'Points','Trial','Block','fix_onset','cons_onset','decision_onset','decision_end','catch','fix_onset_real','cons_onset_real','decision_onset_real'};
     p.numlineResults(1,:,ii) = {'Num','Denom','Value','Num_Probe','Denom_Probe','Value_Probe','Correct','Response','RT','Acc','Points','Trial','Block','fix_onset','cons_onset','decision_onset','decision_end','catch','fix_onset_real','cons_onset_real','decision_onset_real'};
 end
 
-p.time_Runs(1,:) ={'Time_Match', 'Time_Comparison', 'Time_NumLine'}; %this might change if number of runs changes
+p.time_Runs(1,:) ={'Time_Sum', 'Time_Comparison', 'Time_NumLine'}; %this might change if number of runs changes
 
 %Add catch information (needed to construct timing)
 ctr = 0;
 for jj = 1:p.runs
-    for ii = 2:length(p.nMatchResults(:,1,1));
+    for ii = 2:length(p.sumResults(:,1,1));
         ctr = ctr + 1;
-        p.nMatchResults(ii,17,jj) = {TestNumMatch(ctr,3)};
+        p.sumResults(ii,17,jj) = {TestSum(ctr,3)};
         p.compResults(ii,18,jj) = {TestFracsComp(ctr,3)};
         p.numlineResults(ii,18,jj) = {TestFracsLine(ctr,3)};
     end
 end
 
 % Separate runs into different 3D matrices
-TestSum = zeros(p.nStim*(p.nRepeats/p.runs),3,p.runs);
+TestSum = zeros(p.nStim*(p.nRepeats/p.runs),4,p.runs);
 TestFComp = zeros(p.nStim*(p.nRepeats/p.runs),5,p.runs);
 TestNLine = zeros(p.nStim*(p.nRepeats/p.runs),5,p.runs);
 
 for ii = 1:p.runs
-    TestSum(:,:,ii) = TestNumMatch(1+((ii-1)*p.nStim*(p.nRepeats/p.runs)):(p.nStim*(p.nRepeats/p.runs))+((ii-1)*(p.nStim*(p.nRepeats/p.runs))),:);
+    TestSum(:,:,ii) = TestSum(1+((ii-1)*p.nStim*(p.nRepeats/p.runs)):(p.nStim*(p.nRepeats/p.runs))+((ii-1)*(p.nStim*(p.nRepeats/p.runs))),:);
     TestFComp(:,:,ii) = TestFracsComp(1+((ii-1)*p.nStim*(p.nRepeats/p.runs)):(p.nStim*(p.nRepeats/p.runs))+((ii-1)*(p.nStim*(p.nRepeats/p.runs))),:);
     TestNLine(:,:,ii) = TestFracsLine(1+((ii-1)*p.nStim*(p.nRepeats/p.runs)):(p.nStim*(p.nRepeats/p.runs))+((ii-1)*(p.nStim*(p.nRepeats/p.runs))),:);
 end
@@ -199,18 +207,18 @@ end
 % simulates going through the whole run and kees track of time and catch
 % events
 
-% First for match(summation)
+% First for summation
 for jj = 1:p.runs
     end_ramp_up = p.ramp_up; % after ramp_up the first fixation begins
     current_time = end_ramp_up; %keeps track of time, starts with time after ramp_up
-    for ii = 1:length(p.nMatchResults(:,1,1))-1;
-        p.nMatchResults(ii+1,13,jj) = {current_time}; %fixation onset
+    for ii = 1:length(p.sumResults(:,1,1))-1;
+        p.sumResults(ii+1,13,jj) = {current_time}; %fixation onset
         current_time = current_time + p.fixation; %end of fixation
-        p.nMatchResults(ii+1,14,jj) = {current_time}; %consider onset
+        p.sumResults(ii+1,14,jj) = {current_time}; %consider onset
         current_time = current_time + p.consider; %end of consider
-        p.nMatchResults(ii+1,15,jj) = {current_time}; %decision onset
-        current_time = current_time + (p.decision * p.nMatchResults{ii+1,17,jj}); %end of decision if ctch 1 = 0 current time does not move
-        p.nMatchResults(ii+1,16,jj) = {current_time}; %end of decision
+        p.sumResults(ii+1,15,jj) = {current_time}; %decision onset
+        current_time = current_time + (p.decision * p.sumResults{ii+1,17,jj}); %end of decision if ctch 1 = 0 current time does not move
+        p.sumhResults(ii+1,16,jj) = {current_time}; %end of decision
     end
 end
 
@@ -250,35 +258,35 @@ end
 
 try
        
-    task = 'mouse';
+    task = 'keyb';
     
     %DisplayInstructsNComp;
     DisplayInstructs1; %Need to change instructions
     %practice trials
     fix = 'X';
-    prac1 = [1 2];
-    prac2 = [1 3];
-    prac3 = [16 24];
+    prac1 = [1 2 1 5];
+    prac2 = [1 3 0 -1];
+    prac3 = [16 24 1 37];
     DrawCenteredNum(fix, win, color, p.fixation);
     ConsiderSlow(prac1, win, color, task, p.consider);
-    NumLineRGSlow(prac1, win, 600, 1, color, p.decision, 1); %Top example
+    SumSlow(prac1, win, 600, 1, color, p.decision, 1); %Need to change paraneters
     DrawCenteredNum(fix, win, color, p.fixation);
     ConsiderSlow(prac2, win, color, task, p.consider); %No answer example
     DrawCenteredNum(fix, win, color, p.fixation);
     ConsiderSlow(prac3, win, color, task, p.consider);
-    NumLineRGSlow(prac3, win, 600, 1, color, p.decision, 2); % Bottom example
+    SumSlow(prac3, win, 600, 1, color, p.decision, 2); % Need to change paraneters
     
     DisplayInstructs4 %End of practice ask question and get ready to start   
     
     points = 0; %This initializes points for accuracy calculation
-    blockNbr_Match = 0;
+    blockNbr_Sum = 0;
     
     % Need to implement this correctly. The idea is the kk will signal
     % which portion of the #D matrix testcomponent will be used for the
     % rest of the code and in principle the rest should not be changed
     % (except for names)
     start_t0 = GetSecs;
-    p.start_match_kk=datestr(now); % for record purpose
+    p.start_sum_kk=datestr(now); % for record purpose
     for kk = 1:p.runs;
         
         % wait for scanner trigger '5'
@@ -287,28 +295,28 @@ try
         start_t = GetSecs;
             
         for ii = 1:(p.nRepeats/p.runs);
-            blockNbr_Match = blockNbr_Match+1;
+            blockNbr_Sum = blockNbr_Sum+1;
             for jj = 1:p.nStim;
-                trialNbr_Match = (p.nStim * (blockNbr_Match-1)) + jj; % This counts across blocks
+                trialNbr_Sum = (p.nStim * (blockNbr_Sum-1)) + jj; % This counts across blocks
                 trialNbr = (p.nStim * (ii-1)) + jj; %This counts within block
-                end_fix = p.nMatchResults{trialNbr+1,14,kk} + start_t;
-                end_cons = p.nMatchResults{trialNbr+1,15,kk} + start_t;
-                end_decision = p.nMatchResults{trialNbr+1,16,kk} + start_t;
+                end_fix = p.sumResults{trialNbr+1,14,kk} + start_t;
+                end_cons = p.sumResults{trialNbr+1,15,kk} + start_t;
+                end_decision = p.sumResults{trialNbr+1,16,kk} + start_t;
                 DrawCenteredNum_Abs('X', win, color);
-                p.nMatchResults(trialNbr+1,18,kk) = {GetSecs - start_t}; %Real onset of fixation
+                p.sumResults(trialNbr+1,18,kk) = {GetSecs - start_t}; %Real onset of fixation
                 WaitTill(end_fix);
                 %%% I need to pass end_time to the functions so that they can
                 %%% use it to figure when to exit from the script
-                p.nMatchResults(trialNbr+1,19,kk) = {GetSecs - start_t}; %Real onset of consider
-                p.nMatchResults(trialNbr+1,1:4,kk) = ConsiderSlow_Abs(TestSum(trialNbr,:,kk), win, color, task,end_cons);
+                p.sumResults(trialNbr+1,19,kk) = {GetSecs - start_t}; %Real onset of consider
+                p.sumResults(trialNbr+1,1:4,kk) = ConsiderSlow_Abs(TestSum(trialNbr,:,kk), win, color, task,end_cons);
                 %Screen('Flip',win);
                 WaitTill(end_cons);
-                p.nMatchResults(trialNbr+1,20,kk) = {GetSecs - start_t}; %Real onset of deciison
-                p.nMatchResults(trialNbr+1,5:10,kk) = NumLineRGSlow_Abs(TestSum(trialNbr,:,kk), win, 600, 1, color,end_decision, p.nMatchResults{trialNbr+1,17,kk}, points);
+                p.sumResults(trialNbr+1,20,kk) = {GetSecs - start_t}; %Real onset of deciison
+                p.sumResults(trialNbr+1,5:10,kk) = SumSlow_Abs(TestSum(trialNbr,:,kk), win, 600, 1, color,end_decision, p.sumResults{trialNbr+1,17,kk}, points);
                 WaitTill(end_decision);
-                p.nMatchResults(trialNbr+1,11,kk) = {trialNbr_Match};
-                p.nMatchResults(trialNbr+1,12,kk) = {blockNbr_Match};
-                points = p.nMatchResults{trialNbr+1,10,kk};
+                p.sumResults(trialNbr+1,11,kk) = {trialNbr_Sum};
+                p.sumResults(trialNbr+1,12,kk) = {blockNbr_Sum};
+                points = p.sumResults{trialNbr+1,10,kk};
             end
         end
         end_t = GetSecs - start_t;
@@ -317,7 +325,7 @@ try
     end
     
     end_t = GetSecs - start_t0;
-    p.finish_match = datestr(now);
+    p.finish_sum = datestr(now);
 catch
     ple
     ShowCursor

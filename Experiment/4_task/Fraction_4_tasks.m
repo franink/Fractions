@@ -41,14 +41,14 @@ load FracStim;
 
 %Setup experiment parameters
 p.ramp_up = 8; %This number needs to be changed once we know TR (this should be TR*4)
-p.fixation = 2.5;
+p.fixation = 3;
 p.consider = 2;
 p.decision = 2.5;
 p.pct_catch = 0.33; % proportion of trials that have a test (decision) phase
 %Make sure that repeats is divisible by runs
 p.runs = 2; %within a single task
 p.tasks = 3; %This will potentially be 4 tasks
-p.nRepeats = 12; %repeats per run. Divisivle by p.runs 
+p.nRepeats = 10; %repeats per run. Divisivle by p.runs 
 p.nStim = 16;
 p.tasks = {'NumMatch', 'FracComp', 'NumLine'}; %This will potentially be 4 tasks
 p.trialSecs = p.fixation + p.consider + (p.decision*p.pct_catch);
@@ -328,7 +328,83 @@ end
 
 % Stage 2 Fraction Comparison task:
 
-%Need to do
+try
+    task = 'keyb';
+    
+    %A neat little script that displays instructions for section two
+    %DisplayInstructs;
+    DisplayInstructs5; %Need to fix instructions
+    
+    %practice trials
+    fix = 'X';
+    prac1 = [1 2 1 6 10];
+    prac2 = [1 3 0 -1 -1];
+    prac3 = [16 24 1 13 20];
+    DrawCenteredNum(fix, win, color, p.fixation);
+    ConsiderSlow(prac1, win, color, task, p.consider);
+    FCompSlow(prac1, win, 600, 1, color, p.decision); %Large example
+    DrawCenteredNum(fix, win, color, p.fixation);
+    ConsiderSlow(prac2, win, color, task, p.consider); %No answer example
+    DrawCenteredNum(fix, win, color, p.fixation);
+    ConsiderSlow(prac3, win, color, task, p.consider);
+    FCompSlow(prac3, win, 600, 1, color, p.decision); % Small example
+    
+    DisplayInstructs4 %End of practice ask question and get ready to start
+    
+    blockNbr_NLine = 0;
+    
+    % Need to implement this correctly. The idea is the kk will signal
+    % which portion of the #D matrix testcomponent will be used for the
+    % rest of the code and in principle the rest should not be changed
+    % (except for names)
+    start_t0 = GetSecs;
+    p.start_NLine=datestr(now); % for record purpose
+    
+    for kk = 1:p.runs;
+    
+        
+        % wait for scanner trigger '5'
+        %[~, startSecs]=WaitTill('5'); %Use this only if used in a scanner that sends 5
+        start_t = GetSecs;
+    
+        for ii = 1:(p.nRepeats/p.runs);
+            blockNbr_FComp = blockNbr_FComp+1;
+            for jj = 1:p.nStim;
+                trialNbr_FComp = (p.nStim * (blockNbr_FComp-1)) + jj; % This counts across blocks
+                trialNbr = (p.nStim * (ii-1)) + jj; %This counts within block
+                end_fix = p.compResults{trialNbr+1,15,kk} + start_t;
+                end_cons = p.compResults{trialNbr+1,16,kk} + start_t;
+                end_decision = p.compResults{trialNbr+1,17,kk} + start_t;
+                DrawCenteredNum_Abs('X', win, color);
+                p.compResults(trialNbr+1,19,kk) = {GetSecs - start_t}; %Real onset of fixation
+                WaitTill(end_fix);
+                p.compResults(trialNbr+1,20,kk) = {GetSecs - start_t}; %Real onset of consider
+                p.compResults(trialNbr+1,1:6,kk) = ConsiderSlow_Abs(TestFComp(trialNbr,:,kk), win, color, task, end_cons);
+                WaitTill(end_cons);
+                p.compResults(trialNbr+1,21,kk) = {GetSecs - start_t}; %Real onset of decision
+                p.compResults(trialNbr+1,7:11,kk) = FCompSlow_Abs(TestFComp(trialNbr,:,kk), win, 600, 1, color, end_decision, p.compResults{trialNbr+1,18,kk}, points);
+                WaitTill(end_decision);
+                p.compResults(trialNbr+1,12,kk) = {trialNbr_FComp};
+                p.compResults(trialNbr+1,13,kk) = {blockNbr_FComp};
+                points = p.compResults{trialNbr+1,10,kk};
+            end
+        end
+        end_t = GetSecs - start_t;
+        p.time_Runs(kk+1,2) = {end_t}; %This needs to be modified becaus task order is variable now (Need to change the '2')
+        DisplayInstructs2;
+    end
+
+    end_t = GetSecs - start_t0;
+    p.finish_FComp = datestr(now);    
+    
+catch
+    sca
+    ple
+    ShowCursor
+    save([filename '_catch3']);
+    Screen('Flip', win);
+
+end
 
 % Stage 3 Fraction numberline task:
 
@@ -394,7 +470,7 @@ try
             end
         end
         end_t = GetSecs - start_t;
-        p.time_Runs(kk+1,2) = {end_t}; %This needs to be modified becaus task order is variable now (Need to change the '2')
+        p.time_Runs(kk+1,3) = {end_t}; %This needs to be modified becaus task order is variable now (Need to change the '3')
         DisplayInstructs2;
     end
 

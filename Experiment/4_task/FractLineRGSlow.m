@@ -19,6 +19,7 @@ response = -1;
 RT = -1;
 Acc = -1;
 time_fix = 0;
+points = 0;
 time_on = time - time_fix;
 
 trialResponse = {correct response RT Acc points};
@@ -77,7 +78,7 @@ Screen('Drawline', win, [0 0 0 0], probe_XPos, y - lineSZ/1.5, probe_XPos, y + l
 Screen('Flip', win);
 
 t_start = GetSecs;
-time = time+t_start
+time = time+t_start;
 KbReleaseWait;
 [key, secs] = WaitTill(time, {'1' '2' '3' '4' '6' '7' '8' '9'}, 0); %wait seconds even if there is a press
 if~isempty(key);

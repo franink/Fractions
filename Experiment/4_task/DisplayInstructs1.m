@@ -23,7 +23,7 @@ Instruct{2} = {'In this section, two numbers will appear on the screen.',
                 'another number in he middle of the screen.',
                 ' ',
                 'If you see a number, then your job is to decide',
-                'if the number shown is smaller or larger than',
+                'if the number shown is smaller or greater than',
                 'the sum you memorized.'
                 ' ',
                 'Please PRESS ANY BUTTON to go on to the next screen.'};
@@ -49,27 +49,26 @@ Instruct{3} = {'You will have 2.5 seconds to decide.',
                 'Please PRESS ANY BUTTON to go on to the next screen.'};
    
                     
-Instruct{6} = {'We are now ready to begin.',
+Instruct{4} = {'We are now ready to begin.',
               ' ',
               'In the following screens there will be 3 practice trials',
               ' ',
               'Please CLICK MOUSE to begin the experiment.'};
             
 
-
-
 for ii = 1:length(Instruct)
-    clearMouseInput;
-    TextDisplay(Instruct{ii}, win, color);
-    Screen('Flip', win);
-    WaitSecs(0.5);GetClicks(win,0);
-%     %This is the code if we want to use keyboard instead of mouse to move
-%     %screen
-%     %clear keyboard, display screen four, wait for z or / to be pressed
-%     KbReleaseWait;
-%     keyResp = 0;
+%     %This is the code if we want to use mouse instead of keyboard
+%     clearMouseInput;
 %     TextDisplay(Instruct{ii}, win, color);
 %     Screen('Flip', win);
-%     WaitSecs(0.5);
-%     WaitTill({'z', '/'});
+%     WaitSecs(0.5);GetClicks(win,0);
+    %This is the code if we want to use keyboard instead of mouse to move
+    %screen
+    %clear keyboard, display screen four, wait for z or / to be pressed
+    KbReleaseWait;
+    keyResp = 0;
+    TextDisplay(Instruct{ii}, win, color);
+    Screen('Flip', win);
+    WaitSecs(0.5);
+    WaitTill({'1' '2' '3' '4' '6' '7' '8' '9'});
 end

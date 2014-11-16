@@ -6,7 +6,7 @@ Instruct{1} = {'REST BREAK',
                ' ',
                pts_txt,
                ' ',
-               'Please click MOUSE when you are ready to continue'};
+               'Please PRESS ANY BUTTON when you are ready to continue'};
 
 
 for ii = 1:length(Instruct)
@@ -16,6 +16,6 @@ for ii = 1:length(Instruct)
     TextDisplay(Instruct{ii}, win, color);
     Screen('Flip', win);
     WaitSecs(0.5);
-    GetClicks(win,0);
+    WaitTill({'1' '2' '3' '4' '6' '7' '8' '9'});
 end
     

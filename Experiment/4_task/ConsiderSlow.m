@@ -4,7 +4,7 @@ function [ compResults ] = ConsiderSlow(Fract, win, color, task, time)
 
 fractMag = Fract(1)/Fract(2);
 correct = fractMag;
-compResults = {Fract(1) Fract(2) correct 0}; %I still need to think about what I will log and if I can put names
+compResults = {Fract(1) Fract(2) correct}; %I still need to think about what I will log and if I can put names
 
 time_fix = 0.0;
 time_on = time - time_fix;
@@ -24,11 +24,11 @@ if strcmp(task,'keyb')
         keypress = find(keyCode==1, 1);
         if ~isempty(keypress) || GetSecs >= t_end;
             if GetSecs >= t_end;
-                compResults{4} = 0;
+                RT = 0;
                 time_left = 0;
                 keyResp = 1;
             else
-                compResults{4} = secs - t_start; %Make sure I know what position goes fo what pieces of data
+                RT = secs - t_start; %Make sure I know what position goes fo what pieces of data
                 %keyResp = 1;
             end
         end
@@ -46,13 +46,13 @@ if strcmp(task,'mouse')
         [xPos, yPos, click] = GetMouse(win);
         if ~isempty(click) || GetSecs >= t_end;
             if GetSecs >= t_end;
-                compResults{4} = 0;
+                RT = 0;
                 time_left = 0;
                 mouseResp = 1;
             else
                 click = sum(click);
                 if click == 1;
-                    compResults{4} = GetSecs - t_start;
+                    RT = GetSecs - t_start;
                     %mouseResp = 1;
                 end
             end

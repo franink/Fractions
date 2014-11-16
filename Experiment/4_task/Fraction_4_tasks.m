@@ -261,7 +261,7 @@ try
     task = 'keyb';
     
     %DisplayInstructsNComp;
-    DisplayInstructs1; %Need to change instructions
+    DisplayInstructs1; %Need to change instructions to add hand variable
     %practice trials
     fix = 'X';
     prac1 = [1 2 1 5];
@@ -269,12 +269,12 @@ try
     prac3 = [16 24 1 37];
     DrawCenteredNum(fix, win, color, p.fixation);
     ConsiderSlow(prac1, win, color, task, p.consider);
-    SumSlow(prac1, win, 600, 1, color, p.decision, 1); %Need to change paraneters
+    SumSlow(prac1, win, color, p.decision); 
     DrawCenteredNum(fix, win, color, p.fixation);
     ConsiderSlow(prac2, win, color, task, p.consider); %No answer example
     DrawCenteredNum(fix, win, color, p.fixation);
     ConsiderSlow(prac3, win, color, task, p.consider);
-    SumSlow(prac3, win, 600, 1, color, p.decision, 2); % Need to change paraneters
+    SumSlow(prac3, win, color, p.decision); 
     
     DisplayInstructs4 %End of practice ask question and get ready to start   
     
@@ -308,11 +308,11 @@ try
                 %%% I need to pass end_time to the functions so that they can
                 %%% use it to figure when to exit from the script
                 p.sumResults(trialNbr+1,19,kk) = {GetSecs - start_t}; %Real onset of consider
-                p.sumResults(trialNbr+1,1:4,kk) = ConsiderSlow_Abs(TestSum(trialNbr,:,kk), win, color, task,end_cons);
+                p.sumResults(trialNbr+1,1:3,kk) = ConsiderSlow_Abs(TestSum(trialNbr,:,kk), win, color, task,end_cons);
                 %Screen('Flip',win);
                 WaitTill(end_cons);
                 p.sumResults(trialNbr+1,20,kk) = {GetSecs - start_t}; %Real onset of deciison
-                p.sumResults(trialNbr+1,5:10,kk) = SumSlow_Abs(TestSum(trialNbr,:,kk), win, 600, 1, color,end_decision, p.sumResults{trialNbr+1,17,kk}, points);
+                p.sumResults(trialNbr+1,4:10,kk) = SumSlow_Abs(TestSum(trialNbr,:,kk), win, color, end_decision, p.sumResults{trialNbr+1,17,kk}, points);
                 WaitTill(end_decision);
                 p.sumResults(trialNbr+1,11,kk) = {trialNbr_Sum};
                 p.sumResults(trialNbr+1,12,kk) = {blockNbr_Sum};
@@ -387,10 +387,10 @@ try
                 p.compResults(trialNbr+1,19,kk) = {GetSecs - start_t}; %Real onset of fixation
                 WaitTill(end_fix);
                 p.compResults(trialNbr+1,20,kk) = {GetSecs - start_t}; %Real onset of consider
-                p.compResults(trialNbr+1,1:6,kk) = ConsiderSlow_Abs(TestFComp(trialNbr,:,kk), win, color, task, end_cons);
+                p.compResults(trialNbr+1,1:3,kk) = ConsiderSlow_Abs(TestFComp(trialNbr,:,kk), win, color, task, end_cons);
                 WaitTill(end_cons);
                 p.compResults(trialNbr+1,21,kk) = {GetSecs - start_t}; %Real onset of decision
-                p.compResults(trialNbr+1,7:11,kk) = FCompSlow_Abs(TestFComp(trialNbr,:,kk), win, 600, 1, color, end_decision, p.compResults{trialNbr+1,18,kk}, points);
+                p.compResults(trialNbr+1,4:11,kk) = FCompSlow_Abs(TestFComp(trialNbr,:,kk), win, 600, 1, color, end_decision, p.compResults{trialNbr+1,18,kk}, points);
                 WaitTill(end_decision);
                 p.compResults(trialNbr+1,12,kk) = {trialNbr_FComp};
                 p.compResults(trialNbr+1,13,kk) = {blockNbr_FComp};
@@ -467,10 +467,10 @@ try
                 p.numlineResults(trialNbr+1,19,kk) = {GetSecs - start_t}; %Real onset of fixation
                 WaitTill(end_fix);
                 p.numlineResults(trialNbr+1,20,kk) = {GetSecs - start_t}; %Real onset of consider
-                p.numlineResults(trialNbr+1,1:6,kk) = ConsiderSlow_Abs(TestNLine(trialNbr,:,kk), win, color, task, end_cons);
+                p.numlineResults(trialNbr+1,1:3,kk) = ConsiderSlow_Abs(TestNLine(trialNbr,:,kk), win, color, task, end_cons);
                 WaitTill(end_cons);
                 p.numlineResults(trialNbr+1,21,kk) = {GetSecs - start_t}; %Real onset of decision
-                p.numlineResults(trialNbr+1,7:11,kk) = FractLineRGSlow_Abs(TestNLine(trialNbr,:,kk), win, 600, 1, color, end_decision, p.numlineResults{trialNbr+1,18,kk}, points);
+                p.numlineResults(trialNbr+1,4:11,kk) = FractLineRGSlow_Abs(TestNLine(trialNbr,:,kk), win, 600, 1, color, end_decision, p.numlineResults{trialNbr+1,18,kk}, points);
                 WaitTill(end_decision);
                 p.numlineResults(trialNbr+1,12,kk) = {trialNbr_NLine};
                 p.numlineResults(trialNbr+1,13,kk) = {blockNbr_NLine};

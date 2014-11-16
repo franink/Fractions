@@ -1,47 +1,55 @@
 Instruct = {};
 
-Instruct{1} = {'END OF SECTION FOUR',
+Instruct{1} = {'Please read carefully the following instructions',
+               'for the next section.'
                ' ',
-               'Please carefully read the following instructions',
-               'for section five.'
-               ' ',
-               'CLICK MOUSE to see instructions'};
+               'PLease PRESS ANY BUTTON to go on to the next screen.'};
 
-Instruct{2} = {'In these trials, you will see two numbers.',
-               'Please type in the fraction between the two displayed numbers',
-               'that is closest to their numeric midpoint.',
+Instruct{2} = {'In this section, a fraction will appear on the screen.',
+               'Your job is to to think about the magnitude of this fraction',
                ' ',
-               'CLICK MOUSE to see continue'};
+                'On some trials, after 2 seconds you will see an X.',
+                'This means you DO NOT need to do anything in this trial.',
+                ' ',
+                'On other trials, after the 2 seconds you will see',
+                'another fraction.',
+                ' ',
+                'If you see another fraction, then your job is to decide',
+                'if the magnitude of the second fraction is smaller',
+                'or greater than the first fraction.'
+                ' ',
+                'Please PRESS ANY BUTTON to go on to the next screen.'};
 
-Instruct{3} = {'The midpoint of two numbers is the number that is closest to',
-               'halfway between them. For example:',
-               '     The midpoint of 4 and 6 is 5',
-               '     The midpoint of 1/4 and 3/4 is 1/2'
-               ' ',
-               'CLICK MOUSE to see continue'};
+Instruct{3} = {'You will have 2.5 seconds to decide.',
+                ' ',
+                'If you think the last fraction is SMALLER than the first',
+                'you should press a button with your LEFT hand.'
+                ' ',
+                'If you think the last fraction is GREATER than the first',
+                'you should press a button with your RIGHT hand.'
+                ' ',
+                'Please press only once.',
+                ' ',
+                'If you answer correctly',
+                'you will receive 1 point. We will keep track of the points',
+                'and the top 5 participants will receive an extra $10 bonus',
+                ' ',
+                'Remember to answer FAST and ACCURATELY.'
+                ' ',
+                'Please PRESS ANY BUTTON to go on to the next screen.'};
 
-Instruct{4} = {'In this experiment, you will answer in hundredths,',
-               'so the answer 1/2 would be given as 50/100.',
-               ' ',
-               'Enter your answer using the number keys at the',
-               'top of the keyboard.'
-               ' ',
-               'CLICK MOUSE to see continue'};
-
-Instruct{5} = {'Press BACKSPACE if you type the wrong character',
-               'Press ENTER to record your response',
-               ' ',
-               'Feel free to answer approximately, use your intuition or',
-               'make an educated guess.'
-               ' ',
-               'Please CLICK MOUSE to start the experiment.'};
-
-
+Instruct{4} = {'We are now ready to begin.',
+              ' ',
+              'In the following screens there will be 3 practice trials',
+              ' ',
+              'Please PRESS ANY BUTTON to begin the experiment.'};
 
 
 for ii = 1:length(Instruct)
-    clearMouseInput;
+    KbReleaseWait;
+    keyResp = 0;
     TextDisplay(Instruct{ii}, win, color);
     Screen('Flip', win);
-    waitsecs(0.5);GetClicks(win,0);
+    waitsecs(0.5);
+    WaitTill({'1' '2' '3' '4' '6' '7' '8' '9'});
 end

@@ -4,7 +4,7 @@ Instruct{1} = {'END OF PRACTICE',
                ' ',
                'If you have any questions please ask now',
                ' ',
-               'Please click MOUSE when you are ready to begin the experiment'};
+               'Please PRESS ANY BUTTON when you are ready to begin the experiment'};
 
 
 for ii = 1:length(Instruct)
@@ -14,7 +14,7 @@ for ii = 1:length(Instruct)
     TextDisplay(Instruct{ii}, win, color);
     Screen('Flip', win);
     WaitSecs(0.5);
-    GetClicks(win,0);
+    WaitTill({'1' '2' '3' '4' '6' '7' '8' '9'});
 end
     
 

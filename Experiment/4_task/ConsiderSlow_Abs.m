@@ -6,7 +6,7 @@ fractMag = Fract(1)/Fract(2);
 correct = fractMag;
 RT = -1;
 
-compResults = {Fract(1) Fract(2) correct RT}; %I still need to think about what I will log and if I can put names
+compResults = {Fract(1) Fract(2) fractMag}; %I still need to think about what I will log and if I can put names
 
 time_fix = 0.05;
 %time_on = time - time_fix;
@@ -20,7 +20,7 @@ if strcmp(task,'keyb')
     KbReleaseWait;
     [key, secs] = WaitTill(end_cons-time_fix, {'z' '/'}, 0); %wait seconds even if there is a press
     if ~isempty(key);
-        compResults{4} = secs - t_start;
+        RT = secs - t_start;
     end
     
     % Decide if I will use a fixation during time left. Tight now I think it is better to keep stim all the time
@@ -54,13 +54,13 @@ if strcmp(task,'mouse')
         [xPos, yPos, click] = GetMouse(win);
         if ~isempty(click) || GetSecs >= end_cons - time_fix;
             if GetSecs >= end_cons - time_fix;
-                compResults{4} = 0;
+                RT = 0;
                 %time_left = 0; Only if fixation after stim is used
                 mouseResp = 1;
             else
                 click = sum(click);
                 if click == 1;
-                    compResults{4} = GetSecs - t_start;
+                    RT = GetSecs - t_start;
                     mouseResp = 1;
                 end
             end

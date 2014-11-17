@@ -15,7 +15,7 @@ clear Instruct;
 %Filename to save data
 filename = getFracFilename();
 
-%Use number in filename to counter balnce
+%Use number in filename to counter balance
 s_nbr = str2num(filename(6:8));
 
 % counter balance hand
@@ -61,15 +61,13 @@ p.trialSecs = p.fixation + p.consider + (p.decision*p.pct_catch);
 
 
 %Randomize stims for all parts of experiment
-%Don't allow two consecutive equal fractions
 rng shuffle;
 
 %assign randomly catch trials to each stim
-%Only for one block. This will then be replicated ofr every other block 
+%Only for one block. This will then be replicated for every other block 
 %to insure they all have the same time length
 ctch_nbr = round((p.nRepeats/p.runs)*p.pct_catch); 
 ctch = [ones(ctch_nbr,1); zeros((p.nRepeats/p.runs) - ctch_nbr,1)];
-%ctch_temp = ctch(tmp(randperm(p.nRepeats)));
 TestFracSum = zeros(p.nRepeats*p.nStim,4); %num, denom, catch, sum probe
 TestFracsComp = zeros(p.nRepeats*p.nStim,5); %num, denom, catch, n probe, d probe 
 TestFracsLine = zeros(p.nRepeats*p.nStim,5); %num, denom, catch, n probe, d probe 
@@ -146,6 +144,8 @@ end
 
 
 %Shuffle trials within block
+
+%First for summation
 for ii = 1:p.nRepeats
     TestFracSum(((ii-1)*p.nStim)+1:((ii-1)*p.nStim)+p.nStim,:) = TestFracSum(randperm(p.nStim)+(p.nStim*(ii-1)),:);
 end
@@ -168,7 +168,6 @@ p.time_Runs = cell((p.runs+1),length(p.tasks));
 
 %Get Labels
 for ii = 1:p.runs
-    % Match needs to be corrected once the task is decided
     p.sumResults(1,:,ii) = {'Num','Denom','Value','Sum_Fraction','Sum_Probe','Correct','Response','RT','Acc','Points','Trial','Block','fix_onset','cons_onset','decision_onset','decision_end','catch','fix_onset_real','cons_onset_real','decision_onset_real'};    
     p.compResults(1,:,ii) = {'Num','Denom','Value','Num_Probe','Denom_Probe','Value_Probe','Correct','Response','RT', 'Acc', 'Points','Trial','Block','fix_onset','cons_onset','decision_onset','decision_end','catch','fix_onset_real','cons_onset_real','decision_onset_real'};
     p.numlineResults(1,:,ii) = {'Num','Denom','Value','Num_Probe','Denom_Probe','Value_Probe','Correct','Response','RT','Acc','Points','Trial','Block','fix_onset','cons_onset','decision_onset','decision_end','catch','fix_onset_real','cons_onset_real','decision_onset_real'};
@@ -176,7 +175,7 @@ end
 
 p.time_Runs(1,:) ={'Time_Sum', 'Time_Comparison', 'Time_NumLine'}; %this might change if number of runs changes
 
-%Add catch information (needed to construct timing)
+%Add catch information to results struct (needed to construct timing)
 ctr = 0;
 for jj = 1:p.runs
     for ii = 2:length(p.sumResults(:,1,1));
@@ -187,7 +186,8 @@ for jj = 1:p.runs
     end
 end
 
-% Separate runs into different 3D matrices
+% Separate runs into different 3D matrices to control time indpeendently
+% for each run
 TestSum = zeros(p.nStim*(p.nRepeats/p.runs),4,p.runs);
 TestFComp = zeros(p.nStim*(p.nRepeats/p.runs),5,p.runs);
 TestNLine = zeros(p.nStim*(p.nRepeats/p.runs),5,p.runs);
@@ -228,7 +228,7 @@ for jj = 1:p.runs
     end
 end
 
-%Second Fraction comparison
+%Fraction comparison
 for jj = 1:p.runs
     end_ramp_up = p.ramp_up; %practice time might include ramp_up
     current_time = end_ramp_up; %keeps track of time, starts with time after practice
@@ -266,16 +266,16 @@ try
        
     task = 'keyb';
     
-    %DisplayInstructsNComp;
-    DisplayInstructs1; %Need to change instructions to add hand variable
+    DisplayInstructs1; 
+    
     %practice trials
     fix = 'X';
     prac1 = [1 2 1 5];
     prac2 = [1 3 0 -1];
     prac3 = [16 24 1 37];
-    DrawCenteredNum(fix, win, color, p.fixation);
-    ConsiderSlow(prac1, win, color, task, p.consider);
-    SumSlow(prac1, win, color, p.decision, 0); 
+    DrawCenteredNum(fix, win, color, p.fixation);%fixation
+    ConsiderSlow(prac1, win, color, task, p.consider);%consider
+    SumSlow(prac1, win, color, p.decision, 0); %decision
     DrawCenteredNum(fix, win, color, p.fixation);
     ConsiderSlow(prac2, win, color, task, p.consider); %No answer example
     DrawCenteredNum(fix, win, color, p.fixation);
@@ -287,10 +287,9 @@ try
     points = 0; %This initializes points for accuracy calculation
     blockNbr_Sum = 0;
     
-    % Need to implement this correctly. The idea is the kk will signal
-    % which portion of the #D matrix testcomponent will be used for the
+    % The idea is the kk will signal
+    % which portion of the #D matrix TestSum will be used for the
     % rest of the code and in principle the rest should not be changed
-    % (except for names)
     start_t0 = GetSecs;
     p.start_sum=datestr(now); % for record purpose
     for kk = 1:p.runs;
@@ -315,7 +314,6 @@ try
                 %%% use it to figure when to exit from the script
                 p.sumResults(trialNbr+1,19,kk) = {GetSecs - start_t}; %Real onset of consider
                 p.sumResults(trialNbr+1,1:3,kk) = ConsiderSlow_Abs(TestSum(trialNbr,:,kk), win, color, task,end_cons);
-                %Screen('Flip',win);
                 WaitTill(end_cons);
                 p.sumResults(trialNbr+1,20,kk) = {GetSecs - start_t}; %Real onset of deciison
                 p.sumResults(trialNbr+1,4:10,kk) = SumSlow_Abs(TestSum(trialNbr,:,kk), win, color, end_decision, p.sumResults{trialNbr+1,17,kk}, points, LR);
@@ -345,9 +343,7 @@ end
 try
     task = 'keyb';
     
-    %A neat little script that displays instructions for section two
-    %DisplayInstructs;
-    DisplayInstructs5; %Need to fix instructions
+    DisplayInstructs5; 
     
     %practice trials
     fix = 'X';
@@ -367,10 +363,9 @@ try
     
     blockNbr_FComp = 0;
     
-    % Need to implement this correctly. The idea is the kk will signal
-    % which portion of the #D matrix testcomponent will be used for the
+    % The idea is the kk will signal
+    % which portion of the #D matrix TestFComp will be used for the
     % rest of the code and in principle the rest should not be changed
-    % (except for names)
     start_t0 = GetSecs;
     p.start_FComp=datestr(now); % for record purpose
     
@@ -404,7 +399,7 @@ try
             end
         end
         end_t = GetSecs - start_t;
-        p.time_Runs(kk+1,2) = {end_t}; %This needs to be modified becaus task order is variable now (Need to change the '2')
+        p.time_Runs(kk+1,2) = {end_t}; 
         DisplayInstructs2;
     end
 
@@ -424,8 +419,6 @@ end
 try
     task = 'keyb';
     
-    %A neat little script that displays instructions for section two
-    %DisplayInstructs;
     DisplayInstructs3;
     
     %practice trials
@@ -446,10 +439,9 @@ try
     
     blockNbr_NLine = 0;
     
-    % Need to implement this correctly. The idea is the kk will signal
-    % which portion of the #D matrix testcomponent will be used for the
+    % The idea is the kk will signal
+    % which portion of the #D matrix TestNLine will be used for the
     % rest of the code and in principle the rest should not be changed
-    % (except for names)
     start_t0 = GetSecs;
     p.start_NLine=datestr(now); % for record purpose
     
@@ -483,7 +475,7 @@ try
             end
         end
         end_t = GetSecs - start_t;
-        p.time_Runs(kk+1,3) = {end_t}; %This needs to be modified becaus task order is variable now (Need to change the '3')
+        p.time_Runs(kk+1,3) = {end_t}; 
         DisplayInstructs2;
     end
 
@@ -498,8 +490,6 @@ catch
     ple
     ShowCursor
     save([filename '_catch4']);
-    %Screen('Flip', win);
-
 end
 
 %save results

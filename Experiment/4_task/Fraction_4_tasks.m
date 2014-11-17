@@ -286,7 +286,7 @@ try
     % rest of the code and in principle the rest should not be changed
     % (except for names)
     start_t0 = GetSecs;
-    p.start_sum_kk=datestr(now); % for record purpose
+    p.start_sum=datestr(now); % for record purpose
     for kk = 1:p.runs;
         
         % wait for scanner trigger '5'
@@ -359,14 +359,14 @@ try
     
     DisplayInstructs4 %End of practice ask question and get ready to start
     
-    blockNbr_NLine = 0;
+    blockNbr_FComp = 0;
     
     % Need to implement this correctly. The idea is the kk will signal
     % which portion of the #D matrix testcomponent will be used for the
     % rest of the code and in principle the rest should not be changed
     % (except for names)
     start_t0 = GetSecs;
-    p.start_NLine=datestr(now); % for record purpose
+    p.start_FComp=datestr(now); % for record purpose
     
     for kk = 1:p.runs;
     
@@ -390,11 +390,11 @@ try
                 p.compResults(trialNbr+1,1:3,kk) = ConsiderSlow_Abs(TestFComp(trialNbr,:,kk), win, color, task, end_cons);
                 WaitTill(end_cons);
                 p.compResults(trialNbr+1,21,kk) = {GetSecs - start_t}; %Real onset of decision
-                p.compResults(trialNbr+1,4:11,kk) = FCompSlow_Abs(TestFComp(trialNbr,:,kk), win, 600, 1, color, end_decision, p.compResults{trialNbr+1,18,kk}, points);
+                p.compResults(trialNbr+1,4:11,kk) = FCompSlow_Abs(TestFComp(trialNbr,:,kk), win, color, end_decision, p.compResults{trialNbr+1,18,kk}, points);
                 WaitTill(end_decision);
                 p.compResults(trialNbr+1,12,kk) = {trialNbr_FComp};
                 p.compResults(trialNbr+1,13,kk) = {blockNbr_FComp};
-                points = p.compResults{trialNbr+1,10,kk};
+                points = p.compResults{trialNbr+1,11,kk};
             end
         end
         end_t = GetSecs - start_t;
@@ -473,7 +473,7 @@ try
                 WaitTill(end_decision);
                 p.numlineResults(trialNbr+1,12,kk) = {trialNbr_NLine};
                 p.numlineResults(trialNbr+1,13,kk) = {blockNbr_NLine};
-                points = p.numlineResults{trialNbr+1,10,kk};
+                points = p.numlineResults{trialNbr+1,11,kk};
             end
         end
         end_t = GetSecs - start_t;

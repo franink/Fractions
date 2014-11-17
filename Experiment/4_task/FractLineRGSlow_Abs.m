@@ -78,7 +78,7 @@ if ctch;
 
 
     % Draw line mark at probe position
-    probe_XPos = x1 + (x2-x1)*probe;
+    probe_XPos = x1 + (x2-x1)*probeMag;
     Screen('Drawline', win, [0 0 0 0], probe_XPos, y - lineSZ/1.5, probe_XPos, y + lineSZ/1.5, round(5*ppc_adjust));
 
     Screen('Flip', win);

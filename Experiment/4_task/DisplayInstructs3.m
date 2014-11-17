@@ -4,7 +4,7 @@ Instruct = {};
 Instruct{1} = {'Please read carefully the following instructions',
                'for the next section.'
                ' ',
-               'PLease PRESS ANY BUTTON to go on to the next screen.'};
+               'Please PRESS ANY BUTTON to go on to the next screen.'};
 
 Instruct{2} = {'In this section, a fraction will appear on the screen.',
                'Your job is to to think about the magnitude of this fraction',
@@ -51,6 +51,6 @@ for ii = 1:length(Instruct);
     keyResp = 0;
     TextDisplay(Instruct{ii}, win, color);
     Screen('Flip', win);
-    waitsecs(0.5);
+    WaitSecs(0.5);
     WaitTill({'1' '2' '3' '4' '6' '7' '8' '9'});
 end

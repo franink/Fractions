@@ -11,11 +11,11 @@ correct =-1;
 response = -1;
 RT = -1;
 Acc = -1;
-points = 0;
+P_points = 0;
 time_fix = 0;
 
 
-trialResponse = {correct response RT Acc points};
+trialResponse = {correct response RT Acc P_points};
 
 fractMag = fract(1)/fract(2);
 probeMag = fract(4)/fract(5);
@@ -29,7 +29,11 @@ end;
 
 trialResponse{1} = correct;
 
-DrawCenteredFrac(probeMag,win, color)
+probe_num = fract(4);
+probe_denom = fract(5);
+probe = [probe_num probe_denom];
+
+DrawCenteredFrac(probe,win, color);
 Screen('Flip', win);
 
 t_start = GetSecs;

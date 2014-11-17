@@ -9,7 +9,7 @@ time_fix = 0.0;
 time_on = time - time_fix;
 time_left = 1;
 
-DrawCenteredFrac(Fract,win, color)
+DrawCenteredFrac(Fract,win, color);
 Screen('Flip', win);
 WaitSecs(time);
 

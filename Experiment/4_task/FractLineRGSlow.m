@@ -19,10 +19,10 @@ response = -1;
 RT = -1;
 Acc = -1;
 time_fix = 0;
-points = 0;
+P_points = 0;
 time_on = time - time_fix;
 
-trialResponse = {correct response RT Acc points};
+trialResponse = {correct response RT Acc P_points};
 
 fractMag = fract(1)/fract(2);
 probeMag = fract(4)/fract(5);
@@ -72,7 +72,7 @@ Screen('DrawText', win, '1', oX, yNum, color);
 
 
 % Draw line mark at probe position
-probe_XPos = x1 + (x2-x1)*probe;
+probe_XPos = x1 + (x2-x1)*probeMag;
 Screen('Drawline', win, [0 0 0 0], probe_XPos, y - lineSZ/1.5, probe_XPos, y + lineSZ/1.5, round(5*ppc_adjust));
 
 Screen('Flip', win);

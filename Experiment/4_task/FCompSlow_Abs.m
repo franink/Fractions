@@ -37,8 +37,12 @@ if ctch;
     trialResponse{2} = Denom_probe;
     trialResponse{3} = probeMag;
     trialResponse{4} = correct;
+    
+    probe_num = fract(4);
+    probe_denom = fract(5);
+    probe = [probe_num probe_denom];
 
-    DrawCenteredFrac(probeMag,win, color)
+    DrawCenteredFrac(probe,win, color);
     Screen('Flip', win);
     
     t_start = GetSecs;

@@ -3,7 +3,7 @@ Instruct = {};
 Instruct{1} = {'Please read carefully the following instructions',
                'for the next section.'
                ' ',
-               'PLease PRESS ANY BUTTON to go on to the next screen.'};
+               'Please PRESS ANY BUTTON to go on to the next screen.'};
 
 Instruct{2} = {'In this section, a fraction will appear on the screen.',
                'Your job is to to think about the magnitude of this fraction',

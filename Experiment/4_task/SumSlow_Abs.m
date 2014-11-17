@@ -1,4 +1,4 @@
-function trialResponse = SumSlow_Abs(fract, win, color, end_decision, ctch, points)
+function trialResponse = SumSlow_Abs(fract, win, color, end_decision, ctch, points, LR)
 
 %plots a line starting at x1, finishing at x2, and ac ursor in 'probe' location
 %only appears if the trial has catch = 1
@@ -24,11 +24,22 @@ if ctch;
     fractSum = fract(1) + fract(2);
     probeSum = fract(4);
     
-    if probeSum > fractSum;
-        correct = 1;
+    if LR == 0; %This is for counterbalncing hand response
+        if probeSum > fractSum;
+            correct = 1;
+        end;
+        if probeSum < fractSum;
+            correct = 0;
+        end;           
     end;
-    if probeSum < fractSum;
-        correct = 0;
+    
+    if LR == 1;
+        if probeSum > fractSum;
+            correct = 0;
+        end;
+        if probeSum < fractSum;
+            correct = 1;
+        end;
     end;
     
     trialResponse{1} = fractSum;

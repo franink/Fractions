@@ -1,6 +1,18 @@
 
 Instruct = {};
 
+if LR == 0;
+    hands_small = 'LEFT';
+    hands_large = 'RIGHT';
+end;
+if LR == 1;
+    hands_small = 'RIGHT';
+    hands_large = 'LEFT';
+end;
+
+small_txt = sprintf('with your %s hand.', hands_small);
+large_txt = sprintf('with your %s hand.', hands_large);
+
 Instruct{1} = {'Please read carefully the following instructions',
                'for the next section.'
                ' ',
@@ -24,10 +36,12 @@ Instruct{2} = {'In this section, a fraction will appear on the screen.',
 Instruct{3} = {'You will have 2.5 seconds to decide.',
                 ' ',
                 'If you think the mark on the number line is SMALLER than',
-                'the fraction you should press a button with your LEFT hand.'
+                'the fraction you should press a button',
+                small_txt,
                 ' ',
                 'If you think the mark on the number line is GREATER than', 
-                'the fraction you should press a button with your RIGHT hand.'
+                'the fraction you should press a button',
+                large_txt,
                 ' ',
                 'Please press only once.',
                 ' ',

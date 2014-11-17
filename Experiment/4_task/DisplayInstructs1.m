@@ -1,6 +1,18 @@
 
 Instruct = {};
 
+if LR == 0;
+    hands_small = 'LEFT';
+    hands_large = 'RIGHT';
+end;
+if LR == 1;
+    hands_small = 'RIGHT';
+    hands_large = 'LEFT';
+end;
+
+small_txt = sprintf('with your %s hand.', hands_small);
+large_txt = sprintf('with your %s hand.', hands_large);
+
 Instruct{1} = {'The following experiment has 4 sections. Each section is',
                'reasonably short. In total, the experiment should last',
                'approximately 70 minutes.',
@@ -32,11 +44,11 @@ Instruct{3} = {'You will have 2.5 seconds to decide.',
                 ' ',
                 'If you think the last number is SMALLER than the sum',
                 'of the first two numbers you should press a button',
-                'with your LEFT hand.'
+                small_txt,
                 ' ',
                 'If you think the last number is GREATER than the sum',
                 'of the first two numbers you should press a button',
-                'with your RIGHT hand.'
+                large_txt,
                 ' ',
                 'Please press only once.',
                 ' ',

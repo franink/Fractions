@@ -2,66 +2,71 @@
 Instruct = {};
 
 if LR == 0;
-    hands_small = 'LEFT';
-    hands_large = 'RIGHT';
+    hands_small = 'RED';
+    hands_large = 'GREEN';
 end;
 if LR == 1;
-    hands_small = 'RIGHT';
-    hands_large = 'LEFT';
+    hands_small = 'GREEN';
+    hands_large = 'RED';
 end;
 
-small_txt = sprintf('with your %s hand.', hands_small);
-large_txt = sprintf('with your %s hand.', hands_large);
+small_txt = sprintf('the %s button.', hands_small);
+large_txt = sprintf('the %s button.', hands_large);
 
-Instruct{1} = {'The following experiment has 4 sections. Each section is',
-               'reasonably short. In total, the experiment should last',
-               'approximately 70 minutes.',
-               ' ',
-               'At the beginning of each section you will receive',
-               'instructions specific to that section.' 
-               ' ',
-               'Read these instructions carefully',
-               'and make sure you understand them.',
-               ' ',
-               'Please PRESS ANY BUTTON to go on to the next screen.'};
 
-Instruct{2} = {'In this section, two numbers will appear on the screen.',
-                'Your job is to add both numbers and memorize the result.',
+Instruct{1} = {'In this section, two numbers will appear on the screen.',
+                'Your job is to add both numbers.',
                 ' ',
-                'On some trials, after 2 seconds you will see an X.',
-                'This means you DO NOT need to do anything in this trial.',
-                ' ',
-                'On other trials, after the 2 seconds you will see',
+                'On some trials, after the 2 seconds you will see',
                 'another number in the middle of the screen.',
                 ' ',
                 'If you see a number, then your job is to decide',
                 'if the number shown is smaller or greater than',
-                'the sum you memorized.'
+                'the value of the sum of the first two numbers.'
                 ' ',
                 'Please PRESS ANY BUTTON to go on to the next screen.'};
                        
-Instruct{3} = {'You will have 2.5 seconds to decide.',
+Instruct{2} = {'You will have 2.5 seconds to decide.',
                 ' ',
                 'If you think the last number is SMALLER than the sum',
-                'of the first two numbers you should press a button',
+                'of the first two numbers you should press',
                 small_txt,
                 ' ',
                 'If you think the last number is GREATER than the sum',
-                'of the first two numbers you should press a button',
+                'of the first two numbers you should press',
                 large_txt,
                 ' ',
                 'Please press only once.',
                 ' ',
                 'If you answer correctly',
                 'you will receive 1 point. We will keep track of the points',
-                'and the top 5 participants will receive an extra $10 bonus',
+                'and at the end you will recieve 5 cents per point',
                 ' ',
                 'Remember to answer FAST and ACCURATELY.'
                 ' ',
                 'Please PRESS ANY BUTTON to go on to the next screen.'};
+            
+Instruct{3} = {'For example, if the numbers you see are 5 and 10',
+              'and in the next screen you see a number like 17',
+              'which is GREATER than the sum of 5 and 10',
+              'you should press',
+              small_txt',
+              ' ',
+              'On the other hand, if in the next screen you see a SMALLER number',
+              'like 13 you should press',
+              large_txt,
+              ' ',
+              'Please PRESS ANY BUTTON to begin the experiment.'};            
    
-                    
-Instruct{4} = {'We are now ready to begin.',
+Instruct{4} = {'On some trials, instead of getting a second number for comparison',
+                'you will see an X. This means you DO NOT need',
+                'to do anything in this trial.',
+                ' ',
+               'If you have any questions please ask now',
+               ' ',
+              'Please PRESS ANY BUTTON to begin the experiment.'};
+          
+Instruct{5} = {'We are now ready to begin.',
               ' ',
               'In the following screens there will be 3 practice trials',
               ' ',

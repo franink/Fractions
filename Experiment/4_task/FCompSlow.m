@@ -1,25 +1,27 @@
-function trialResponse = FCompSlow(fract, win, color, time)
+function block_p_points = FCompSlow(fract, win, color, time, points)
 
-%plots a line starting at x1, finishing at x2, and ac ursor in 'probe' location
+% Version for practice (relative time unlike real trials)
+%Draws a probe fraction, waits for a response or for time and logs
+%responses and stim used
 %only appears if the trial has catch = 1
 
 ppc_adjust = 23/38;
 
 
-%set variables
+%set variables to -1 to check if something is wrong and catch missing data
 correct =-1;
 response = -1;
 RT = -1;
 Acc = -1;
-P_points = 0;
-time_fix = 0;
+%time_fix = 0;
 
-
-trialResponse = {correct response RT Acc P_points};
+%initialize result log
+%trialResponse = {correct response RT Acc p_points};
 
 fractMag = fract(1)/fract(2);
 probeMag = fract(4)/fract(5);
 
+%Decide what is a correct response
 if probeMag > fractMag;
     correct = 1;
 end;
@@ -27,8 +29,9 @@ if probeMag < fractMag;
     correct = 0;
 end;
 
-trialResponse{1} = correct;
+%trialResponse{1} = correct;
 
+%Draw the fraction probe
 probe_num = fract(4);
 probe_denom = fract(5);
 probe = [probe_num probe_denom];
@@ -41,8 +44,8 @@ time = time+t_start;
     KbReleaseWait;
     [key, secs] = WaitTill(time, {'1' '2' '3' '4' '6' '7' '8' '9'}, 0); %wait seconds even if there is a press
     if~isempty(key);
-        trialResponse{2} = key;
-        trialResponse{3} = secs - t_start;
+        %trialResponse{2} = key;
+        %trialResponse{3} = secs - t_start;
         left = {'1' '2' '3' '4'};
         right = {'6' '7' '8' '9'};
         if ismember(key, left);
@@ -51,10 +54,14 @@ time = time+t_start;
         if ismember(key, right);
             response = 1;
         end
-        trialResponse{4} = correct==response;
-        if trialResponse{4} == 1;
-            trialResponse{5} = trialResponse{5} + 1;
+        %trialResponse{4} = correct==response;
+        if correct == response;
+            block_p_points = points + 1;
+        else
+            block_p_points = points;
         end
+    else
+        block_p_points = points;
     end
 
 

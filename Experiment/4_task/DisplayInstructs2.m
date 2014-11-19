@@ -1,10 +1,13 @@
 Instruct = {};
 
-pts_txt = sprintf('You have earned %d points', points); 
+pts_txt = sprintf('You have earned %d points in this section', block_points);
+block_pts_txt = sprintf('In total, you have earned %d points', points);
 
 Instruct{1} = {'REST BREAK',
                ' ',
                pts_txt,
+               ' ',
+               block_pts_txt,
                ' ',
                'Please PRESS ANY BUTTON when you are ready to continue'};
 

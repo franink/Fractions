@@ -1,58 +1,73 @@
 Instruct = {};
 
 if LR == 0;
-    hands_small = 'LEFT';
-    hands_large = 'RIGHT';
+    hands_small = 'RED';
+    hands_large = 'GREEN';
 end;
 if LR == 1;
-    hands_small = 'RIGHT';
-    hands_large = 'LEFT';
+    hands_small = 'GREEN';
+    hands_large = 'RED';
 end;
 
-small_txt = sprintf('with your %s hand.', hands_small);
-large_txt = sprintf('with your %s hand.', hands_large);
+small_txt = sprintf('the %s button.', hands_small);
+large_txt = sprintf('the %s button.', hands_large);
 
-Instruct{1} = {'Please read carefully the following instructions',
-               'for the next section.'
-               ' ',
-               'Please PRESS ANY BUTTON to go on to the next screen.'};
-
-Instruct{2} = {'In this section, a fraction will appear on the screen.',
-               'Your job is to to think about the magnitude of this fraction',
-               ' ',
-                'On some trials, after 2 seconds you will see an X.',
-                'This means you DO NOT need to do anything in this trial.',
+Instruct{1} = {'In this section, a fraction will appear on the screen.',
                 ' ',
-                'On other trials, after the 2 seconds you will see',
+                'Each fraction will have a value between 0 and 1.',
+                ' ',
+                'Your job is to to think about the value of this fraction',
+                ' ',
+                'On some trials, after the 2 seconds you will see',
                 'another fraction.',
                 ' ',
                 'If you see another fraction, then your job is to decide',
-                'if the magnitude of the second fraction is smaller',
+                'if the value of the second fraction is smaller',
                 'or greater than the first fraction.'
                 ' ',
                 'Please PRESS ANY BUTTON to go on to the next screen.'};
 
-Instruct{3} = {'You will have 2.5 seconds to decide.',
+Instruct{2} = {'You will have 2.5 seconds to decide.',
                 ' ',
-                'If you think the last fraction is SMALLER than the first',
-                'you should press a button',
+                'If you think the value of the last fraction is SMALLER',
+                'than the first, you should press',
                 small_txt,
                 ' ',
-                'If you think the last fraction is GREATER than the first',
-                'you should press a button',
+                'If you think the value of the last fraction is GREATER',
+                'than the first you should press',
                 large_txt,
                 ' ',
                 'Please press only once.',
                 ' ',
                 'If you answer correctly',
                 'you will receive 1 point. We will keep track of the points',
-                'and the top 5 participants will receive an extra $10 bonus',
+                'and at the end you will recieve 5 cents per point',
                 ' ',
                 'Remember to answer FAST and ACCURATELY.'
                 ' ',
                 'Please PRESS ANY BUTTON to go on to the next screen.'};
 
-Instruct{4} = {'We are now ready to begin.',
+Instruct{3} = {'For example, if you see a fraction like 5/10',
+              'and then you see a fraction with a GREATER value like 3/4',
+              'you should press',
+              small_txt,
+              ' ',
+              'On the other hand, if in you see a fraction with a SMALLER value',
+              'like 7/20 you should press',
+              large_txt,
+              ' ',
+              'Please PRESS ANY BUTTON to begin the experiment.'};            
+   
+                    
+Instruct{4} = {'On some trials, instead of seeing a second fraction for comparison',
+                'you will see an X. This means you DO NOT need',
+                'to do anything in this trial.',
+                ' ',
+               'If you have any questions please ask now',
+               ' ',
+              'Please PRESS ANY BUTTON to begin the experiment.'};
+          
+Instruct{5} = {'We are now ready to begin.',
               ' ',
               'In the following screens there will be 3 practice trials',
               ' ',

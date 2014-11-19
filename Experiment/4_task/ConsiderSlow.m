@@ -1,6 +1,8 @@
 function [ compResults ] = ConsiderSlow(Fract, win, color, task, time)
-%Consider the numbers on the screen and when ready to move on press 'z' or '/' 
-%logs the fraction used, RT task is iether 'keyb' or 'mouse' and tells the program what needs to log
+%Version for practice trials (time is relative unlike in main experiment
+%Consider the numbers on the screen before moving to decision phase
+% task is iether 'keyb' or 'mouse' and tells the program what needs to log
+%Logs the numerator denominator and the magnitude of the fraction
 
 fractMag = Fract(1)/Fract(2);
 correct = fractMag;

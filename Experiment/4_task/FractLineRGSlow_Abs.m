@@ -1,27 +1,31 @@
 function trialResponse = FractLineRGSlow_Abs(fract, win, lineLength, jitter, color, end_decision, ctch, points, LR)
 
-%plots a line starting at x1, finishing at x2, and ac ursor in 'probe' location
+% Version for real experiment in absolute time (unlike practice trials)
+%Draws a numberline and a mark in the position of probe fraction, 
+%waits for a response or for time and logs
+%responses and stim used
 %only appears if the trial has catch = 1
 
 ppc_adjust = 23/38;
 
 lineLength = round(lineLength*ppc_adjust);
 
+% Jitter horizontal position of numberline
 rng shuffle
 jitter = jitter*randi([-300 300]);
 jitter = round(jitter*ppc_adjust);% Here position of line is jittered
 
-%set variables
+%set variables to -1 to catch missing trials and errors
 correct =-1;
 response = -1;
 RT = -1;
 Acc = -1;
-time_fix = 0.05;
+time_fix = 0.05; %Allows code to exit to keep experiment on time
 Num_probe = -1;
 Denom_probe = -1;
 probeMag = -1;
 
-
+%Initialize log
 trialResponse = {Num_probe Denom_probe probeMag correct response RT Acc points};
 
 
@@ -31,6 +35,7 @@ if ctch;
     fractMag = fract(1)/fract(2);
     probeMag = fract(4)/fract(5);
     
+    %Decide what is correct response
     if LR == 0; %This is for counterbalncing hand response
         if probeMag > fractMag;
             correct = 1;

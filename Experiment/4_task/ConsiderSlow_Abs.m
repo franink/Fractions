@@ -1,18 +1,16 @@
 function [ compResults ] = ConsiderSlow_Abs(Fract, win, color, task, end_cons)
-%Consider the numbers on the screen and when ready to move on press 'z' or '/' 
-%logs the fraction used, RT task is iether 'keyb' or 'mouse' and tells the program what needs to log
+%Version for real trials (time is absolute unlike in practice)
+%Consider the numbers on the screen before moving to decision phase
+% task is either 'keyb' or 'mouse' and tells the program what needs to log
+%Logs the numerator denominator and the magnitude of the fraction
 
 fractMag = Fract(1)/Fract(2);
 correct = fractMag;
 RT = -1;
 
-compResults = {Fract(1) Fract(2) fractMag}; %I still need to think about what I will log and if I can put names
+compResults = {Fract(1) Fract(2) fractMag}; 
 
-%time_fix = 0.09;
-%time_on = time - time_fix;
-%time_left = 1;
-
-DrawCenteredFrac(Fract,win, color)
+DrawCenteredFrac(Fract,win, color);
 Screen('Flip', win);
 
 % t_start = GetSecs;

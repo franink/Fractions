@@ -1,22 +1,24 @@
 function trialResponse = FCompSlow_Abs(fract, win, color, end_decision, ctch, points, LR)
 
-%plots a line starting at x1, finishing at x2, and ac ursor in 'probe' location
+% Version for real experiment in absolute time (unlike practice trials)
+%Draws a probe fraction, waits for a response or for time and logs
+%responses and stim used
 %only appears if the trial has catch = 1
 
 ppc_adjust = 23/38;
 
 
-%set variables
+%set variables to -1 to catch missing data and check if something is wrong
 correct =-1;
 response = -1;
 RT = -1;
 Acc = -1;
-time_fix = 0.05;
+time_fix = 0.05; %Allow code to exit in time for the code to move on
 Num_probe = -1;
 Denom_probe = -1;
 probeMag = -1;
 
-
+%Initialize log
 trialResponse = {Num_probe Denom_probe probeMag correct response RT Acc points};
 
 
@@ -26,6 +28,7 @@ if ctch;
     fractMag = fract(1)/fract(2);
     probeMag = fract(4)/fract(5);
     
+    %Decide what is a correct response
     if LR == 0; %This is for counterbalncing hand response
         if probeMag > fractMag;
             correct = 1;
@@ -54,6 +57,7 @@ if ctch;
     probe_denom = fract(5);
     probe = [probe_num probe_denom];
 
+    %Draw probe
     DrawCenteredFrac(probe,win, color);
     Screen('Flip', win);
     

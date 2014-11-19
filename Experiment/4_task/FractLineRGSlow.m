@@ -1,32 +1,36 @@
-function trialResponse = FractLineRGSlow(fract, win, lineLength, jitter, color, time)
+function block_p_points = FractLineRGSlow(fract, win, lineLength, jitter, color, time, points)
 
-%plots a line starting at x1, finishing at x2, with cursor starting on
-%either left (lrStart = 0) or right (lrStart = 1) side.
+% Version for practice (relative time unlike real trials)
+%Draws a numberline with a mark in the position of the probe fraction,
+%waits for a response or for time and logs
+%responses and stim used
+%only appears if the trial has catch = 1
 
-%trialResponse format is [startPos, RT, propLine)
 
 ppc_adjust = 23/38;
 
 lineLength = round(lineLength*ppc_adjust);
 
+% Jitter horizontal position of number line
 rng shuffle
 jitter = jitter*randi([-300 300]);
 jitter = round(jitter*ppc_adjust);% Here position of line is jittered
 
-%set variables
+%set variables to -1 to catch errors and missing data
 correct =-1;
 response = -1;
 RT = -1;
 Acc = -1;
-time_fix = 0;
-P_points = 0;
-time_on = time - time_fix;
+%time_fix = 0;
+%time_on = time - time_fix;
 
-trialResponse = {correct response RT Acc P_points};
+%initialize log
+%trialResponse = {correct response RT Acc p_points};
 
 fractMag = fract(1)/fract(2);
 probeMag = fract(4)/fract(5);
 
+%Decide what is correct response
 if probeMag > fractMag;
     correct = 1;
 end;
@@ -34,9 +38,9 @@ if probeMag < fractMag;
     correct = 0;
 end;
 
-trialResponse{1} = correct;
+%trialResponse{1} = correct;
 
-trialResponse{2} = correct;
+%trialResponse{2} = correct;
 
 lineSZ = round(20*ppc_adjust);
 
@@ -82,8 +86,8 @@ time = time+t_start;
 KbReleaseWait;
 [key, secs] = WaitTill(time, {'1' '2' '3' '4' '6' '7' '8' '9'}, 0); %wait seconds even if there is a press
 if~isempty(key);
-    trialResponse{2} = key;
-    trialResponse{3} = secs - t_start;
+    %trialResponse{2} = key;
+    %trialResponse{3} = secs - t_start;
     left = {'1' '2' '3' '4'};
     right = {'6' '7' '8' '9'};
     if ismember(key, left);
@@ -92,10 +96,14 @@ if~isempty(key);
     if ismember(key, right);
         response = 1;
     end
-    trialResponse{4} = correct==response;
-    if trialResponse{4} == 1;
-        trialResponse{5} = trialResponse{5} + 1;
+    %trialResponse{4} = correct==response;
+    if correct == response;
+        block_p_points = points + 1;
+    else
+        block_p_points = points;
     end
+else
+    block_p_points = points;
 end
 
 

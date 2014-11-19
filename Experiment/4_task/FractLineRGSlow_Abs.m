@@ -101,10 +101,27 @@ if ctch;
     
     t_start = GetSecs;
         KbReleaseWait;
-        [key, secs] = WaitTill((end_decision-time_fix), {'1' '2' '3' '4' '6' '7' '8' '9'}, 0); %wait seconds even if there is a press
+        time = end_decision-time_fix;
+        [key, secs] = WaitTill(time, {'1' '2' '3' '4' '6' '7' '8' '9'});
         if~isempty(key);
             trialResponse{5} = str2double(key);
             trialResponse{6} = secs - t_start;
+            %Let participants know their response was recorded by flipping
+            %the screen
+            t_remain = time - secs;
+            Screen('Flip', win);
+            %Draw number line
+            Screen('Drawline', win,color, x1, y, x2, y, round(5*ppc_adjust)); %instead of color he had [0 0 200 255]
+            Screen('Drawline', win, color, x1, y - lineSZ, x1, y + lineSZ, round(5*ppc_adjust));
+            Screen('Drawline', win, color, x2, y - lineSZ, x2, y + lineSZ, round(5*ppc_adjust));
+            %Add '0' and '1' to endpoints
+            Screen('DrawText', win, '0', zX, yNum, color);
+            Screen('DrawText', win, '1', oX, yNum, color);
+            % Draw line mark at probe position
+            probe_XPos = x1 + (x2-x1)*probeMag;
+            Screen('Drawline', win, [0 0 0 0], probe_XPos, y - lineSZ/1.5, probe_XPos, y + lineSZ/1.5, round(5*ppc_adjust));
+            Screen('Flip', win);
+            
             left = {'1' '2' '3' '4'};
             right = {'6' '7' '8' '9'};
             if ismember(key, left);

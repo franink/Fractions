@@ -21,7 +21,7 @@ correct =-1;
 response = -1;
 RT = -1;
 Acc = -1;
-%time_fix = 0;
+time_fix = 0.01;
 %time_on = time - time_fix;
 
 %initialize log
@@ -81,13 +81,32 @@ Screen('Drawline', win, [0 0 0 0], probe_XPos, y - lineSZ/1.5, probe_XPos, y + l
 
 Screen('Flip', win);
 
+tot_time = time - time_fix;
 t_start = GetSecs;
 time = time+t_start;
 KbReleaseWait;
-[key, secs] = WaitTill(time, {'1' '2' '3' '4' '6' '7' '8' '9'}, 0); %wait seconds even if there is a press
+[key, secs] = WaitTill(time, {'1' '2' '3' '4' '6' '7' '8' '9'});
 if~isempty(key);
     %trialResponse{2} = key;
     %trialResponse{3} = secs - t_start;
+    
+    %Let participants know that their answer was reocrded by flipping
+    %the screen
+    t_remain = tot_time - (secs - t_start);
+    Screen('Flip', win);
+    %Draw number line
+    Screen('Drawline', win,color, x1, y, x2, y, round(5*ppc_adjust)); %instead of color he had [0 0 200 255]
+    Screen('Drawline', win, color, x1, y - lineSZ, x1, y + lineSZ, round(5*ppc_adjust));
+    Screen('Drawline', win, color, x2, y - lineSZ, x2, y + lineSZ, round(5*ppc_adjust));
+    %Add '0' and '1' to endpoints
+    Screen('DrawText', win, '0', zX, yNum, color);
+    Screen('DrawText', win, '1', oX, yNum, color);
+    % Draw line mark at probe position
+    probe_XPos = x1 + (x2-x1)*probeMag;
+    Screen('Drawline', win, [0 0 0 0], probe_XPos, y - lineSZ/1.5, probe_XPos, y + lineSZ/1.5, round(5*ppc_adjust));
+    Screen('Flip', win);
+    WaitSecs(t_remain);
+    
     left = {'1' '2' '3' '4'};
     right = {'6' '7' '8' '9'};
     if ismember(key, left);

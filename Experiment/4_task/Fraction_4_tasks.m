@@ -77,8 +77,8 @@ p.pct_catch = 0.4; % proportion of trials that have a test (decision) phase
 %Make sure that repeats is divisible by runs
 p.runs = 2; %within a single task
 p.tasks = 3; %This will potentially be 4 tasks
-p.nRepeats = 4; %repeats per run. Divisivle by p.runs 
-p.nStim = 4;
+p.nRepeats = 10; %repeats per run. Divisivle by p.runs 
+p.nStim = 16;
 p.tasks = {'Sum', 'FracComp', 'NumLine', 'Dots'}; 
 p.trialSecs = p.fixation + p.consider + (p.decision*p.pct_catch);
 
@@ -260,7 +260,7 @@ end
 
 % Open a PTB Window on our screen
 try
-    screenid = max(Screen('Screens')); %Originally it was max instead of min changed it for testing purposes (max corresponds to secondary display)
+    screenid = min(Screen('Screens')); %Originally it was max instead of min changed it for testing purposes (max corresponds to secondary display)
     
     [win, winRect] = Screen('OpenWindow', screenid, WhiteIndex(screenid)/2);
     

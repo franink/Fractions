@@ -30,7 +30,7 @@ xlim1 = fbox11(RectRight);
 
 
 Screen('DrawText', Window, Fract, x11, y11, color);
-Screen('Flip',Window,1);
+Screen('Flip',Window);
 %wakeup = WaitSecs(time); Time now controlled from outside script
 
 

@@ -13,7 +13,7 @@ correct =-1;
 response = -1;
 RT = -1;
 Acc = -1;
-%time_fix = 0;
+time_fix = 0.01;
 
 %initialize result log
 %trialResponse = {correct response RT Acc p_points};
@@ -39,13 +39,21 @@ probe = [probe_num probe_denom];
 DrawCenteredFrac(probe,win, color);
 Screen('Flip', win);
 
+tot_time = time - time_fix;
 t_start = GetSecs;
 time = time+t_start;
     KbReleaseWait;
-    [key, secs] = WaitTill(time, {'1' '2' '3' '4' '6' '7' '8' '9'}, 0); %wait seconds even if there is a press
+    [key, secs] = WaitTill(time, {'1' '2' '3' '4' '6' '7' '8' '9'}); 
     if~isempty(key);
         %trialResponse{2} = key;
         %trialResponse{3} = secs - t_start;
+        %Let participants know that their answer was reocrded by flipping
+        %the screen
+        t_remain = tot_time - (secs - t_start);
+        Screen('Flip', win);
+        DrawCenteredFrac(probe,win, color);
+        Screen('Flip', win);
+        WaitSecs(t_remain);
         left = {'1' '2' '3' '4'};
         right = {'6' '7' '8' '9'};
         if ismember(key, left);

@@ -54,10 +54,15 @@ if ctch;
     t_start = GetSecs;
     KbReleaseWait;
     time = end_decision-time_fix;
-    [key, secs] = WaitTill(time, {'1' '2' '3' '4' '6' '7' '8' '9'}, 0); %wait seconds even if there is a press
+    [key, secs] = WaitTill(time, {'1' '2' '3' '4' '6' '7' '8' '9'});
     if~isempty(key);
         trialResponse{4} = str2double(key);
         trialResponse{5} = secs - t_start;
+        %Let participants know their response was recorded by flipping
+        %the screen
+        t_remain = time - secs;
+        Screen('Flip', win);
+        DrawCenteredNum(num2str(probeSum),win, color,t_remain);
         left = {'1' '2' '3' '4'};
         right = {'6' '7' '8' '9'};
         if ismember(key, left);

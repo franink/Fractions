@@ -16,7 +16,7 @@ h = winRect(RectBottom);
 textSz = 50;
 
 %Text size is 20, style is 1, color is color
-Screen('TextSize',Window, 45);
+Screen('TextSize',Window, 40);
 Screen('TextStyle',Window,1);
 
 %Draw text into backbuffer

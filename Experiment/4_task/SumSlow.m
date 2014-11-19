@@ -15,7 +15,7 @@ correct =-1;
 response = -1;
 RT = -1;
 Acc = -1;
-time_fix = 0;
+time_fix = 0.01;
 
 
 
@@ -38,13 +38,17 @@ end;
 
 DrawCenteredNum_Abs(num2str(probeSum),win, color);
 
+tot_time = time - time_fix;
 t_start = GetSecs;
 time = time+t_start;
     KbReleaseWait;
-    [key, secs] = WaitTill(time, {'1' '2' '3' '4' '6' '7' '8' '9'}, 0); %wait seconds even if there is a press
+    [key, secs] = WaitTill(time, {'1' '2' '3' '4' '6' '7' '8' '9'});
     if~isempty(key);
         %trialResponse{4} = key;
         %trialResponse{5} = secs - t_start;
+        t_remain = tot_time - (secs - t_start);
+        Screen('Flip', win);
+        DrawCenteredNum(num2str(probeSum),win, color, t_remain);
         left = {'1' '2' '3' '4'};
         right = {'6' '7' '8' '9'};
         if ismember(key, left);

@@ -48,6 +48,14 @@ if ismember(order, fcomp_task);
     % Summation task
     p.order = 'FComp First';
 end;
+if ismember(order, nline_task);
+    % Summation task
+    p.order = 'NLine First';
+end;
+if ismember(order, dot_task);
+    % Summation task
+    p.order = 'Dot First';
+end;
    
 
 %Cursor helps no one here - kill it

@@ -35,8 +35,11 @@ end;
 %trialResponse{2} = probeSum;
 %trialResponse{3} = correct;
 
-
+winRect = Screen('Rect', win);
+Screen('FrameRect', win, [255 255 255 255], winRect, 30);
+Screen('Flip', win, 0, 1);
 DrawCenteredNum_Abs(num2str(probeSum),win, color);
+
 
 tot_time = time - time_fix;
 t_start = GetSecs;
@@ -48,6 +51,7 @@ time = time+t_start;
         %trialResponse{5} = secs - t_start;
         t_remain = tot_time - (secs - t_start);
         Screen('Flip', win);
+        WaitSecs(0.05);
         DrawCenteredNum(num2str(probeSum),win, color, t_remain);
         left = {'1' '2' '3' '4'};
         right = {'6' '7' '8' '9'};

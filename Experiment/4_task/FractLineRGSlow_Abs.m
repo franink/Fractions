@@ -83,6 +83,11 @@ if ctch;
     oneBox = CenterRectOnPoint(oneBox, x2, y + yTextPos*40);
 
     zX=zeroBox(RectLeft); oX = oneBox(RectLeft); yNum=oneBox(RectTop);
+    
+    %Draw frame
+    winRect = Screen('Rect', win);
+    Screen('FrameRect', win, [255 255 255 255], winRect, 30);
+    Screen('Flip', win, 0, 1);
 
     %Draw number line
     Screen('Drawline', win,color, x1, y, x2, y, round(5*ppc_adjust)); %instead of color he had [0 0 200 255]
@@ -110,6 +115,7 @@ if ctch;
             %the screen
             t_remain = time - secs;
             Screen('Flip', win);
+            WaitSecs(0.05);
             %Draw number line
             Screen('Drawline', win,color, x1, y, x2, y, round(5*ppc_adjust)); %instead of color he had [0 0 200 255]
             Screen('Drawline', win, color, x1, y - lineSZ, x1, y + lineSZ, round(5*ppc_adjust));

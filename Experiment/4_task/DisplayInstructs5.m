@@ -18,12 +18,15 @@ Instruct{1} = {'In this section, a fraction will appear on the screen.',
                 ' ',
                 'Your job is to to think about the value of this fraction',
                 ' ',
-                'On some trials, after the 2 seconds you will see',
+                'On some trials, after 2 seconds you will see',
                 'another fraction.',
                 ' ',
-                'If you see another fraction, then your job is to decide',
+                'If you see another fraction, your job is to decide',
                 'if the value of the second fraction is smaller',
                 'or greater than the first fraction.'
+                ' ',
+                'A white frame around the screen will remind you',
+                'that is time to answer.' 
                 ' ',
                 'Please PRESS ANY BUTTON to go on to the next screen.'};
 
@@ -39,7 +42,7 @@ Instruct{2} = {'You will have 2.5 seconds to decide.',
                 ' ',
                 'Please press only once.',
                 ' ',
-                'If you answer correctly',
+                'After the practce phase, if you answer correctly,',
                 'you will receive 1 point. We will keep track of the points',
                 'and at the end you will recieve 5 cents per point',
                 ' ',
@@ -56,7 +59,7 @@ Instruct{3} = {'For example, if you see a fraction like 5/10',
               'like 7/20 you should press',
               large_txt,
               ' ',
-              'Please PRESS ANY BUTTON to begin the experiment.'};            
+              'Please PRESS ANY BUTTON to go on to the next screen.'};            
    
                     
 Instruct{4} = {'On some trials, instead of seeing a second fraction for comparison',
@@ -65,13 +68,13 @@ Instruct{4} = {'On some trials, instead of seeing a second fraction for comparis
                 ' ',
                'If you have any questions please ask now',
                ' ',
-              'Please PRESS ANY BUTTON to begin the experiment.'};
+              'Please PRESS ANY BUTTON to go on to the next screen.'};
           
 Instruct{5} = {'We are now ready to begin.',
               ' ',
               'In the following screens there will be 3 practice trials',
               ' ',
-              'Please PRESS ANY BUTTON to begin the experiment.'};
+              'Please PRESS ANY BUTTON to begin the practice trials.'};
 
 
 for ii = 1:length(Instruct);

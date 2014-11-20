@@ -36,6 +36,9 @@ probe_num = fract(4);
 probe_denom = fract(5);
 probe = [probe_num probe_denom];
 
+winRect = Screen('Rect', win);
+Screen('FrameRect', win, [255 255 255 255], winRect, 30);
+Screen('Flip', win, 0, 1);
 DrawCenteredFrac(probe,win, color);
 Screen('Flip', win);
 
@@ -51,6 +54,7 @@ time = time+t_start;
         %the screen
         t_remain = tot_time - (secs - t_start);
         Screen('Flip', win);
+        WaitSecs(0.05);
         DrawCenteredFrac(probe,win, color);
         Screen('Flip', win);
         WaitSecs(t_remain);

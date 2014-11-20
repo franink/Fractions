@@ -17,12 +17,15 @@ large_txt = sprintf('the %s button.', hands_large);
 Instruct{1} = {'In this section, two numbers will appear on the screen.',
                 'Your job is to add both numbers.',
                 ' ',
-                'On some trials, after the 2 seconds you will see',
+                'On some trials, after 2 seconds you will see',
                 'another number in the middle of the screen.',
                 ' ',
-                'If you see a number, then your job is to decide',
+                'If you see a number, your job is to decide',
                 'if the number shown is smaller or greater than',
                 'the value of the sum of the first two numbers.'
+                ' ',
+                'A white frame around the screen will remind you',
+                'that is time to answer.' 
                 ' ',
                 'Please PRESS ANY BUTTON to go on to the next screen.'};
                        
@@ -38,7 +41,7 @@ Instruct{2} = {'You will have 2.5 seconds to decide.',
                 ' ',
                 'Please press only once.',
                 ' ',
-                'If you answer correctly',
+                'After the practce phase, if you answer correctly,',
                 'you will receive 1 point. We will keep track of the points',
                 'and at the end you will recieve 5 cents per point',
                 ' ',
@@ -56,7 +59,7 @@ Instruct{3} = {'For example, if the numbers you see are 5 and 10',
               'like 13 you should press',
               large_txt,
               ' ',
-              'Please PRESS ANY BUTTON to begin the experiment.'};            
+              'Please PRESS ANY BUTTON to go on to the next screen.'};            
    
 Instruct{4} = {'On some trials, instead of getting a second number for comparison',
                 'you will see an X. This means you DO NOT need',
@@ -64,13 +67,13 @@ Instruct{4} = {'On some trials, instead of getting a second number for compariso
                 ' ',
                'If you have any questions please ask now',
                ' ',
-              'Please PRESS ANY BUTTON to begin the experiment.'};
+              'Please PRESS ANY BUTTON to go on to the next sceen.'};
           
 Instruct{5} = {'We are now ready to begin.',
               ' ',
               'In the following screens there will be 3 practice trials',
               ' ',
-              'Please PRESS ANY BUTTON to begin the experiment.'};
+              'Please PRESS ANY BUTTON to begin the practice trials.'};
             
 
 for ii = 1:length(Instruct);

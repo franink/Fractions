@@ -49,6 +49,11 @@ if ctch;
     trialResponse{2} = probeSum;
     trialResponse{3} = correct;
     
+    %Draw frame
+    winRect = Screen('Rect', win);
+    Screen('FrameRect', win, [255 255 255 255], winRect, 30);
+    Screen('Flip', win, 0, 1);
+    
     DrawCenteredNum_Abs(num2str(probeSum),win, color);
     
     t_start = GetSecs;
@@ -62,6 +67,7 @@ if ctch;
         %the screen
         t_remain = time - secs;
         Screen('Flip', win);
+        WaitSecs(0.05);
         DrawCenteredNum(num2str(probeSum),win, color,t_remain);
         left = {'1' '2' '3' '4'};
         right = {'6' '7' '8' '9'};

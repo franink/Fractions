@@ -57,6 +57,11 @@ if ctch;
     probe_denom = fract(5);
     probe = [probe_num probe_denom];
 
+    %Draw frame
+    winRect = Screen('Rect', win);
+    Screen('FrameRect', win, [255 255 255 255], winRect, 30);
+    Screen('Flip', win, 0, 1);
+    
     %Draw probe
     DrawCenteredFrac(probe,win, color);
     Screen('Flip', win);
@@ -72,6 +77,7 @@ if ctch;
             %the screen
             t_remain = time - secs;
             Screen('Flip', win);
+            WaitSecs(0.05);
             DrawCenteredFrac(probe,win, color);
             Screen('Flip', win);
             left = {'1' '2' '3' '4'};

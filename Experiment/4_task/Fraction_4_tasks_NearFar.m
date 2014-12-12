@@ -373,13 +373,13 @@ if ismember(order, nline_task);
     % Dot task:
     [p, points, block_points] = Dot_Loop_NearFar(filename, LR, win, color, p, points, Test3DDots, block_points); %This can be changed Andrew
 end;
-% if ismember(order, dot_task);
+if ismember(order, dot_task);
 %     % Dot task:
     [p, points, block_points] = Dot_Loop_NearFar(filename, LR, win, color, p, points, Test3DDots, block_points); %This can be changed Andrew
 %     
 %     % Fraction numberline task: 
     [p, points, block_points] = FNLine_Loop(filename, LR, win, color, p, points, TestNLine, block_points);
-% end;
+end;
 
 DrawCenteredNum('Thank You', win, color, 2);
     

@@ -82,7 +82,7 @@ try
                 p.dotsResults(trialNbr+1,1:3,kk) = ConsiderSlow_Abs(Test3DDots(trialNbr,:,kk), win, color, task, end_cons);
                 WaitTill(end_cons);
                 p.dotsResults(trialNbr+1,21,kk) = {GetSecs - start_t}; %Real onset of decision
-                p.dotsResults(trialNbr+1,4:11,kk) = FractDotRGSlow_NearFar_Abs_NearFar(Test3DDots(trialNbr,:,kk), win, color, end_decision, p.dotsResults{trialNbr+1,18,kk}, points, LR);
+                p.dotsResults(trialNbr+1,4:11,kk) = FractDotRGSlow_Abs_NearFar(Test3DDots(trialNbr,:,kk), win, color, end_decision, p.dotsResults{trialNbr+1,18,kk}, points, LR);
                 WaitTill(end_decision);
                 p.dotsResults(trialNbr+1,12,kk) = {trialNbr_Dots};
                 p.dotsResults(trialNbr+1,13,kk) = {blockNbr_Dots};

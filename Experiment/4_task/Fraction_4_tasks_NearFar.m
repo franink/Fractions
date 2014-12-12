@@ -64,7 +64,7 @@ HideCursor;
 
 
 %Don't show characters on matlab screen
-% ListenChar(2);
+ListenChar(2);
 
 %load up stimuli
 load FracStimNearFar;

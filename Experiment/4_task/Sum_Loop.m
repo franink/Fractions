@@ -62,7 +62,9 @@ try
     
         block_points = points;
         % wait for scanner trigger '5'
-        DrawCenteredNum('Waiting for scanner', win, color, 0.5);
+        DrawCenteredNum('Waiting for experimenter', win, color, 0.3);
+        WaitTill('9');
+        DrawCenteredNum('Waiting for scanner', win, color, 0.3);
         WaitTill('5'); %Use this only if used in a scanner that sends 5
         start_t = GetSecs;
             
@@ -103,6 +105,7 @@ catch
     ShowCursor
     sca
     save([filename '_catch2']);
-    save(filename, 'p')
+    save(filename, 'p');
+    ListenChar(1);
 
 end

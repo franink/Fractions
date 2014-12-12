@@ -11,7 +11,7 @@ ppc_adjust = 23/38;
 lineLength = round(lineLength*ppc_adjust);
 
 % Jitter horizontal position of numberline
-rng shuffle
+% rng shuffle
 jitter = jitter*randi([-300 300]);
 jitter = round(jitter*ppc_adjust);% Here position of line is jittered
 

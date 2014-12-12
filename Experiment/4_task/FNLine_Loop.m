@@ -89,12 +89,12 @@ try
                 points = p.numlineResults{trialNbr+1,11,kk};
             end
         end
-        end_t = GetSecs - start_t0;
+        end_t = GetSecs - start_t;
         p.time_Runs(kk+1,3) = {end_t};
         block_points = points - block_points;
         DisplayInstructs2;
     end
-
+    end_t = GetSecs - start_t0;
     p.finish_NLine = datestr(now);
     
 catch

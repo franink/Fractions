@@ -102,4 +102,5 @@ catch
     ple
     ShowCursor
     save([filename '_catch4']);
+    save(filename, 'p')
 end

@@ -55,11 +55,11 @@ Instruct{3} = {'For example, if you see a fraction like 5/10',
               'and then the fraction of filled dots corresponds',
               'to a fraction with GREATER value like 3/4',
               'you should press',
-              small_txt
+              large_txt
               ' ',
               'On the other hand, if the fraction of filled dots',
               'corresponds to a fraction with SMALLER value like 7/20 you should press',
-              large_txt,
+              small_txt,
               ' ',
               'Please PRESS ANY BUTTON to begin the experiment.'};            
                     

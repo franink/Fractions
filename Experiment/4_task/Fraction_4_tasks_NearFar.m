@@ -385,7 +385,7 @@ DrawCenteredNum('Thank You', win, color, 2);
     
 %save results
 save(filename, 'p')
-ListenChar(0)
+ListenChar(1)
 ShowCursor
 %Show characters on matlab screen again
 close all;

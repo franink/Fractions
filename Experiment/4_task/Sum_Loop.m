@@ -103,5 +103,6 @@ catch
     ShowCursor
     sca
     save([filename '_catch2']);
+    save(filename, 'p')
 
 end

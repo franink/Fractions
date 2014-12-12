@@ -53,11 +53,11 @@ Instruct{3} = {'For example, if the numbers you see are 5 and 10',
               'and in the next screen you see a number like 17',
               'which is GREATER than the sum of 5 and 10',
               'you should press',
-              small_txt',
+              large_txt,
               ' ',
               'On the other hand, if in the next screen you see a SMALLER number',
               'like 13 you should press',
-              large_txt,
+              small_txt,
               ' ',
               'Please PRESS ANY BUTTON to go on to the next screen.'};            
    

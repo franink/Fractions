@@ -53,11 +53,11 @@ Instruct{2} = {'You will have 2.5 seconds to decide.',
 Instruct{3} = {'For example, if you see a fraction like 5/10',
               'and then you see a fraction with a GREATER value like 3/4',
               'you should press',
-              small_txt,
+              large_txt,
               ' ',
               'On the other hand, if in you see a fraction with a SMALLER value',
               'like 7/20 you should press',
-              large_txt,
+              small_txt,
               ' ',
               'Please PRESS ANY BUTTON to go on to the next screen.'};            
    

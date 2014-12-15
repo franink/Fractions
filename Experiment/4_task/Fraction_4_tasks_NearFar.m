@@ -79,7 +79,7 @@ p.pct_catch = 0.4; % proportion of trials that have a test (decision) phase
 %Make sure that repeats is divisible by runs
 p.runs = 2; %within a single task
 p.nRepeats = 10; %repeats across runs. Divisible by p.runs 
-p.nStim = 16;
+p.nStim = 14;
 p.tasks = {'Sum', 'FracComp', 'NumLine', 'Dots'}; 
 p.trialSecs = p.fixation + p.consider + (p.decision*p.pct_catch);
 
@@ -340,6 +340,8 @@ end
 points = 0; %This initializes points for accuracy calculation
 block_points = 0;
 %Introductory instructions
+DrawCenteredNum('Welcome', win, color, 0.5);
+WaitTill('9');
 DisplayInstructsInt;
 
 % counter balance task order

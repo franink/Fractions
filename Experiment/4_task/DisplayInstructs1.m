@@ -14,20 +14,22 @@ small_txt = sprintf('the %s button.', hands_small);
 large_txt = sprintf('the %s button.', hands_large);
 
 
-Instruct{1} = {'In this section, two numbers will appear on the screen.',
-                'Your job is to add both numbers.',
+Instruct{1} = {'In each trial in this section, a display containing a pair of numbers',
+                'separated by a horizontal line will appear.',
                 ' ',
-                'On some trials, after 2 seconds you will see',
-                'another number in the middle of the screen.',
+                'Your job is to add the number above the line to the number below the line.'
                 ' ',
-                'If you see a number, your job is to decide',
-                'if the number shown is smaller or greater than',
-                'the value of the sum of the first two numbers.'
+                'On many trials, the first display will be replaced by a second display',
+                'containing a white border and a single number.',  
                 ' ',
-                'A white frame around the screen will remind you',
-                'that is time to answer.' 
+                'When you see this number, your job is to decide if it is smaller or larger ',
+                'than the sum of two numbers in the first display.',
                 ' ',
-                'Please PRESS ANY BUTTON to go on to the next screen.'};
+                'Remember, a white border around the screen means',
+                'that it is time to make your decision.' 
+                ' ',
+                'PRESS ANY BUTTON to go on to the next screen.'};
+
                        
 Instruct{2} = {'You will have 2.5 seconds to decide.',
                 ' ',
@@ -49,21 +51,21 @@ Instruct{2} = {'You will have 2.5 seconds to decide.',
                 ' ',
                 'Please PRESS ANY BUTTON to go on to the next screen.'};
             
-Instruct{3} = {'For example, if the numbers you see are 5 and 10',
-              'and in the next screen you see a number like 17',
-              'which is GREATER than the sum of 5 and 10',
-              'you should press',
+Instruct{3} = {'For example, if you see a display containing 5 and 10',
+                'followed by the number 17 which is GREATER',
+                'than the sum of 5 and 10, you should press',
               large_txt,
               ' ',
-              'On the other hand, if in the next screen you see a SMALLER number',
-              'like 13 you should press',
+              'On the other hand, if th first display is followed',
+              'by a SMALLER number like 13 you should press',
               small_txt,
               ' ',
               'Please PRESS ANY BUTTON to go on to the next screen.'};            
    
-Instruct{4} = {'On some trials, instead of getting a second number for comparison',
-                'you will see an X. This means you DO NOT need',
-                'to do anything in this trial.',
+Instruct{4} = {'Finally, on many trials, instead of getting a second display',
+                'with a number for comparison you will see an X.',
+                ' ',
+                'This means you DO NOT need to do anything in this trial.',
                 ' ',
                'If you have any questions please ask now',
                ' ',

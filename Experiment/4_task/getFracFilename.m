@@ -7,8 +7,8 @@ function [ filenameMAT ] = GetFracFileName()
 expInfo.program = 'Frac_';
 expInfo.subjectID = [];
 
-while(length(expInfo.subjectID)~=3)
-    expInfo.subjectID =input('Enter subject ID (3 digits) : ','s');
+while(length(expInfo.subjectID)~=5)
+    expInfo.subjectID =input('Enter subject ID (5 digits) : ','s');
 end
 
 expInfo.subjectID = upper(expInfo.subjectID);

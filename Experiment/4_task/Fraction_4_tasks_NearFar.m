@@ -17,7 +17,7 @@ clear Instruct;
 filename = getFracFilename();
 
 %Use number in filename to counter balance
-s_nbr = str2num(filename(6:8));
+s_nbr = str2num(filename(6:10));
 
 % counter balance hand
 % odds left= yes/larger

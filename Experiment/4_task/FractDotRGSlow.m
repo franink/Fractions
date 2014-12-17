@@ -31,7 +31,8 @@ winRect = Screen('Rect', win);
 Screen('FrameRect', win, [255 255 255 255], winRect, 30);
 
 %Put Image on screen
-ima=imread([pwd '\Stimuli\_Orig16\' num2str(fract(4)*3) '_' num2str(fract(5)*3) '_c' num2str(ceil(rand()*4)) '_FirstNumber' , '.bmp']);
+path = fileparts(mfilename('fullpath'));
+ima=imread([path '\Stimuli\_Orig16\' num2str(fract(4)*3) '_' num2str(fract(5)*3) '_c' num2str(ceil(rand()*4)) '_FirstNumber' , '.bmp']);
 Screen('PutImage', win, ima); % put image on screen
 Screen('Flip',win); % now visible on screen
 
@@ -49,7 +50,7 @@ if~isempty(key);
     t_remain = tot_time - (secs - t_start);
     Screen('Flip', win);
     WaitSecs(0.05);
-
+    
     Screen('PutImage', win, ima); % put image on screen
     Screen('Flip', win);
     WaitSecs(t_remain);

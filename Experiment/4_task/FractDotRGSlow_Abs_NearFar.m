@@ -30,7 +30,7 @@ if ctch;
         end;
         if probeMag < fractMag;
             correct = 0;
-        end;           
+        end;
     end;
     
     if LR == 1;
@@ -52,10 +52,11 @@ if ctch;
     Screen('FrameRect', win, [255 255 255 255], winRect, 30);
     
     %Put Image on screen
-    ima=imread([pwd '/Stimuli/_NearFar16/' num2str(fract(4)*3) '_' num2str(fract(5)*3) '_c' num2str(ceil(rand()*4)) '_FirstNumber' , '.bmp']);
+    path = fileparts(mfilename('fullpath'));
+    ima=imread([path '\Stimuli\_NearFar16\' num2str(fract(4)*3) '_' num2str(fract(5)*3) '_c' num2str(ceil(rand()*4)) '_FirstNumber' , '.bmp']);
     Screen('PutImage', win, ima); % put image on screen
     Screen('Flip',win); % now visible on screen
-
+    
     
     t_start = GetSecs;
     KbReleaseWait;
@@ -69,11 +70,11 @@ if ctch;
             t_remain = time - secs;
             Screen('Flip', win);
             WaitSecs(0.05);
-            
+
             Screen('PutImage', win, ima); % put image on screen
             Screen('Flip', win);
             WaitSecs(t_remain);
-            
+
             left = {'4'};
             right = {'3'};
             if ismember(key, left);
@@ -87,7 +88,7 @@ if ctch;
                 trialResponse{8} = trialResponse{8} + 1;
             end
         end
-   
+    
 end
 
 end

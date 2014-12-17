@@ -32,7 +32,7 @@ Screen('FrameRect', win, [255 255 255 255], winRect, 30);
 
 %Put Image on screen
 path = fileparts(mfilename('fullpath'));
-ima=imread([path '\Stimuli\_NearFar16\' num2str(fract(4)*3) '_' num2str(fract(5)*3) '_c' num2str(ceil(rand()*4)) '_FirstNumber' , '.bmp']);
+ima=imread([path '/Stimuli/_NearFar16/' num2str(fract(4)*3) '_' num2str(fract(5)*3) '_c' num2str(ceil(rand()*4)) '_FirstNumber' , '.bmp']);
 Screen('PutImage', win, ima); % put image on screen
 Screen('Flip',win); % now visible on screen
 

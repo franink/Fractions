@@ -95,7 +95,7 @@ try
         end_t = GetSecs - start_t;
         p.time_Runs(kk+1,2) = {end_t};
         block_points = points - block_points;
-        DrawCenteredNum(fix, win, color, 3);%fixation to pad end of scan
+        DrawCenteredNum(fix, win, color, 4);%fixation to pad end of scan
         DisplayInstructs2;
     end
 

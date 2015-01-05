@@ -45,11 +45,11 @@ for MAT in MAT_DICT.keys():
     mat = cdist(MAT_DICT[MAT], MAT_DICT[MAT])
     model_mats[MAT] = mat
 
-for MAT in model_mats.keys():
-    M_name = 'RANK_'+MAT
-    print M_name
-    model_mats[M_name] = rankdata(model_mats[MAT])
-    model_mats[M_name] = np.reshape(model_mats[M_name],(n_values, n_values))
+#for MAT in model_mats.keys():
+#    M_name = 'RANK_'+MAT
+#    print M_name
+#    model_mats[M_name] = rankdata(model_mats[MAT])
+#    model_mats[M_name] = np.reshape(model_mats[M_name],(n_values, n_values))
     
 fou = open('/Volumes/LaCie/fMRI/Fractions/Rank_model_mats.mat', 'w')
 io.savemat(fou, mdict = model_mats)

@@ -29,21 +29,21 @@ LABELS = ['1-6', '2-9', '5-21', '4-16', '6-24', '2-6', '9-27', '12-22',
 targets = ['FRACTION', 'NUM', 'DENOM', 'SUM', 'DIFFERENCE']
 
 # and set up tasks
-tasks = ['Sum','Comp','Nline','Dots']
+tasks = ['sum','comp','nline','dots']
 
 #and set up subjects
 SUBNUM = ['s_01010', 's_01003']
 #SUBNUM = ['s_01010']
 
 #Runs
-RUNS = ['Run_0', 'Run_1']
+RUNS = ['0', '1']
 
 nr = len(SUBNUM)
 
 
 #ROIS = glob.glob('ROI/*_25.nii.gz')
 #ROIS.sort()
-ROIS = ['ROI/IPS_L_12mSphere2mm.nii.gz', 'ROI/IPS_R_12mSphere2mm.nii.gz']
+ROIS = ['ROI/IPS_L_12mSphere.nii.gz', 'ROI/IPS_R_12mSphere.nii.gz']
 #ROIS = ['/fMRI/lottery/ROI/Area20.nii.gz']
 
 field_names = []
@@ -98,7 +98,7 @@ for ROI in ROIS:
         print ROI
         for TASK in tasks:
             for RUN in RUNS:
-                brain_task = subjpath + '/' + TASK +'_'+RUN+ '_allT.nii.gz'
+                brain_task = subjpath + '/2ndLevel_AllCond_Runs.gfeat/' + TASK+RUN+ '_allT.nii.gz'
                 mat_name = s+' '+TASK+' '+' '+RUN+' '+ROI+' DSM'
                 print brain_task
                 
@@ -147,13 +147,20 @@ for MODEL in models.keys():
 DSM_DSM = pdist(dsms, 'correlation')
 DSM_DSM = squareform(DSM_DSM)
 
+DSM_DSM_IPS_L = pdist(dsms[0:16], 'correlation')
+DSM_DSM_IPS_L = squareform(DSM_DSM_IPS_L)
+
+DSM_DSM_IPS_R = pdist(dsms[16:32], 'correlation')
+DSM_DSM_IPS_R = squareform(DSM_DSM_IPS_R)
+
 
 DSM_DSM_labels = []
 for ROI in field_name_dict.keys():
     for SUB in SUBNUM:
         s = SUB[-2:]
         for TASK in tasks:
-            DSM_DSM_labels.append(ROI+'s'+s+TASK)
+            for RUN in RUNS:
+                DSM_DSM_labels.append(ROI+'_s'+s+'_'+TASK+RUN)
 
 for TARGET in targets:
     DSM_DSM_labels.append(TARGET)

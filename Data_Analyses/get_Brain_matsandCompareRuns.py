@@ -29,18 +29,21 @@ LABELS = ['1-6', '2-9', '5-21', '4-16', '6-24', '2-6', '9-27', '12-22',
 targets = ['FRACTION', 'NUM', 'DENOM', 'SUM', 'DIFFERENCE']
 
 # and set up tasks
-tasks = ['sum','comp','nline','dots']
+tasks = ['Sum','Comp','Nline','Dots']
 
 #and set up subjects
 SUBNUM = ['s_01010', 's_01003']
 #SUBNUM = ['s_01010']
+
+#Runs
+RUNS = ['Run_0', 'Run_1']
 
 nr = len(SUBNUM)
 
 
 #ROIS = glob.glob('ROI/*_25.nii.gz')
 #ROIS.sort()
-ROIS = ['ROI/IPS_L_12mSphere.nii.gz', 'ROI/IPS_R_12mSphere.nii.gz']
+ROIS = ['ROI/IPS_L_12mSphere2mm.nii.gz', 'ROI/IPS_R_12mSphere2mm.nii.gz']
 #ROIS = ['/fMRI/lottery/ROI/Area20.nii.gz']
 
 field_names = []
@@ -89,32 +92,33 @@ for ROI in ROIS:
     brain_mat_dict[ROI] = []
     for s in SUBNUM:
         print s
-        subjpath = path + '/' + s + '/2ndLevel_AllCond.gfeat'
+        subjpath = path + '/' + s
         print subjpath
         #os.chdir(subjpath)
         print ROI
         for TASK in tasks:
-            brain_task = subjpath + '/' + TASK + '_allT.nii.gz'
-            mat_name = s+' '+TASK+' '+ROI+' DSM'
-            print brain_task
-            
-            # define dataset and pick a specific mask (here target is irrelevant)
-            ds = fmri_dataset(brain_task, mask=ROI)
-            
-            
-            # define the comparison
-            dsm = measures.rsa.PDist(square=True)
-            
-            res = dsm(ds)
-            
-            plot_mtx(res, LABELS, mat_name)
-                        
-            #Grab the square brain matrix
-            brain_mat = dsm(ds).samples
-            
-            #brain_mat = rankdata(brain_map) right now I am not using this but probably should
-            # check if previous step is correct before using
-            brain_mat_dict[ROI].append(brain_mat)
+            for RUN in RUNS:
+                brain_task = subjpath + '/' + TASK +'_'+RUN+ '_allT.nii.gz'
+                mat_name = s+' '+TASK+' '+' '+RUN+' '+ROI+' DSM'
+                print brain_task
+                
+                # define dataset and pick a specific mask (here target is irrelevant)
+                ds = fmri_dataset(brain_task, mask=ROI)
+                
+                
+                # define the comparison
+                dsm = measures.rsa.PDist(square=True)
+                
+                res = dsm(ds)
+                
+                plot_mtx(res, LABELS, mat_name)
+                            
+                #Grab the square brain matrix
+                brain_mat = dsm(ds).samples
+                
+                #brain_mat = rankdata(brain_map) right now I am not using this but probably should
+                # check if previous step is correct before using
+                brain_mat_dict[ROI].append(brain_mat)
 
 field_name_dict = {}
 for name in range(0, len(field_names)):
@@ -133,7 +137,7 @@ models.pop('__version__')
 dsms = []
 for ROI in field_name_dict.keys():
     for i in range(0,len(field_name_dict[ROI])):
-        dsms.append(rankdata(squareform(field_name_dict[ROI][i]))
+        dsms.append(rankdata(squareform(field_name_dict[ROI][i])))
 
 for MODEL in models.keys():
     print MODEL

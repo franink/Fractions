@@ -9,7 +9,10 @@ from scipy.stats.stats import rankdata
 from scipy import io
 import copy
 
+#laptop
 filepath = '/Users/frankkanayet/Dropbox/FractionExperiment'
+#Desktop
+filepath = '/Users/frankanayet/Dropbox/FractionExperiment'
 os.chdir(filepath)
 fracts = pd.read_csv('fraction_list_14.csv', names = ['num', 'denom'])
 

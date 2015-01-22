@@ -17,7 +17,7 @@ from scipy.spatial.distance import squareform,pdist
 from scipy.stats import rankdata,pearsonr
 
 #Laptop
-path = '/Volumes/LaCie/fMRI/Fractions'
+#path = '/Volumes/LaCie/fMRI/Fractions'
 #Desktop
 path = '/fMRI/Fractions'
 os.chdir(path)
@@ -89,12 +89,14 @@ for ROI in ROIS:
     brain_mat_dict[ROI] = []
     for s in SUBNUM:
         print s
-        subjpath = path + '/' + s + '/2ndLevel_AllCond.gfeat'
+        #subjpath = path + '/' + s + '/2ndLevel_AllCond.gfeat'
+        subjpath = path + '/' + s + '/2ndLevel_AllCond_NC.gfeat'
         print subjpath
         #os.chdir(subjpath)
         print ROI
         for TASK in tasks:
-            brain_task = subjpath + '/' + TASK + '_allT.nii.gz'
+            #brain_task = subjpath + '/' + TASK + '_allT.nii.gz'
+            brain_task = subjpath + '/' + TASK + '_allT_NC.nii.gz'
             mat_name = s+' '+TASK+' '+ROI+' DSM'
             print brain_task
             
@@ -133,11 +135,11 @@ models.pop('__version__')
 dsms = []
 for ROI in field_name_dict.keys():
     for i in range(0,len(field_name_dict[ROI])):
-        dsms.append(rankdata(squareform(field_name_dict[ROI][i]))
+        dsms.append(squareform(field_name_dict[ROI][i]))
 
 for MODEL in models.keys():
     print MODEL
-    dsms.append(rankdata(squareform(models[MODEL])))
+    dsms.append(squareform(models[MODEL]))
 
 
 DSM_DSM = pdist(dsms, 'correlation')

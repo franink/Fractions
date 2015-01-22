@@ -16,14 +16,22 @@ if __debug__:
     
 #debug.active += ["SLC"]
 
-path = '/Volumes/LaCie/fMRI/Fractions'
+#Laptop
+#path = '/Volumes/LaCie/fMRI/Fractions'
+
+#Desktop
+path = '/fMRI/Fractions'
+
 os.chdir(path)
 #subjects = ['s_01010', 's_01003', 's_01008','s_01009', 's_01004', 's_01005','s_01006','s_01007']
             
-subjects = ['s_01010', 's_01003']
+            
+subjects = ['s_01003', 's_01010']
+
 
 LABELS = ['1-6', '2-9', '5-21', '4-16', '6-24', '2-6', '9-27', '12-22',
           '6-9', '2-3', '15-21', '5-7', '3-4', '7-8']
+
 
 targets = ['FRACTION', 'NUM', 'DENOM', 'SUM', 'DIFFERENCE']
             
@@ -72,12 +80,18 @@ for s in subjects:
     
             sl = sphere_searchlight(dsmetric, radius=3)
     
-            sl.nproc = 4
+            #Laptop            
+            #sl.nproc = 4
+            #Desktop
+            sl.nproc = 12
     
             sl_map = sl(ds)
     
             # save it out
-            filename = '/Volumes/LaCie/fMRI/Fractions/Searchlight_Ranked/'+MODEL+'_SL_'+TASK+'_'+s+'.nii.gz'
+            #Laptop
+            #filename = '/Volumes/LaCie/fMRI/Fractions/Searchlight_Ranked/'+MODEL+'_SL_'+TASK+'_'+s+'.nii.gz'
+            #Desktop
+            filename = '/fMRI/Fractions/Searchlight_Ranked/'+MODEL+'_SL_'+TASK+'_'+s+'.nii.gz'
             print filename
             map2nifti(ds,sl_map.samples).to_filename(filename)
 

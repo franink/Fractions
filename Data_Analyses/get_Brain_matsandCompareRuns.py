@@ -98,7 +98,8 @@ for ROI in ROIS:
         print ROI
         for TASK in tasks:
             for RUN in RUNS:
-                brain_task = subjpath + '/2ndLevel_AllCond_Runs.gfeat/' + TASK+RUN+ '_allT.nii.gz'
+                #brain_task = subjpath + '/2ndLevel_AllCond_Runs.gfeat/' + TASK+RUN+ '_allT.nii.gz'
+                brain_task = subjpath + '/2ndLevel_AllCond_Runs_NC.gfeat/' + TASK+RUN+ '_allT_NC.nii.gz'
                 mat_name = s+' '+TASK+' '+' '+RUN+' '+ROI+' DSM'
                 print brain_task
                 
@@ -137,11 +138,11 @@ models.pop('__version__')
 dsms = []
 for ROI in field_name_dict.keys():
     for i in range(0,len(field_name_dict[ROI])):
-        dsms.append(rankdata(squareform(field_name_dict[ROI][i])))
+        dsms.append(squareform(field_name_dict[ROI][i]))
 
 for MODEL in models.keys():
     print MODEL
-    dsms.append(rankdata(squareform(models[MODEL])))
+    dsms.append(squareform(models[MODEL]))
 
 
 DSM_DSM = pdist(dsms, 'correlation')
@@ -164,6 +165,11 @@ for ROI in field_name_dict.keys():
 
 for TARGET in targets:
     DSM_DSM_labels.append(TARGET)
+    
+plot_mtx(DSM_DSM_IPS_L, DSM_DSM_labels[0:16], 'DSM of DSMs IPS Left')
+plot_mtx(DSM_DSM_IPS_R, DSM_DSM_labels[16:32], 'DSM of DSMs IPS Right')
+plot_mtx(DSM_DSM, DSM_DSM_labels, 'DSM of DSMs')
+
 
 #fou = open('Brain_mats_IPS.mat', 'w')
 #scipy.io.savemat(fou, mdict = field_name_dict)

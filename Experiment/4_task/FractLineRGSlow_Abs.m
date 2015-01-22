@@ -11,7 +11,7 @@ ppc_adjust = 23/38;
 lineLength = round(lineLength*ppc_adjust);
 
 % Jitter horizontal position of numberline
-rng shuffle
+% rng shuffle
 jitter = jitter*randi([-300 300]);
 jitter = round(jitter*ppc_adjust);% Here position of line is jittered
 
@@ -107,7 +107,7 @@ if ctch;
     t_start = GetSecs;
         KbReleaseWait;
         time = end_decision-time_fix;
-        [key, secs] = WaitTill(time, {'1' '2' '3' '4' '6' '7' '8' '9'});
+        [key, secs] = WaitTill(time, {'3' '4'});
         if~isempty(key);
             trialResponse{5} = str2double(key);
             trialResponse{6} = secs - t_start;
@@ -128,8 +128,8 @@ if ctch;
             Screen('Drawline', win, [0 0 0 0], probe_XPos, y - lineSZ/1.5, probe_XPos, y + lineSZ/1.5, round(5*ppc_adjust));
             Screen('Flip', win);
             
-            left = {'1' '2' '3' '4'};
-            right = {'6' '7' '8' '9'};
+            left = {'4'};
+            right = {'3'};
             if ismember(key, left);
                 response = 0;
             end

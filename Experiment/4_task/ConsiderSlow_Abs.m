@@ -10,6 +10,7 @@ RT = -1;
 
 compResults = {Fract(1) Fract(2) fractMag}; 
 
+
 DrawCenteredFrac(Fract,win, color);
 Screen('Flip', win);
 

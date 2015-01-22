@@ -64,7 +64,9 @@ try
     
         block_points = points;
         % wait for scanner trigger '5'
-        DrawCenteredNum('Waiting for scanner', win, color, 0.5);
+        DrawCenteredNum('Waiting for experimenter', win, color, 0.3);
+        WaitTill('9');
+        DrawCenteredNum('Waiting for scanner', win, color, 0.3);
         WaitTill('5'); %Use this only if used in a scanner that sends 5
         start_t = GetSecs;
     
@@ -93,6 +95,7 @@ try
         end_t = GetSecs - start_t;
         p.time_Runs(kk+1,2) = {end_t};
         block_points = points - block_points;
+        DrawCenteredNum(fix, win, color, 4);%fixation to pad end of scan
         DisplayInstructs2;
     end
 
@@ -104,5 +107,7 @@ catch
     ple
     ShowCursor
     save([filename '_catch3']);
+    save(filename, 'p');
+    ListenChar(1);
     
 end

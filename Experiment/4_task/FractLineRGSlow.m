@@ -12,7 +12,7 @@ ppc_adjust = 23/38;
 lineLength = round(lineLength*ppc_adjust);
 
 % Jitter horizontal position of number line
-rng shuffle
+% rng shuffle
 jitter = jitter*randi([-300 300]);
 jitter = round(jitter*ppc_adjust);% Here position of line is jittered
 
@@ -90,7 +90,7 @@ tot_time = time - time_fix;
 t_start = GetSecs;
 time = time+t_start;
 KbReleaseWait;
-[key, secs] = WaitTill(time, {'1' '2' '3' '4' '6' '7' '8' '9'});
+[key, secs] = WaitTill(time, {'3' '4'});
 if~isempty(key);
     %trialResponse{2} = key;
     %trialResponse{3} = secs - t_start;
@@ -113,8 +113,8 @@ if~isempty(key);
     Screen('Flip', win);
     WaitSecs(t_remain);
     
-    left = {'1' '2' '3' '4'};
-    right = {'6' '7' '8' '9'};
+    left = {'4'};
+    right = {'3'};
     if ismember(key, left);
         response = 0;
     end

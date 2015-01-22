@@ -5,6 +5,7 @@
 
 %make sure no Java problems
 PsychJavaTrouble;
+rng shuffle
 
 %Parameter to scale size on monitor... pixel per cm adjustment
 ppc_adjust = 38/23; % Need to ask what these numbers mean exactly and why these and not others.
@@ -16,7 +17,7 @@ clear Instruct;
 filename = getFracFilename();
 
 %Use number in filename to counter balance
-s_nbr = str2num(filename(6:8));
+s_nbr = str2num(filename(6:10));
 
 % counter balance hand
 % odds left= yes/larger
@@ -67,6 +68,7 @@ ListenChar(2);
 
 %load up stimuli
 load FracStim;
+strDotDir = '_Orig16';
 
 %Setup experiment parameters
 p.ramp_up = 8; %This number needs to be changed once we know TR (this should be TR*4)
@@ -75,16 +77,15 @@ p.consider = 2;
 p.decision = 2.5;
 p.pct_catch = 0.4; % proportion of trials that have a test (decision) phase
 %Make sure that repeats is divisible by runs
-p.runs = 1; %within a single task
-p.tasks = 3; %This will potentially be 4 tasks
-p.nRepeats = 2; %repeats per run. Divisivle by p.runs 
-p.nStim = 4;
+p.runs = 2; %within a single task
+p.nRepeats = 10; %repeats across runs. Divisible by p.runs 
+p.nStim = 14;
 p.tasks = {'Sum', 'FracComp', 'NumLine', 'Dots'}; 
 p.trialSecs = p.fixation + p.consider + (p.decision*p.pct_catch);
 
 
 %Randomize stims for all parts of experiment
-rng shuffle;
+% rng shuffle;
 
 %assign randomly catch trials to each stim
 %Only for one block. This will then be replicated for every other block 
@@ -195,21 +196,23 @@ end
 %Shuffle trials within block
 
 %First for summation
+%For each repetition(indexed at nStim intervals), scramble the order within
+%that interval
 for ii = 1:p.nRepeats
-    TestFracSum(((ii-1)*p.nStim)+1:((ii-1)*p.nStim)+p.nStim,:) = TestFracSum(randperm(p.nStim)+(p.nStim*(ii-1)),:);
+    TestFracSum(((ii-1)*p.nStim)+1:((ii-1)*p.nStim)+p.nStim,:) = TestFracSum(randperm(p.nStim)+p.nStim*(ii-1),:);
 end
 % Now for fraction comparison
 for ii = 1:p.nRepeats
-    TestFracsComp(((ii-1)*p.nStim)+1:((ii-1)*p.nStim)+p.nStim,:) = TestFracsLine(randperm(p.nStim)+(p.nStim*(ii-1)),:);
+    TestFracsComp(((ii-1)*p.nStim)+1:((ii-1)*p.nStim)+p.nStim,:) = TestFracsLine(randperm(p.nStim)+p.nStim*(ii-1),:);
 end
 % Now for fraction number line
 for ii = 1:p.nRepeats
-    TestFracsLine(((ii-1)*p.nStim)+1:((ii-1)*p.nStim)+p.nStim,:) = TestFracsLine(randperm(p.nStim)+(p.nStim*(ii-1)),:);
+    TestFracsLine(((ii-1)*p.nStim)+1:((ii-1)*p.nStim)+p.nStim,:) = TestFracsLine(randperm(p.nStim)+p.nStim*(ii-1),:);
 end
 
 % Now for dot line
 for ii = 1:p.nRepeats
-    TestDots(((ii-1)*p.nStim)+1:((ii-1)*p.nStim)+p.nStim,:) = TestDots(randperm(p.nStim)+(p.nStim*(ii-1)),:);
+    TestDots(((ii-1)*p.nStim)+1:((ii-1)*p.nStim)+p.nStim,:) = TestDots(randperm(p.nStim)+p.nStim*(ii-1),:);
 end
 
 
@@ -337,11 +340,13 @@ end
 points = 0; %This initializes points for accuracy calculation
 block_points = 0;
 %Introductory instructions
+DrawCenteredNum('Welcome', win, color, 0.5);
+WaitTill('9');
 DisplayInstructsInt;
 
 % counter balance task order
 % order [0,1] = sum 1st; fraction comparison 2nd
-% order [2,3] = fraction comparison 1; match 2nd
+% % order [2,3] = fraction comparison 1; match 2nd
 if ismember(order, sum_task);
     % Summation task
     [p, points, block_points] = Sum_Loop(filename, LR, win, color, p, points, TestSum, block_points);
@@ -357,36 +362,32 @@ if ismember(order, fcomp_task);
     % Summation task
     [p, points, block_points] = Sum_Loop(filename, LR, win, color, p, points, TestSum, block_points);
 end;
-    
-
-% Fraction numberline task:
-[p, points, block_points] = FNLine_Loop(filename, LR, win, color, p, points, TestNLine, block_points);
-
+%     
 % % counter balance task order when Dot task exists
 % % order [0,1] = NLine 1st; Dot 2nd
 % % order [2,3] = Dot 1st; NLine 2nd
 % nline_task = [0 2];
 % dot_task = [1 3];
-% if ismember(order, nline_task);
-%     % Fraction numberline task: 
-%     [p, points, block_points] = FNLine_Loop(filename, LR, win, color, p, points, TestNLine, block_points);
-%     
-%     % Dot task:
-%     [p, points, block_points] = Dot_Loop(filename, LR, win, color, p, points, Test3DDots, block_points); %This can be changed Andrew
-% end;
-% if ismember(order, dot_task);
-%     % Dot task:
-%     [p, points, block_points] = Dot_Loop(filename, LR, win, color, p, points, Test3DDots, block_points); %This can be changed Andrew
-%     
-%     % Fraction numberline task: 
-%     [p, points, block_points] = FNLine_Loop(filename, LR, win, color, p, points, TestNLine, block_points);
-% end;
+if ismember(order, nline_task);
+    % Fraction numberline task: 
+    [p, points, block_points] = FNLine_Loop(filename, LR, win, color, p, points, TestNLine, block_points);
+    
+    % Dot task:
+    [p, points, block_points] = Dot_Loop(filename, LR, win, color, p, points, Test3DDots, block_points); %This can be changed Andrew
+end;
+if ismember(order, dot_task);
+    % Dot task:
+    [p, points, block_points] = Dot_Loop(filename, LR, win, color, p, points, Test3DDots, block_points); %This can be changed Andrew
+    
+    % Fraction numberline task: 
+    [p, points, block_points] = FNLine_Loop(filename, LR, win, color, p, points, TestNLine, block_points);
+end;
 
 DrawCenteredNum('Thank You', win, color, 2);
     
 %save results
 save(filename, 'p')
-ListenChar(0)
+ListenChar(1)
 ShowCursor
 %Show characters on matlab screen again
 close all;

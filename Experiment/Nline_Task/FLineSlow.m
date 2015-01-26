@@ -1,47 +1,41 @@
-function trialResponse = NumLineSlow_Abs(stim, win, lineLength, jitter, color, end_decision, points)
-
+function block_p_points = NumLineSlow(fract, win, lineLength, jitter, color, time, points)
 %plots a line starting at x1, finishing at x2, with cursor starting on
 %either left (lrStart = 0) or right (lrStart = 1) side.
 
 %trialResponse format is [startPos, RT, propLine)
 
-ppc_adjust = 23/38;
+    ppc_adjust = 23/38;
 
-lineLength = round(lineLength*ppc_adjust);
+    lineLength = round(lineLength*ppc_adjust);
 
-rng shuffle
-jitter = jitter*randi([-300 300]);
-jitter = round(jitter*ppc_adjust);% Here position of line is jittered
+    rng shuffle
+    jitter = jitter*randi([-300 300]);
+    jitter = round(jitter*ppc_adjust);% Here position of line is jittered
 
-clearMouseInput;
+    clearMouseInput;
 
-FlushEvents;
-click = 0;
+    FlushEvents;
+    click = 0;
 
-%set variables
-%set variables to -1 to catch missing trials and errors
-correct =-1;
-response = -1;
-RT = -1;
-Error = -1;
-time_fix = 0.05; %Allows code to exit to keep experiment on time
-probe = -1;
-mouse_pos = -1;
+    %set variables
+    mouse_pos = -1;
+    correct =-1;
+    response = -1;
+    RT = -1;
+    error = -1;
+    %time_left = 1;
+    time_fix = 0.01;
+    time_on = time - time_fix;
 
+    %initialize log
+    %trialResponse = {correct response RT Acc p_points};
 
-%Initialize log
-trialResponse = {correct response RT Error points mouse_pos};
+    fractMag = fract(1)/fract(2);
+    probeMag = fract(4)/fract(5);
 
+    trialResponse = {mouse_pos correct response RT error};
 
-
-if ctch;
-
-    probe = stim(1);
-    
-    correct = probe/100;
-    
-    trialResponse{1} = correct;
-    
+    correct = probeMag;
     
     lineSZ = round(20*ppc_adjust);
 
@@ -50,21 +44,17 @@ if ctch;
     y = round(winRect(4)/2);
     center = winRect(3)/2;
     
+   % yprobe = round(winRect(4)/4); % This is to signal number to be placed
+
     x1 = round(center - lineLength/2 + jitter); % Here position of line is jittered
     x2 = round(center + lineLength/2 + jitter);% Here position of line is jittered
     
-    %Find out where mark should be placed
-    %correct = correct/25;
-    %trialResponse{2} = correct;
-
-    HideCursor;
-    t_start = GetSecs;
-
-    StartCursor = 0.8*rand + 0.1; %If rand 0 cursonr starts at 0.1 if rand 1 starts at 0.9
-
-    MouseStartPosX = round(StartCursor*(x2-x1) + x1);
-    trialResponse{6} = MouseStartPosX;
     
+    HideCursor;
+    
+    trialResponse{1} = 0.8*rand + 0.1; %If rand 0 cursonr starts at 0.1 if rand 1 starts at 0.9
+
+    MouseStartPosX = round(trialResponse{1}*(x2-x1) + x1);
 
     SetMouse(MouseStartPosX,y,win);
 
@@ -79,7 +69,6 @@ if ctch;
     zeroBox = CenterRectOnPoint(zeroBox, x1, y + yTextPos*40);
     oneBox = CenterRectOnPoint(oneBox, x2, y + yTextPos*40);
     
-    
     yprobe = y - 100;
     probeBox = Screen('TextBounds', win, probe);
     probeBox = CenterRectOnPoint(probeBox, center + jitter, yprobe);
@@ -87,20 +76,17 @@ if ctch;
     probeTop = probeBox(RectTop);
     
     zX=zeroBox(RectLeft); oX = oneBox(RectLeft); yNum=oneBox(RectTop);
-    
-    %Draw frame
-    winRect = Screen('Rect', win);
-    Screen('FrameRect', win, [255 255 255 255], winRect, 30);
-    Screen('Flip', win, 0, 1);
 
-    % t_start = GetSecs;
-    % t_end = t_start + time_on;
+    t_start = GetSecs;
+    t_end = t_start + time_on;
     mouseResp = 0;
+    
+    
 
     while ~mouseResp;
         [xPos, yPos, click] = GetMouse(win);
-        if ~isempty(click) || GetSecs >= end_decision - time_fix;
-           if GetSecs >= end_decision - time_fix;
+        if ~isempty(click) || GetSecs >= t_end;
+           if GetSecs >= t_end;
                 %sprintf('timeout');
                 time_left = 0;
                 mouseResp = 1;
@@ -117,13 +103,12 @@ if ctch;
                 click = sum(click);
 
                 if click == 1;
-                    trialResponse{3} = GetSecs - t_start;
-                    trialResponse{2} = (xPos - x1)/(x2-x1);
-                    trialResponse{4} = trialResponse{2} - correct;
-                    if abs(trialResponse{4}) <= 0.1;
-                        trialResponse{5} = points + 1;
-                    end
-                    mouseResp = 1;
+                    trialResponse{4} = GetSecs - t_start;
+                    trialResponse{3} = (xPos - x1)/(x2-x1);
+                    trialResponse{5} = trialResponse{3} - correct;
+                    if abs(trialResponse{5}) <= 0.1;
+                        block_p_points = points + 1;
+                    %mouseResp = 1;
                 end
 
 
@@ -133,7 +118,6 @@ if ctch;
 
                 Screen('DrawText', win, '0', zX, yNum, color);
                 Screen('DrawText', win, '1', oX, yNum, color);
-                
                 
                 Screen('DrawText', win, probe, probeLeft, probeTop, color);
                 
@@ -149,6 +133,4 @@ if ctch;
     % fix_on = time_fix + time_left*(time_on - trialResponse{4});
     % DrawCenteredNum('X',win,color,fix_on);
     % Screen('Flip', win);
-end
-
 end

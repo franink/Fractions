@@ -17,7 +17,7 @@ clear Instruct;
 filename = getNlineFilename();
 
 %Use number in filename to counter balance
-s_nbr = str2num(filename(6:10));
+s_nbr = str2num(filename(7:11));
 
 % counter balance hand
 % odds left= yes/larger
@@ -89,7 +89,8 @@ p.trialSecs = p.fixation + p.decision;
 %to insure they all have the same time length
 TestNline = zeros(p.nRepeats*p.nStim,2); %probe, line_pct
 TestFline = zeros(p.nRepeats*p.nStim,4); %probe, line_pct, num, denom 
-TestControl = zeros(p.nRepeats*p.nStim,2); %probe, line_pct
+%TestControl = zeros(p.nRepeats*p.nStim,2); %probe, line_pct
+TestControl = cell(p.nRepeats*p.nStim,2); %probe, line_pct
 
 
 % First Nline task
@@ -105,7 +106,7 @@ end
 for ii = 1:p.nStim;
     for kk = 1:p.runs;
         for jj = 1:p.nRepeats/p.runs;
-            TestFline(ii+((kk-1)*(p.nStim*(p.nRepeats/p.runs))+((jj-1)*(p.nStim))), 1:2) = [NlineStim(ii,2)/NlineStim(ii,3) NlineStim(ii,2)/NlineStim(ii,3) NlineStim(ii,2) NlineStim(ii,3)];
+            TestFline(ii+((kk-1)*(p.nStim*(p.nRepeats/p.runs))+((jj-1)*(p.nStim))), 1:4) = [NlineStim(ii,2)/NlineStim(ii,3) NlineStim(ii,2)/NlineStim(ii,3) NlineStim(ii,2) NlineStim(ii,3)];
         end
     end
 end
@@ -115,7 +116,8 @@ end
 for ii = 1:p.nStim;
     for kk = 1:p.runs;
         for jj = 1:p.nRepeats/p.runs;
-            TestControl(ii+((kk-1)*(p.nStim*(p.nRepeats/p.runs))+((jj-1)*(p.nStim))), 1:2) = [WordStim{ii,1} NlineStim(ii,1)/100];
+            tmp = {WordStim{ii,1} NlineStim(ii,1)/100};
+            TestControl(ii+((kk-1)*(p.nStim*(p.nRepeats/p.runs))+((jj-1)*(p.nStim))), 1:2) = [tmp(1) tmp{2}]; %Note this is a cell and has to be changed in loop and ControlSlow_Abs
         end
     end
 end
@@ -138,49 +140,33 @@ for ii = 1:p.nRepeats
     TestControl(((ii-1)*p.nStim)+1:((ii-1)*p.nStim)+p.nStim,:) = TestControl(randperm(p.nStim)+p.nStim*(ii-1),:);
 end
 
-%I am here!!!!
 % Create Results files
-p.sumResults = cell(p.nStim*(p.nRepeats/p.runs)+1,20,p.runs);
-p.compResults = cell(p.nStim*(p.nRepeats/p.runs)+1,21,p.runs);
-p.numlineResults = cell(p.nStim*(p.nRepeats/p.runs)+1,21,p.runs);
-p.dotsResults = cell(p.nStim*(p.nRepeats/p.runs)+1,21,p.runs);
+p.NlineResults = cell(p.nStim*(p.nRepeats/p.runs)+1,15,p.runs);
+p.FlineResults = cell(p.nStim*(p.nRepeats/p.runs)+1,18,p.runs);
+p.ControlResults = cell(p.nStim*(p.nRepeats/p.runs)+1,15,p.runs);
 p.time_Runs = cell((p.runs+1),length(p.tasks));
-
 
 %Get Labels
 for ii = 1:p.runs
-    p.sumResults(1,:,ii) = {'Num','Denom','Value','Sum_Fraction','Sum_Probe','Correct','Response','RT','Acc','Points','Trial','Block','fix_onset','cons_onset','decision_onset','decision_end','catch','fix_onset_real','cons_onset_real','decision_onset_real'};    
-    p.compResults(1,:,ii) = {'Num','Denom','Value','Num_Probe','Denom_Probe','Value_Probe','Correct','Response','RT', 'Acc', 'Points','Trial','Block','fix_onset','cons_onset','decision_onset','decision_end','catch','fix_onset_real','cons_onset_real','decision_onset_real'};
-    p.numlineResults(1,:,ii) = {'Num','Denom','Value','Num_Probe','Denom_Probe','Value_Probe','Correct','Response','RT','Acc','Points','Trial','Block','fix_onset','cons_onset','decision_onset','decision_end','catch','fix_onset_real','cons_onset_real','decision_onset_real'};
-    p.dotsResults(1,:,ii) = {'Num','Denom','Value','Num_Probe','Denom_Probe','Value_Probe','Correct','Response','RT','Acc','Points','Trial','Block','fix_onset','cons_onset','decision_onset','decision_end','catch','fix_onset_real','cons_onset_real','decision_onset_real'};
+    p.NlineResults(1,:,ii) = {'Probe', 'Line_pct','Correct','Response','RT','Error','Points', 'mouse_pos','Trial','Block','fix_onset','decision_onset','decision_end','fix_onset_real','decision_onset_real'};    
+    p.FlineResults(1,:,ii) = {'Probe', 'Line_pct', 'Num','Denom','Value','Correct','Response','RT', 'Error', 'Points', 'mouse_pos','Trial','Block','fix_onset','decision_onset','decision_end','fix_onset_real','decision_onset_real'};
+    p.ControlResults(1,:,ii) = {'Probe', 'Line_pct','Correct','Response','RT','Error','Points','mouse_pos', 'Trial','Block','fix_onset','decision_onset','decision_end','fix_onset_real','decision_onset_real'};
+    
 end
 
-p.time_Runs(1,:) ={'Time_Sum', 'Time_Comparison', 'Time_NumLine', 'Time_Dots'}; 
-
-%Add catch information to results struct (needed to construct timing)
-ctr = 0;
-for jj = 1:p.runs;
-    for ii = 2:length(p.sumResults(:,1,1));
-        ctr = ctr + 1;
-        p.sumResults(ii,17,jj) = {TestFracSum(ctr,3)};
-        p.compResults(ii,18,jj) = {TestFracsComp(ctr,3)};
-        p.numlineResults(ii,18,jj) = {TestFracsLine(ctr,3)};
-        p.dotsResults(ii,18,jj) = {TestDots(ctr,3)};
-    end
-end
+p.time_Runs(1,:) ={'Time_Nline', 'Time_Fline', 'Time_Control'}; 
 
 % Separate runs into different 3D matrices to control time indpeendently
 % for each run
-TestSum = zeros(p.nStim*(p.nRepeats/p.runs),4,p.runs);
-TestFComp = zeros(p.nStim*(p.nRepeats/p.runs),5,p.runs);
-TestNLine = zeros(p.nStim*(p.nRepeats/p.runs),5,p.runs);
-Test3DDots = zeros(p.nStim*(p.nRepeats/p.runs),5,p.runs);
+NlineTime = zeros(p.nStim*(p.nRepeats/p.runs),2,p.runs);
+FlineTime = zeros(p.nStim*(p.nRepeats/p.runs),4,p.runs);
+%ControlTime = zeros(p.nStim*(p.nRepeats/p.runs),2,p.runs);
+ControlTime = cell(p.nStim*(p.nRepeats/p.runs),2,p.runs);
 
 for ii = 1:p.runs
-    TestSum(:,:,ii) = TestFracSum(1+((ii-1)*p.nStim*(p.nRepeats/p.runs)):(p.nStim*(p.nRepeats/p.runs))+((ii-1)*(p.nStim*(p.nRepeats/p.runs))),:);
-    TestFComp(:,:,ii) = TestFracsComp(1+((ii-1)*p.nStim*(p.nRepeats/p.runs)):(p.nStim*(p.nRepeats/p.runs))+((ii-1)*(p.nStim*(p.nRepeats/p.runs))),:);
-    TestNLine(:,:,ii) = TestFracsLine(1+((ii-1)*p.nStim*(p.nRepeats/p.runs)):(p.nStim*(p.nRepeats/p.runs))+((ii-1)*(p.nStim*(p.nRepeats/p.runs))),:);
-    Test3DDots(:,:,ii) = TestDots(1+((ii-1)*p.nStim*(p.nRepeats/p.runs)):(p.nStim*(p.nRepeats/p.runs))+((ii-1)*(p.nStim*(p.nRepeats/p.runs))),:);
+    NlineTime(:,:,ii) = TestNline(1+((ii-1)*p.nStim*(p.nRepeats/p.runs)):(p.nStim*(p.nRepeats/p.runs))+((ii-1)*(p.nStim*(p.nRepeats/p.runs))),:);
+    FlineTime(:,:,ii) = TestFline(1+((ii-1)*p.nStim*(p.nRepeats/p.runs)):(p.nStim*(p.nRepeats/p.runs))+((ii-1)*(p.nStim*(p.nRepeats/p.runs))),:);
+    ControlTime(:,:,ii) = TestControl(1+((ii-1)*p.nStim*(p.nRepeats/p.runs)):(p.nStim*(p.nRepeats/p.runs))+((ii-1)*(p.nStim*(p.nRepeats/p.runs))),:);
 end
 
 
@@ -198,64 +184,43 @@ end
 % simulates going through the whole run and kees track of time and catch
 % events
 
-% First for summation
+% First for Nline
 for jj = 1:p.runs
     end_ramp_up = p.ramp_up; % after ramp_up the first fixation begins
     current_time = end_ramp_up; %keeps track of time, starts with time after ramp_up
-    for ii = 1:length(p.sumResults(:,1,1))-1;
-        p.sumResults(ii+1,13,jj) = {current_time}; %fixation onset
+    for ii = 1:length(p.NlineResults(:,1,1))-1;
+        p.NlineResults(ii+1,11,jj) = {current_time}; %fixation onset
         current_time = current_time + p.fixation; %end of fixation
-        p.sumResults(ii+1,14,jj) = {current_time}; %consider onset
-        current_time = current_time + p.consider; %end of consider
-        p.sumResults(ii+1,15,jj) = {current_time}; %decision onset
-        current_time = current_time + (p.decision * p.sumResults{ii+1,17,jj}); %end of decision if ctch 1 = 0 current time does not move
-        p.sumResults(ii+1,16,jj) = {current_time}; %end of decision
+        p.NlineResults(ii+1,12,jj) = {current_time}; %decision onset
+        current_time = current_time + p.decision; %end of decision
+        p.NlineResults(ii+1,13,jj) = {current_time}; %end of decision
     end
 end
 
-%Fraction comparison
+%Fline
 for jj = 1:p.runs
     end_ramp_up = p.ramp_up; %practice time might include ramp_up
     current_time = end_ramp_up; %keeps track of time, starts with time after practice
-    for ii = 1:length(p.compResults(:,1,1))-1;
-        p.compResults(ii+1,14,jj) = {current_time}; %fixation onset
+    for ii = 1:length(p.FlineResults(:,1,1))-1;
+        p.FlineResults(ii+1,14,jj) = {current_time}; %fixation onset
         current_time = current_time + p.fixation; %end of fixation
-        p.compResults(ii+1,15,jj) = {current_time}; %consider onset
-        current_time = current_time + p.consider; %end of consider
-        p.compResults(ii+1,16,jj) = {current_time}; %decision onset
-        current_time = current_time + (p.decision * p.compResults{ii+1,18,jj}); %end of decision if ctch 1 = 0 current time does not move
-        p.compResults(ii+1,17,jj) = {current_time}; %end of decision
+        p.FlineResults(ii+1,15,jj) = {current_time}; %decision onset
+        current_time = current_time + p.decision; %end of decision
+        p.FlineResults(ii+1,16,jj) = {current_time}; %end of decision
     end
 end
 
 
-% and now for numberline
+% and now for Control
 for jj = 1:p.runs
     end_ramp_up = p.ramp_up; %practice time might include ramp_up
     current_time = end_ramp_up; %keeps track of time, starts with time after practice
-    for ii = 1:length(p.numlineResults(:,1,1))-1;
-        p.numlineResults(ii+1,14,jj) = {current_time}; %fixation onset
+    for ii = 1:length(p.ControlResults(:,1,1))-1;
+        p.ControlResults(ii+1,11,jj) = {current_time}; %fixation onset
         current_time = current_time + p.fixation; %end of fixation
-        p.numlineResults(ii+1,15,jj) = {current_time}; %consider onset
-        current_time = current_time + p.consider; %end of consider
-        p.numlineResults(ii+1,16,jj) = {current_time}; %decision onset
-        current_time = current_time + (p.decision * p.numlineResults{ii+1,18,jj}); %end of decision if ctch 1 = 0 current time does not move
-        p.numlineResults(ii+1,17,jj) = {current_time}; %end of decision
-    end
-end
-
-% Finally for dots
-for jj = 1:p.runs
-    end_ramp_up = p.ramp_up; %practice time might include ramp_up
-    current_time = end_ramp_up; %keeps track of time, starts with time after practice
-    for ii = 1:length(p.dotsResults(:,1,1))-1;
-        p.dotsResults(ii+1,14,jj) = {current_time}; %fixation onset
-        current_time = current_time + p.fixation; %end of fixation
-        p.dotsResults(ii+1,15,jj) = {current_time}; %consider onset
-        current_time = current_time + p.consider; %end of consider
-        p.dotsResults(ii+1,16,jj) = {current_time}; %decision onset
-        current_time = current_time + (p.decision * p.dotsResults{ii+1,18,jj}); %end of decision if ctch 1 = 0 current time does not move
-        p.dotsResults(ii+1,17,jj) = {current_time}; %end of decision
+        p.ControlResults(ii+1,12,jj) = {current_time}; %decision onset
+        current_time = current_time + p.decision; %end of decision
+        p.ControlResults(ii+1,13,jj) = {current_time}; %end of decision
     end
 end
 
@@ -267,44 +232,49 @@ DrawCenteredNum('Welcome', win, color, 0.5);
 WaitTill('9');
 DisplayInstructsInt;
 
-% counter balance task order
-% order [0,1] = sum 1st; fraction comparison 2nd
-% % order [2,3] = fraction comparison 1; match 2nd
-if ismember(order, sum_task);
-    % Summation task
-    [p, points, block_points] = Sum_Loop(filename, LR, win, color, p, points, TestSum, block_points);
-    
-    % Fraction Comparison task:
-    [p, points, block_points] = FComp_Loop(filename, LR, win, color, p, points, TestFComp, block_points);
-end;
+%COunterbalance task order
+if order == 0;
+    p.order = {'nline', 'fline', 'control'};
+    [p, points, block_points] = Nline_Loop(filename, win, color, p, points, NlineTime, block_points);
+    [p, points, block_points] = Fline_Loop(filename, win, color, p, points, FlineTime, block_points);
+    [p, points, block_points] = Control_Loop(filename, win, color, p, points, ControlTime, block_points);
+end
 
-if ismember(order, fcomp_task);
-    % Fraction Comparison task:
-    [p, points, block_points] = FComp_Loop(filename, LR, win, color, p, points, TestFComp, block_points);
-    
-    % Summation task
-    [p, points, block_points] = Sum_Loop(filename, LR, win, color, p, points, TestSum, block_points);
-end;
-%     
-% % counter balance task order when Dot task exists
-% % order [0,1] = NLine 1st; Dot 2nd
-% % order [2,3] = Dot 1st; NLine 2nd
-% nline_task = [0 2];
-% dot_task = [1 3];
-if ismember(order, nline_task);
-    % Fraction numberline task: 
-    [p, points, block_points] = FNLine_Loop(filename, LR, win, color, p, points, TestNLine, block_points);
-    
-    % Dot task:
-    [p, points, block_points] = Dot_Loop(filename, LR, win, color, p, points, Test3DDots, block_points); %This can be changed Andrew
-end;
-if ismember(order, dot_task);
-    % Dot task:
-    [p, points, block_points] = Dot_Loop(filename, LR, win, color, p, points, Test3DDots, block_points); %This can be changed Andrew
-    
-    % Fraction numberline task: 
-    [p, points, block_points] = FNLine_Loop(filename, LR, win, color, p, points, TestNLine, block_points);
-end;
+if order == 1;
+    p.order = {'nline', 'control', 'fline'};
+    [p, points, block_points] = Nline_Loop(filename, win, color, p, points, NlineTime, block_points);
+    [p, points, block_points] = Control_Loop(filename, win, color, p, points, ControlTime, block_points);
+    [p, points, block_points] = Fline_Loop(filename, win, color, p, points, FlineTime, block_points);
+end
+
+if order == 2;
+    p.order = {'fline', 'nline', 'control'};
+    [p, points, block_points] = Fline_Loop(filename, win, color, p, points, FlineTime, block_points);
+    [p, points, block_points] = Nline_Loop(filename, win, color, p, points, NlineTime, block_points);
+    [p, points, block_points] = Control_Loop(filename, win, color, p, points, ControlTime, block_points);
+end
+
+if order == 3;
+    p.order = {'fline', 'control', 'nline'};
+    [p, points, block_points] = Fline_Loop(filename, win, color, p, points, FlineTime, block_points);
+    [p, points, block_points] = Control_Loop(filename, win, color, p, points, ControlTime, block_points);
+    [p, points, block_points] = Nline_Loop(filename, win, color, p, points, NlineTime, block_points);
+end
+
+if order == 4;
+    p.order = {'control', 'nline', 'fline'};
+    [p, points, block_points] = Control_Loop(filename, win, color, p, points, ControlTime, block_points);
+    [p, points, block_points] = Nline_Loop(filename, win, color, p, points, NlineTime, block_points);
+    [p, points, block_points] = Fline_Loop(filename, win, color, p, points, FlineTime, block_points);
+end
+
+if order == 5;
+    p.order = {'control', 'fline', 'nline'};
+    [p, points, block_points] = Control_Loop(filename, win, color, p, points, ControlTime, block_points);
+    [p, points, block_points] = Fline_Loop(filename, win, color, p, points, FlineTime, block_points);
+    [p, points, block_points] = Nline_Loop(filename, win, color, p, points, NlineTime, block_points);
+end
+
 
 DrawCenteredNum('Thank You', win, color, 2);
     

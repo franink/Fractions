@@ -1,4 +1,4 @@
-function trialResponse = NumLineSlow_Abs(stim, win, lineLength, jitter, color, end_decision, points)
+function trialResponse = NumLineSlow_Abs(fract, win, lineLength, jitter, color, end_decision, points)
 
 %plots a line starting at x1, finishing at x2, with cursor starting on
 %either left (lrStart = 0) or right (lrStart = 1) side.
@@ -23,10 +23,13 @@ click = 0;
 correct =-1;
 response = -1;
 RT = -1;
-Error = -1;
+Acc = -1;
 time_fix = 0.05; %Allows code to exit to keep experiment on time
-probe = -1;
+Num_probe = -1;
+Denom_probe = -1;
+probeMag = -1;
 mouse_pos = -1;
+error = -1;
 
 
 %Initialize log
@@ -36,12 +39,18 @@ trialResponse = {correct response RT Error points mouse_pos};
 
 if ctch;
 
-    probe = stim(1);
+    Num_probe = fract(4);
+    Denom_probe = fract(5);
+    fractMag = fract(1)/fract(2);
+    probeMag = fract(4)/fract(5);
+    correct = probeMag
+    probe = [num2str(Num_probe) '/' num2str(Denom_probe)]
     
-    correct = probe/100;
     
-    trialResponse{1} = correct;
-    
+    trialResponse{1} = Num_probe;
+    trialResponse{2} = Denom_probe;
+    trialResponse{3} = probeMag;
+    trialResponse{4} = correct;
     
     lineSZ = round(20*ppc_adjust);
 
@@ -63,8 +72,6 @@ if ctch;
     StartCursor = 0.8*rand + 0.1; %If rand 0 cursonr starts at 0.1 if rand 1 starts at 0.9
 
     MouseStartPosX = round(StartCursor*(x2-x1) + x1);
-    trialResponse{6} = MouseStartPosX;
-    
 
     SetMouse(MouseStartPosX,y,win);
 
@@ -117,11 +124,11 @@ if ctch;
                 click = sum(click);
 
                 if click == 1;
-                    trialResponse{3} = GetSecs - t_start;
-                    trialResponse{2} = (xPos - x1)/(x2-x1);
-                    trialResponse{4} = trialResponse{2} - correct;
-                    if abs(trialResponse{4}) <= 0.1;
-                        trialResponse{5} = points + 1;
+                    trialResponse{6} = GetSecs - t_start;
+                    trialResponse{5} = (xPos - x1)/(x2-x1);
+                    trialResponse{7} = trialResponse{5} - correct;
+                    if abs(trialResponse{7}) <= 0.1;
+                        trialResponse{8} = points + 1;
                     end
                     mouseResp = 1;
                 end

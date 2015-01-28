@@ -71,7 +71,7 @@ load FracStimNearFar;
 strDotDir  = '_NearFar16';
 
 %Setup experiment parameters
-p.ramp_up = 8; %This number needs to be changed once we know TR (this should be TR*4)
+p.ramp_up = 14; %This number needs to be changed once we know TR (this should be TR*4)
 p.fixation = 3;
 p.consider = 2;
 p.decision = 2.5;

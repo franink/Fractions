@@ -6,7 +6,7 @@ function [] = TextDisplay( TextCell, win, color )
 %or similar should be called to close the window.
 
 %Text size is 20, style is 1, color is black
-Screen('TextSize',win, 20);
+Screen('TextSize',win, 30);
 Screen('TextStyle',win,1);
 %color = BlackIndex(Window);
 

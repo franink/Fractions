@@ -98,8 +98,9 @@ for ROI in ROIS:
         print ROI
         for TASK in tasks:
             for RUN in RUNS:
+                brain_task = subjpath + '/2ndLevel_AllCond_RunsSMOOTH.gfeat/' + TASK+RUN+ '_allT_SM.nii.gz'
                 #brain_task = subjpath + '/2ndLevel_AllCond_Runs.gfeat/' + TASK+RUN+ '_allT.nii.gz'
-                brain_task = subjpath + '/2ndLevel_AllCond_Runs_NC.gfeat/' + TASK+RUN+ '_allT_NC.nii.gz'
+                #brain_task = subjpath + '/2ndLevel_AllCond_Runs_NC.gfeat/' + TASK+RUN+ '_allT_NC.nii.gz'
                 mat_name = s+' '+TASK+' '+' '+RUN+' '+ROI+' DSM'
                 print brain_task
                 

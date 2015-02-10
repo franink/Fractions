@@ -89,14 +89,15 @@ for ROI in ROIS:
     brain_mat_dict[ROI] = []
     for s in SUBNUM:
         print s
+        subjpath = path + '/' + s + '/2ndLevel_AllCondSMOOTH.gfeat'
         #subjpath = path + '/' + s + '/2ndLevel_AllCond.gfeat'
-        subjpath = path + '/' + s + '/2ndLevel_AllCond_NC.gfeat'
+        #subjpath = path + '/' + s + '/2ndLevel_AllCond_NC.gfeat'
         print subjpath
         #os.chdir(subjpath)
         print ROI
         for TASK in tasks:
             #brain_task = subjpath + '/' + TASK + '_allT.nii.gz'
-            brain_task = subjpath + '/' + TASK + '_allT_NC.nii.gz'
+            brain_task = subjpath + '/' + TASK + '_allT_SM.nii.gz'
             mat_name = s+' '+TASK+' '+ROI+' DSM'
             print brain_task
             

@@ -95,7 +95,8 @@ for ROI in ROIS:
         print subjpath
         #os.chdir(subjpath)
         print ROI
-        brain_task = subjpath + '/2ndLevel_AllCond_Runs.gfeat/all_dec.nii.gz'
+        brain_task = subjpath + '/2ndLevel_AllCond_RunsSMOOTH.gfeat/all_decSM.nii.gz'
+        #brain_task = subjpath + '/2ndLevel_AllCond_Runs.gfeat/all_dec.nii.gz'
         #brain_task = subjpath + '/2ndLevel_AllCond_Runs_NC.gfeat/all_dec_NC.nii.gz'
         mat_name = s+' '+ROI[4:9]+'Dec DSM'
         print brain_task

@@ -5,7 +5,7 @@
 
 %make sure no Java problems
 PsychJavaTrouble;
-rng shuffle
+rng shuffle;
 
 %Parameter to scale size on monitor... pixel per cm adjustment
 ppc_adjust = 38/23; % Need to ask what these numbers mean exactly and why these and not others.
@@ -236,52 +236,52 @@ DisplayInstructsInt;
 if order == 0;
     p.order = {'nline', 'fline', 'control'};
     [p, points, block_points] = Nline_Loop(filename, win, color, p, points, NlineTime, block_points);
-    [p, points, block_points] = Fline_Loop(filename, win, color, p, points, FlineTime, block_points);
-    [p, points, block_points] = Control_Loop(filename, win, color, p, points, ControlTime, block_points);
+    %[p, points, block_points] = Fline_Loop(filename, win, color, p, points, FlineTime, block_points);
+    %[p, points, block_points] = Control_Loop(filename, win, color, p, points, ControlTime, block_points);
 end
 
 if order == 1;
     p.order = {'nline', 'control', 'fline'};
     [p, points, block_points] = Nline_Loop(filename, win, color, p, points, NlineTime, block_points);
-    [p, points, block_points] = Control_Loop(filename, win, color, p, points, ControlTime, block_points);
-    [p, points, block_points] = Fline_Loop(filename, win, color, p, points, FlineTime, block_points);
+    %[p, points, block_points] = Control_Loop(filename, win, color, p, points, ControlTime, block_points);
+    %[p, points, block_points] = Fline_Loop(filename, win, color, p, points, FlineTime, block_points);
 end
 
 if order == 2;
     p.order = {'fline', 'nline', 'control'};
-    [p, points, block_points] = Fline_Loop(filename, win, color, p, points, FlineTime, block_points);
+    %[p, points, block_points] = Fline_Loop(filename, win, color, p, points, FlineTime, block_points);
     [p, points, block_points] = Nline_Loop(filename, win, color, p, points, NlineTime, block_points);
-    [p, points, block_points] = Control_Loop(filename, win, color, p, points, ControlTime, block_points);
+    %[p, points, block_points] = Control_Loop(filename, win, color, p, points, ControlTime, block_points);
 end
 
 if order == 3;
     p.order = {'fline', 'control', 'nline'};
-    [p, points, block_points] = Fline_Loop(filename, win, color, p, points, FlineTime, block_points);
-    [p, points, block_points] = Control_Loop(filename, win, color, p, points, ControlTime, block_points);
+    %[p, points, block_points] = Fline_Loop(filename, win, color, p, points, FlineTime, block_points);
+    %[p, points, block_points] = Control_Loop(filename, win, color, p, points, ControlTime, block_points);
     [p, points, block_points] = Nline_Loop(filename, win, color, p, points, NlineTime, block_points);
 end
 
 if order == 4;
     p.order = {'control', 'nline', 'fline'};
-    [p, points, block_points] = Control_Loop(filename, win, color, p, points, ControlTime, block_points);
+    %[p, points, block_points] = Control_Loop(filename, win, color, p, points, ControlTime, block_points);
     [p, points, block_points] = Nline_Loop(filename, win, color, p, points, NlineTime, block_points);
-    [p, points, block_points] = Fline_Loop(filename, win, color, p, points, FlineTime, block_points);
+    %[p, points, block_points] = Fline_Loop(filename, win, color, p, points, FlineTime, block_points);
 end
 
 if order == 5;
     p.order = {'control', 'fline', 'nline'};
-    [p, points, block_points] = Control_Loop(filename, win, color, p, points, ControlTime, block_points);
-    [p, points, block_points] = Fline_Loop(filename, win, color, p, points, FlineTime, block_points);
+    %[p, points, block_points] = Control_Loop(filename, win, color, p, points, ControlTime, block_points);
+    %[p, points, block_points] = Fline_Loop(filename, win, color, p, points, FlineTime, block_points);
     [p, points, block_points] = Nline_Loop(filename, win, color, p, points, NlineTime, block_points);
 end
 
 
-DrawCenteredNum('Thank You', win, color, 2);
+%DrawCenteredNum('Thank You', win, color, 2);
     
 %save results
 save(filename, 'p')
 ListenChar(1)
-ShowCursor
+ShowCursor;
 %Show characters on matlab screen again
 close all;
 sca

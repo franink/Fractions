@@ -6,35 +6,47 @@ function [p, points, block_points] = Nline_Loop(filename, win, color, p, points,
 % Nline task
 
 try
-       
+    left_end = '0';
+    right_end = '100';
+    winRect = Screen('Rect', win);
+    y = round(winRect(4)/2);
+    center = winRect(3)/2;
     
-    DisplayInstructs1; 
+    ppc_adjust = 23/38;
+  
+    lineLength = round(900*ppc_adjust);
+    lineSZ = round(20*ppc_adjust);
+    
+    rng shuffle;
+    jitter = 0;
+    jitter = jitter*randi([-300 300]);
+    jitter = round(jitter*ppc_adjust);% Here position of line is jittered
+    
+    x1 = round(center - lineLength/2 + jitter); % Here position of line is jittered
+    x2 = round(center + lineLength/2 + jitter);% Here position of line is jittered
+    
+    %DisplayInstructs1; 
     
     %practice trials
     p_points = 0;
     block_p_points = 0;
-    fix = 'X';
     prac1 = [10 0.1];
     prac2 = [50 0.5];
     prac3 = [80 0.8];
-    DrawCenteredNum(fix, win, color, p.fixation);%fixation
-    block_p_points = NumLineSlow(prac1, win, color, p.decision, block_p_points); %decision
-    DrawCenteredNum(fix, win, color, p.fixation);
-    block_p_points = NumLineSlow(prac2, win, color, p.decision, block_p_points); %decision
-    DrawCenteredNum(fix, win, color, p.fixation);
-    block_p_points = NumLineSlow(prac3, win, color, p.decision, block_p_points);
+    block_p_points = Practice_TrialLoop(prac1,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,y,center,winRect,3,4,1);
+    block_p_points = Practice_TrialLoop(prac2,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,y,center,winRect,5,3,1);
+    block_p_points = Practice_TrialLoop(prac3,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,y,center,winRect,6,5,0);
     p_points = block_p_points;
     DisplayInstructsPractice;
     block_p_points = 0;
-    prac4 = [20 0.2];
-    prac5 = [25 0.25];
-    prac6 = [95 0.95];
-    DrawCenteredNum(fix, win, color, p.fixation);%fixation
-    block_p_points = NumLineSlow(prac4, win, color, p.decision, block_p_points); %decision
-    DrawCenteredNum(fix, win, color, p.fixation);%fixation
-    block_p_points = NumLineSlow(prac5, win, color, p.decision, block_p_points); %decision
-    DrawCenteredNum(fix, win, color, p.fixation);%fixation
-    block_p_points = NumLineSlow(prac6, win, color, p.decision, block_p_points); %decision
+    left_end = '-100';
+    right_end = '100';
+    prac4 = [-20 0.4];
+    prac5 = [25 0.625];
+    prac6 = [-95 0.025];
+    block_p_points = Practice_TrialLoop(prac4,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,y,center,winRect,5,3,1);
+    block_p_points = Practice_TrialLoop(prac5,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,y,center,winRect,4,4,0);
+    block_p_points = Practice_TrialLoop(prac6,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,y,center,winRect,3,6,0);
     p_points = block_p_points + p_points;
     DisplayInstructs4; %End of practice ask question and get ready to start   
     
@@ -86,7 +98,7 @@ try
     p.finish_Nline = datestr(now);
 catch
     ple
-    ShowCursor
+    ShowCursor;
     sca
     save([filename '_catch2']);
     save(filename, 'p');

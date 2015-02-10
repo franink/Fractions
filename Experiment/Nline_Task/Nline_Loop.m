@@ -6,8 +6,7 @@ function [p, points, block_points] = Nline_Loop(filename, win, color, p, points,
 % Nline task
 
 try
-    left_end = '0';
-    right_end = '100';
+    
     winRect = Screen('Rect', win);
     y = round(winRect(4)/2);
     center = winRect(3)/2;
@@ -28,25 +27,42 @@ try
     %DisplayInstructs1; 
     
     %practice trials
+    left_end = '0';
+    right_end = '100';
+    task = 1;
     p_points = 0;
     block_p_points = 0;
     prac1 = [10 0.1];
     prac2 = [50 0.5];
     prac3 = [80 0.8];
-    block_p_points = Practice_TrialLoop(prac1,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,y,center,winRect,3,4,1);
-    block_p_points = Practice_TrialLoop(prac2,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,y,center,winRect,5,3,1);
-    block_p_points = Practice_TrialLoop(prac3,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,y,center,winRect,6,5,0);
-    p_points = block_p_points;
-    DisplayInstructsPractice;
+%     block_p_points = Practice_TrialLoop(prac1,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,y,center,winRect,3,4,1,task);
+%     block_p_points = Practice_TrialLoop(prac2,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,y,center,winRect,5,3,1,task);
+%     block_p_points = Practice_TrialLoop(prac3,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,y,center,winRect,6,5,0,task);
+%     p_points = block_p_points + p_points;
+%     DisplayInstructsPractice;
+%     block_p_points = 0;
+%     left_end = '-100';
+%     right_end = '100';
+%     task = 1;
+%     prac4 = [-20 0.4];
+%     prac5 = [25 0.625];
+%     prac6 = [-95 0.025];
+%     block_p_points = Practice_TrialLoop(prac4,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,y,center,winRect,5,3,1,task);
+%     block_p_points = Practice_TrialLoop(prac5,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,y,center,winRect,4,4,0,task);
+%     block_p_points = Practice_TrialLoop(prac6,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,y,center,winRect,3,6,0,task);
+%     p_points = block_p_points + p_points;
+%     %control task
+%     DisplayInstructsPractice;
     block_p_points = 0;
-    left_end = '-100';
-    right_end = '100';
-    prac4 = [-20 0.4];
-    prac5 = [25 0.625];
-    prac6 = [-95 0.025];
-    block_p_points = Practice_TrialLoop(prac4,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,y,center,winRect,5,3,1);
-    block_p_points = Practice_TrialLoop(prac5,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,y,center,winRect,4,4,0);
-    block_p_points = Practice_TrialLoop(prac6,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,y,center,winRect,3,6,0);
+    left_end = ' ';
+    right_end = ' ';
+    task =2;
+    prac7 = {'in' 0.4 'on'};
+    prac8 = {'at' 0.75 'at'};
+    prac9 = {'to' 0.33 'be'}; %I'm here need to change the rest of the code
+    block_p_points = Practice_TrialLoop(prac7,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,y,center,winRect,5,3,0,task)
+    block_p_points = Practice_TrialLoop(prac8,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,y,center,winRect,4,4,1,task)
+    block_p_points = Practice_TrialLoop(prac9,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,y,center,winRect,3,6,0,task)
     p_points = block_p_points + p_points;
     DisplayInstructs4; %End of practice ask question and get ready to start   
     

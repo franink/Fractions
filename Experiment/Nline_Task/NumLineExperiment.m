@@ -172,7 +172,7 @@ end
 
 % Open a PTB Window on our screen
 try
-    screenid = max(Screen('Screens')); %Originally it was max instead of min changed it for testing purposes (max corresponds to secondary display)
+    screenid = min(Screen('Screens')); %Originally it was max instead of min changed it for testing purposes (max corresponds to secondary display)
     
     [win, winRect] = Screen('OpenWindow', screenid, WhiteIndex(screenid)/2);
     

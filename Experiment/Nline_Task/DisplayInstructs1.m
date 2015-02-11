@@ -1,18 +1,6 @@
 
 Instruct = {};
 
-if LR == 0;
-    hands_small = 'RED';
-    hands_large = 'GREEN';
-end;
-if LR == 1;
-    hands_small = 'GREEN';
-    hands_large = 'RED';
-end;
-
-small_txt = sprintf('the %s button.', hands_small);
-large_txt = sprintf('the %s button.', hands_large);
-
 
 Instruct{1} = {'In each trial in this section, a display containing a pair of numbers',
                 'separated by a horizontal line will appear.',

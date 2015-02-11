@@ -1,4 +1,4 @@
-function block_p_points = ControlSlow(stim, time, points, left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, y, center, winRect, junk)
+function block_p_points = ControlSlow(stim, time, points, left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, junk)
 %plots a line starting at x1, finishing at x2, with cursor starting on
 %either left (lrStart = 0) or right (lrStart = 1) side.
 
@@ -17,8 +17,9 @@ function block_p_points = ControlSlow(stim, time, points, left_end, right_end, l
     %time_left = 1;
     time_fix = 0.01;
     time_on = time - time_fix;
-    click = -1;
+    Click = -1;
     RTHold = -1;
+    draw = 1;
 
     
     probe = stim{1}; % Control is already string
@@ -26,21 +27,21 @@ function block_p_points = ControlSlow(stim, time, points, left_end, right_end, l
     probeLine = stim{3};% syllable printed on the line
 
     %initialize log
-    trialResponse = {mouse_pos correct response RT error RTHold probeLine click};
+    trialResponse = {mouse_pos correct response RT error RTHold Click probeLine};
     
     if probeLine == probe;
         correct = probeMag;
-        click =1;
+        Click =1;
     else
         correct = -1;
-        click = 0;
+        Click = 0;
     end;
     % Log changes to control variables
     trialResponse{2} = correct;
-    trialResponse{8} = click;
+    trialResponse{7} = Click;
         
 
-    y = round(winRect(4)/2);
+    %yline = round(winRect(4)/2);
 
     HideCursor;
     
@@ -48,7 +49,7 @@ function block_p_points = ControlSlow(stim, time, points, left_end, right_end, l
 %     trialResponse{1} = 0.5; %Fixed position 
     
     MouseStartPosX = round(trialResponse{1}*(x2-x1) + x1); %Mouse starts in random position
-    SetMouse(MouseStartPosX,y,win);
+    SetMouse(MouseStartPosX,yline,win);
 
     Screen('TextSize',win, 30);
     Screen('TextStyle',win, 1);
@@ -59,16 +60,15 @@ function block_p_points = ControlSlow(stim, time, points, left_end, right_end, l
     
     %Remove the hold cue
     %Draw numberline
-    DrawNline(left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, y, center, winRect, 1);
+    DrawNline(left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, 1);
     %Draw probe
-    DrawProbeBox(' ', win, color, y, center, jitter, winRect);
+    DrawProbeBox(' ', win, color, yline, center, jitter, winRect);
     Screen('Flip', win);
     
     block_p_points = points;
     test = 0;
     
-    % Wait to subject to move mouse before displaying cursor
-    % CHECK IF I DONT MOvE THE MOPUSE AT ALL IF THE TRIAL GETS STUCK
+    % Wait for subject to move mouse before displaying cursor
     [xPos_old, yPos_old] = GetMouse(win);
     while ~test;
         [xPos, yPos] = GetMouse(win);
@@ -77,6 +77,7 @@ function block_p_points = ControlSlow(stim, time, points, left_end, right_end, l
         end;
         if GetSecs >= t_end - 0.01;
             test = 1;
+            draw = 0;
         end;
     end;
     
@@ -121,32 +122,28 @@ function block_p_points = ControlSlow(stim, time, points, left_end, right_end, l
                 end
 
 
-%                 Screen('Drawline', win,color, x1, y, x2, y, round(5*ppc_adjust)); %instead of color he had [0 0 200 255]
-%                 Screen('Drawline', win, color, x1, y - lineSZ, x1, y + lineSZ, round(5*ppc_adjust));
-%                 Screen('Drawline', win, color, x2, y - lineSZ, x2, y + lineSZ, round(5*ppc_adjust));
-
-%                 Screen('DrawText', win, '0', zX, yNum, color);
-%                 Screen('DrawText', win, '100', oX, yNum, color);
 
                 %Draw numberline
-                DrawNline(left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, y, center, winRect, 1);
+                DrawNline(left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, 1);
                 %Draw probe
-                DrawProbeBox(' ', win, color, y, center, jitter, winRect);
+                DrawProbeBox(' ', win, color, yline, center, jitter, winRect);
 %                 Screen('DrawText', win, probe, probeLeft, probeTop, color);
-                %Draw cursor line
-                Screen('Drawline', win, [0 0 0 0], xPos, y - lineSZ/1.5, xPos, y + lineSZ/1.5, round(5*ppc_adjust));
+
+                if draw == 1;
+                    %Draw cursor line
+                    Screen('Drawline', win, [0 0 0 0], xPos, yline - lineSZ/1.5, xPos, yline + lineSZ/1.5, round(5*ppc_adjust));                
                 
-                
-                %Draw arrow for junk trials and/or syllable for control
-                %task
-                Screen('TextSize',win, 20);
-                Screen('TextStyle',win, 1);
-                pBox = Screen('TextBounds', win, probeLine);
-                pBox = CenterRectOnPoint(pBox, round(probeMag*(x2-x1) + x1), y + 30);
-                pX=pBox(RectLeft);
-                yNum=pBox(RectTop);
-                Screen('DrawText', win, probeLine, pX, yNum, color);
-                %DrawArrow(round(correct*(x2-x1) + x1),y,win,ppc_adjust);
+                    %Draw arrow for junk trials and/or syllable for control
+                    %task
+                    Screen('TextSize',win, 30);
+                    Screen('TextStyle',win, 1);
+                    pBox = Screen('TextBounds', win, probeLine);
+                    pBox = CenterRectOnPoint(pBox, round(probeMag*(x2-x1) + x1), yline + 30);
+                    pX=pBox(RectLeft);
+                    yNum=pBox(RectTop);
+                    Screen('DrawText', win, probeLine, pX, yNum, color);
+                    %DrawArrow(round(correct*(x2-x1) + x1),y,win,ppc_adjust);
+                end
                 
                 Screen('Flip', win);
            end

@@ -1,8 +1,8 @@
-function [] = DrawArrow(xpos, y, win, ppc_adjust)
+function [] = DrawArrow(xpos, yline, win, ppc_adjust)
 %Draws a small arrow at xpos to indicate where to click
 % y is the position of numberline so arrow will be slightly below
 
-ytop = y + 15;
+ytop = yline + 15;
 ybot = ytop + 15;
 xleft = xpos - 4;
 xright = xpos + 4;

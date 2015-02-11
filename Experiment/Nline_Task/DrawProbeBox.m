@@ -1,12 +1,12 @@
-function [] = DrawProbeBox(probe, win, color, y, center, jitter, winRect)
+function [] = DrawProbeBox(probe, win, color, yline, center, jitter, winRect)
 %Drwas a box to put probes in.
 %Probes include empty field, X's, syllables, or numbers
 
 probe = num2str(probe);
 Screen('TextSize',win, 32);
 Screen('TextStyle',win, 1);
-y = round(winRect(4)/2);
-yprobe = y - 250;
+yline = round(winRect(4)/2);
+yprobe = yline - 250;
 Box = Screen('TextBounds', win, 'XXXX');
 Screen('TextSize',win, 30);
 probeBox = Screen('TextBounds', win, probe);

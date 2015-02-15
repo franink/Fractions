@@ -10,6 +10,11 @@ function [] = DrawNline(left_end, right_end, lineLength, lineSZ, jitter, ppc_adj
 Screen('TextSize',win, 30);
 Screen('TextStyle',win, 1);
 
+%Draw an extended numberline that extends beyond endpoints
+extension = lineLength/2;
+xStart = x1 - extension;
+xEnd = x2 + extension;
+
 if cursor == 0
     HideCursor;
 end
@@ -20,7 +25,7 @@ oneBox = CenterRectOnPoint(oneBox, x2, yline + 40);
 
 zX=zeroBox(RectLeft); oX = oneBox(RectLeft); yNum=oneBox(RectTop);
 
-Screen('Drawline', win,color, x1, yline, x2, yline, round(5*ppc_adjust)); %instead of color he had [0 0 200 255]
+Screen('Drawline', win,color, xStart, yline, xEnd, yline, round(5*ppc_adjust)); %instead of color he had [0 0 200 255]
 Screen('Drawline', win, color, x1, yline - lineSZ, x1, yline + lineSZ, round(5*ppc_adjust));
 Screen('Drawline', win, color, x2, yline - lineSZ, x2, yline + lineSZ, round(5*ppc_adjust));
 

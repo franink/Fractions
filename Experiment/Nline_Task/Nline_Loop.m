@@ -60,12 +60,12 @@ try
     DisplayInstructsPractice;
     
     block_p_points = 0;
-    left_end = 'x';
-    right_end = 'xxx';
+    left_end = 'xx';
+    right_end = 'xx';
     task =2;
-    prac7 = {'in' 0.4 'on'};
-    prac8 = {'at' 0.75 'at'};
-    prac9 = {'to' 0.33 'to'}; %I'm here need to change the rest of the code
+    prac7 = {'me' 0.4 'is'};
+    prac8 = {'be' 0.75 'be'};
+    prac9 = {'of' 0.33 'of'}; %I'm here need to change the rest of the code
     block_p_points = Practice_TrialLoop(prac7,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,5,3,1,task);
     block_p_points = Practice_TrialLoop(prac8,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,4,4,0,task);
     block_p_points = Practice_TrialLoop(prac9,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,3,6,0,task);

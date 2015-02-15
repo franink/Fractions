@@ -1,4 +1,4 @@
-function block_p_points = NumLineSlow(stim, time, points, left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, junk)
+function block_p_points = NumLineSlow(stim, time, points, left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, junk, testX)
 %plots a line starting at x1, finishing at x2, with cursor starting on
 %either left (lrStart = 0) or right (lrStart = 1) side.
 
@@ -45,8 +45,16 @@ function block_p_points = NumLineSlow(stim, time, points, left_end, right_end, l
     
     HideCursor;
     
-    trialResponse{1} = 0.8*rand + 0.1; %If rand 0 cursonr starts at 0.1 if rand 1 starts at 0.9
-%     trialResponse{1} = 0.5; %Fixed position 
+    displacement = JitterCursor();
+    trialResponse{1} = probeMag + displacement; %Cursor will always appear +/- 20-40 from correct position.
+    % Only works if also nline has extended endpoints
+%     trialResponse{1} = 0.8*rand + 0.1; %If rand 0 cursonr starts at 0.1 if rand 1 starts at 0.9
+%     trialResponse{1} = 0.5; %Fixed position
+
+    %Extended endpoints
+    extension = lineLength/2;
+    xStart = x1 - extension;
+    xEnd = x2 + extension;
     
     MouseStartPosX = round(trialResponse{1}*(x2-x1) + x1); %Mouse starts in random position
 %     MouseStartPosX = round(0.5*(x2-x1) + x1) %Mouse position in center of line this can change
@@ -97,16 +105,19 @@ function block_p_points = NumLineSlow(stim, time, points, left_end, right_end, l
                 trialResponse{5} = trialResponse{3} - correct;
                 if abs(trialResponse{5}) <= 0.1;
                         block_p_points = points + 1;
-                end                
+                end
+                if testX == 1;
+                    block_p_points = poitns;
+                end
                 mouseResp = 1;
            else
 
-                if xPos < x1;
-                    xPos = x1;
+                if xPos < xStart;
+                    xPos = xStart;
                 end
 
-                if xPos > x2;
-                    xPos = x2;
+                if xPos > xEnd;
+                    xPos = xEnd;
                 end
 
                 click = sum(click);
@@ -117,6 +128,9 @@ function block_p_points = NumLineSlow(stim, time, points, left_end, right_end, l
                     trialResponse{5} = trialResponse{3} - correct;
                     if abs(trialResponse{5}) <= 0.1;
                         block_p_points = points + 1;
+                    end
+                    if testX == 1;
+                        block_p_points = points;
                     end
                     mouseResp = 1;
                 end

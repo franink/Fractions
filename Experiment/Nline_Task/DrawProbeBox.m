@@ -20,5 +20,7 @@ Screen('FrameRect', win, color, Box, 3);
 Screen('DrawText', win, probe, probeLeft, probeTop, color);
 ReadKey('z'); %To allow ESC to exit
 
+HideCursor;
+
 end
 

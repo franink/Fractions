@@ -1,4 +1,4 @@
-function [block_p_points] = Practice_TrialLoop(stim, block_p_points, decision_time, left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, iti, hold, junk, task)
+function [p, points, block_points] = TrialLoop(stim, block_p_points, decision_time, left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, iti, hold, junk, task)
 %Controls all stages of a single trial
 % This includes ITI, probe box, probe, hold signal, and decision
  
@@ -37,6 +37,7 @@ function [block_p_points] = Practice_TrialLoop(stim, block_p_points, decision_ti
             testX = 1;
         end
     end
+    
 %     WaitSecs(hold); % Hold time this is variable jittered time
     
     if task ==1;

@@ -1,4 +1,4 @@
-% Code for fMRI experiment of fractions using absolute time instead of
+% Code for fMRI experiment of numberlines using absolute time instead of
 % relative time for more precision.
 % Modified from Cameron McKenzie's code
 % Tanks to Xiangrui Li for the codes for WaitTill and ReadKey.
@@ -31,37 +31,47 @@ s_nbr = str2num(filename(7:11));
 % if LR == 1;
 %     p.LeftHand = 'Larger';
 % end;
-LR = 0;
 
 % counter balance task order
 % order [0] = match 1st; fraction comparison 2nd
 % order [1] = fraction comparison 1; match 2nd
 % order [0] = match 1st; fraction comparison 2nd
-order = mod(s_nbr,6);
 
-if order == 0;
-    p.order = {'nline', 'fline', 'control'};
+%Setup experiment parameters
+p.ramp_up = 12; %This number needs to be changed once we know TR (this should be TR*4)
+p.ISI = 5; %average 5s
+p.hold = 4.5; %Average 4.5s
+p.decision = 2;
+p.consider = 0.5;
+%Make sure that repeats is divisible by runs
+p.runs = 4; 
+p.nStim = 16;
+p.ntasks = 3;
+p.tasks = {'Nline', 'Negline', 'Control'}; 
+p.trialSecs = p.consider + p.decision +p.hold + p.ISI;
+p.lineLength = 900;
+
+
+order_random = datasample([1,2,3,4,5,6],p.runs,'Replace',false);
+orders = [[1 2 3];...
+    [1 3 2];...
+    [2 1 3];...
+    [2 3 1];...
+    [3 1 2];...
+    [3 2 1]];
+% orders = {{'Nline', 'Negline', 'Control'}...
+%     {'Nline', 'Control', 'Negline'}...
+%     {'Negline', 'Nline', 'Control'}...
+%     {'Negline', 'Control', 'Nline'}...
+%     {'Control', 'Nline', 'Negline'}...
+%     {'Control', 'Negline', 'Nline'}};
+
+p.run_order = zeros(p.runs,p.ntasks);
+for i = 1:p.runs
+    p.run_order(i,:) = orders(order_random(i),:);
 end
 
-if order == 1;
-    p.order = {'nline', 'control', 'fline'};
-end
 
-if order == 2;
-    p.order = {'fline', 'nline', 'control'};
-end
-
-if order == 3;
-    p.order = {'fline', 'control', 'nline'};
-end
-
-if order == 4;
-    p.order = {'control', 'nline', 'fline'};
-end
-
-if order == 5;
-    p.order = {'control', 'fline', 'nline'};
-end
 
 %Cursor helps no one here - kill it
 HideCursor;
@@ -72,101 +82,103 @@ ListenChar(2);
 
 %load up stimuli
 load NlineStim;
+load NeglineStim;
 load WordStim;
 
-%Setup experiment parameters
-p.ramp_up = 8; %This number needs to be changed once we know TR (this should be TR*4)
-p.fixation = 3;
-p.decision = 3;
-%Make sure that repeats is divisible by runs
-p.runs = 2; %within a single task
-p.nRepeats = 10; %repeats across runs. Divisible by p.runs 
-p.nStim = 20;
-p.tasks = {'Nline', 'Fline', 'Control'}; 
-p.trialSecs = p.fixation + p.decision;
+catch_run = repmat(1:p.runs,1,p.runs);
+catch_run = catch_run(randperm(length(catch_run)));
+NlineStim(:,2) = catch_run;
+catch_run = catch_run(randperm(length(catch_run)));
+NeglineStim(:,2) = catch_run;
+catch_run = catch_run(randperm(length(catch_run)));
+for i = 1:length(catch_run)
+    WordStim{i,2} = catch_run(i);
+end
+
+TestNline = cell(p.runs*p.ntasks*p.nStim,5); %probe, line_pct, catch, catch syllable, task
+% TestNegline = zeros(p.runs*p.nStim,3); %probe, line_pct, catch
+% TestControl = cell(p.runs*p.nStim,4); %probe, line_pct, catch, catch syllable
 
 
-%to insure they all have the same time length
-TestNline = zeros(p.nRepeats*p.nStim,2); %probe, line_pct
-TestFline = zeros(p.nRepeats*p.nStim,4); %probe, line_pct, num, denom 
-%TestControl = zeros(p.nRepeats*p.nStim,2); %probe, line_pct
-TestControl = cell(p.nRepeats*p.nStim,2); %probe, line_pct
-
-
-% First Nline task
-for ii = 1:p.nStim;
-    for kk = 1:p.runs;
-        for jj = 1:p.nRepeats/p.runs;
-            TestNline(ii+((kk-1)*(p.nStim*(p.nRepeats/p.runs))+((jj-1)*(p.nStim))), 1:2) = [NlineStim(ii,1) NlineStim(ii,1)/100];
+%Construct list of stimuli
+for ii = 1:p.runs;
+    word_tmp = WordStim(randperm(length(WordStim)),1);
+    for jj = 1:p.ntasks;
+        for kk = 1:p.nStim;
+            
+            if p.run_order(ii,jj) == 1;
+                TestNline(((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim) + kk, 1:2) = [{NlineStim(kk,1)}, {NlineStim(kk,1)/100}];
+                if NlineStim(kk,2) == ii
+                    TestNline(((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim) + kk, 3) = {1};
+                else
+                    TestNline(((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim) + kk, 3) = {0};
+                end
+                TestNline(((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim) + kk, 5) = {p.run_order(ii,jj)};
+            end
+            
+            if p.run_order(ii,jj) == 2;
+                TestNline(((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim) + kk, 1:2) = [{NeglineStim(kk,1)}, {abs(-100 - NeglineStim(kk,1))/200}];
+                if NeglineStim(kk,2) == ii
+                    TestNline(((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim) + kk, 3) = {1};
+                else
+                    TestNline(((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim) + kk, 3) = {0};
+                end
+                TestNline(((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim) + kk, 5) = {p.run_order(ii,jj)};
+            end
+            
+            if p.run_order(ii,jj) == 3;
+                tmp = {word_tmp{kk,1} NlineStim(kk,1)/100};
+                TestNline(((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim) + kk, 1:2) = [tmp(1) tmp{2}]; %Note this is a cell and has to be changed in loop and ControlSlow_Abs
+                if WordStim{kk,2} == ii
+                    TestNline(((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim) + kk, 3) = {1};
+                    diff = 0;
+                    while ~diff;
+                        TestNline(((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim) + kk, 4) = datasample(WordStim(:,1),1);
+                        if TestNline{((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim) + kk, 4} ~= TestNline{((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim) + kk, 1};
+                            diff =1;
+                        end
+                    end               
+                else
+                    TestNline(((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim) + kk, 3) = {0};
+                    TestNline(((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim) + kk, 4) = tmp(1);
+                end
+                TestNline(((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim) + kk, 5) = {p.run_order(ii,jj)};
+            end
         end
     end
 end
-
-% Now for Fline task
-for ii = 1:p.nStim;
-    for kk = 1:p.runs;
-        for jj = 1:p.nRepeats/p.runs;
-            TestFline(ii+((kk-1)*(p.nStim*(p.nRepeats/p.runs))+((jj-1)*(p.nStim))), 1:4) = [NlineStim(ii,2)/NlineStim(ii,3) NlineStim(ii,2)/NlineStim(ii,3) NlineStim(ii,2) NlineStim(ii,3)];
-        end
-    end
-end
-
-%Now for Control task (Do we want the same word paired always with the same
-%position?
-for ii = 1:p.nStim;
-    for kk = 1:p.runs;
-        for jj = 1:p.nRepeats/p.runs;
-            tmp = {WordStim{ii,1} NlineStim(ii,1)/100};
-            TestControl(ii+((kk-1)*(p.nStim*(p.nRepeats/p.runs))+((jj-1)*(p.nStim))), 1:2) = [tmp(1) tmp{2}]; %Note this is a cell and has to be changed in loop and ControlSlow_Abs
-        end
-    end
-end
-
 
 %Shuffle trials within block
 
 %First for Nline
 %For each repetition(indexed at nStim intervals), scramble the order within
 %that interval
-for ii = 1:p.nRepeats
-    TestNline(((ii-1)*p.nStim)+1:((ii-1)*p.nStim)+p.nStim,:) = TestNline(randperm(p.nStim)+p.nStim*(ii-1),:);
-end
-% Now for Fline
-for ii = 1:p.nRepeats
-    TestFline(((ii-1)*p.nStim)+1:((ii-1)*p.nStim)+p.nStim,:) = TestFline(randperm(p.nStim)+p.nStim*(ii-1),:);
-end
-% Now for Control
-for ii = 1:p.nRepeats
-    TestControl(((ii-1)*p.nStim)+1:((ii-1)*p.nStim)+p.nStim,:) = TestControl(randperm(p.nStim)+p.nStim*(ii-1),:);
+for ii = 1:p.runs
+    for jj = 1:p.ntasks
+        TestNline((((ii-1)*p.nStim*p.ntasks) + (jj-1)*p.nStim)+1:(((ii-1)*p.nStim*p.ntasks) + (jj-1)*p.nStim)+p.nStim,:) = TestNline(randperm(p.nStim) + (p.nStim*(jj-1)) + ((ii-1)*p.nStim*p.ntasks),:);
+    end
 end
 
 % Create Results files
-p.NlineResults = cell(p.nStim*(p.nRepeats/p.runs)+1,15,p.runs);
-p.FlineResults = cell(p.nStim*(p.nRepeats/p.runs)+1,18,p.runs);
-p.ControlResults = cell(p.nStim*(p.nRepeats/p.runs)+1,15,p.runs);
-p.time_Runs = cell((p.runs+1),length(p.tasks));
+p.NlineResults = cell(p.nStim*p.ntasks+1,28,p.runs);
+
+p.time_Runs = cell(2,p.runs);
+p.task_transition = cell(length(p.tasks)+1,p.runs);
 
 %Get Labels
 for ii = 1:p.runs
-    p.NlineResults(1,:,ii) = {'Probe', 'Line_pct','Correct','Response','RT','Error','Points', 'mouse_pos','Trial','Block','fix_onset','decision_onset','decision_end','fix_onset_real','decision_onset_real'};    
-    p.FlineResults(1,:,ii) = {'Probe', 'Line_pct', 'Num','Denom','Value','Correct','Response','RT', 'Error', 'Points', 'mouse_pos','Trial','Block','fix_onset','decision_onset','decision_end','fix_onset_real','decision_onset_real'};
-    p.ControlResults(1,:,ii) = {'Probe', 'Line_pct','Correct','Response','RT','Error','Points','mouse_pos', 'Trial','Block','fix_onset','decision_onset','decision_end','fix_onset_real','decision_onset_real'};
-    
+    p.NlineResults(1,:,ii) = {'Task','Probe','Line_pct','catch','iti','hold','mouse_pos','Correct','Response','RT','Error','RTHold','Click','TestX','Points','Trial','Block','ISI_onset','consider_onset','hold_onset','decision_onset','decision_end','ISI_onset_real','consider_onset_real','hold_onset_real','decision_onset_real','decision_end_real','catch_probe'};
 end
 
-p.time_Runs(1,:) ={'Time_Nline', 'Time_Fline', 'Time_Control'}; 
+p.time_Runs(1,:) ={'Run_1', 'Run_2', 'Run_3', 'Run_4'};
+p.task_transition(1,:) = {'Run_1', 'Run_2', 'Run_3', 'Run_4'};
 
 % Separate runs into different 3D matrices to control time indpeendently
 % for each run
-NlineTime = zeros(p.nStim*(p.nRepeats/p.runs),2,p.runs);
-FlineTime = zeros(p.nStim*(p.nRepeats/p.runs),4,p.runs);
-%ControlTime = zeros(p.nStim*(p.nRepeats/p.runs),2,p.runs);
-ControlTime = cell(p.nStim*(p.nRepeats/p.runs),2,p.runs);
+NlineTest = cell(p.nStim * p.ntasks, 5, p.runs);
 
 for ii = 1:p.runs
-    NlineTime(:,:,ii) = TestNline(1+((ii-1)*p.nStim*(p.nRepeats/p.runs)):(p.nStim*(p.nRepeats/p.runs))+((ii-1)*(p.nStim*(p.nRepeats/p.runs))),:);
-    FlineTime(:,:,ii) = TestFline(1+((ii-1)*p.nStim*(p.nRepeats/p.runs)):(p.nStim*(p.nRepeats/p.runs))+((ii-1)*(p.nStim*(p.nRepeats/p.runs))),:);
-    ControlTime(:,:,ii) = TestControl(1+((ii-1)*p.nStim*(p.nRepeats/p.runs)):(p.nStim*(p.nRepeats/p.runs))+((ii-1)*(p.nStim*(p.nRepeats/p.runs))),:);
+    NlineTest(:,:,ii) = TestNline(1+((ii-1)*p.nStim*p.ntasks):p.nStim*p.ntasks+((ii-1)*p.nStim*p.ntasks),:);
 end
 
 
@@ -183,46 +195,35 @@ end
 % Setup the onsets for each stimulus
 % simulates going through the whole run and kees track of time and catch
 % events
+% 16 times to be sampled randomly to each of the 16 stim in a particular
+% run and particular task
+ISI_Jits = [3.5:0.5:7 repmat(3:0.5:4.5,1,2)];
+Hold_Jits = [4:0.5:7.5 repmat(3.5:.5:5,1,2)];
 
-% First for Nline
 for jj = 1:p.runs
     end_ramp_up = p.ramp_up; % after ramp_up the first fixation begins
     current_time = end_ramp_up; %keeps track of time, starts with time after ramp_up
-    for ii = 1:length(p.NlineResults(:,1,1))-1;
-        p.NlineResults(ii+1,11,jj) = {current_time}; %fixation onset
-        current_time = current_time + p.fixation; %end of fixation
-        p.NlineResults(ii+1,12,jj) = {current_time}; %decision onset
-        current_time = current_time + p.decision; %end of decision
-        p.NlineResults(ii+1,13,jj) = {current_time}; %end of decision
+    for kk = 1:p.ntasks
+        ISI_Jits = datasample(ISI_Jits, 16, 'Replace', false);
+        Hold_Jits = datasample(Hold_Jits, 16, 'Replace', false);
+        p.task_transition{kk+1,jj} = {current_time};
+        current_time = current_time + 2;
+        for ii = 1:p.nStim;
+            p.NlineResults((ii+1) + ((kk-1)*p.nStim),18,jj) = {current_time}; %ISI onset
+            ISI = ISI_Jits(ii);
+            current_time = current_time + ISI; %end of ISI
+            p.NlineResults((ii+1) + ((kk-1)*p.nStim),19,jj) = {current_time}; %consider onset
+            current_time = current_time + p.consider; %end of consider
+            p.NlineResults((ii+1) + ((kk-1)*p.nStim),20,jj) = {current_time}; %hold onset
+            HOLD = Hold_Jits(ii);
+            current_time = current_time + HOLD; %end of hold
+            p.NlineResults((ii+1) + ((kk-1)*p.nStim),21,jj) = {current_time}; %decision onset
+            current_time = current_time + p.decision; %end of decision
+            p.NlineResults((ii+1) + ((kk-1)*p.nStim),22,jj) = {current_time}; %end of decision
+        end
     end
 end
 
-%Fline
-for jj = 1:p.runs
-    end_ramp_up = p.ramp_up; %practice time might include ramp_up
-    current_time = end_ramp_up; %keeps track of time, starts with time after practice
-    for ii = 1:length(p.FlineResults(:,1,1))-1;
-        p.FlineResults(ii+1,14,jj) = {current_time}; %fixation onset
-        current_time = current_time + p.fixation; %end of fixation
-        p.FlineResults(ii+1,15,jj) = {current_time}; %decision onset
-        current_time = current_time + p.decision; %end of decision
-        p.FlineResults(ii+1,16,jj) = {current_time}; %end of decision
-    end
-end
-
-
-% and now for Control
-for jj = 1:p.runs
-    end_ramp_up = p.ramp_up; %practice time might include ramp_up
-    current_time = end_ramp_up; %keeps track of time, starts with time after practice
-    for ii = 1:length(p.ControlResults(:,1,1))-1;
-        p.ControlResults(ii+1,11,jj) = {current_time}; %fixation onset
-        current_time = current_time + p.fixation; %end of fixation
-        p.ControlResults(ii+1,12,jj) = {current_time}; %decision onset
-        current_time = current_time + p.decision; %end of decision
-        p.ControlResults(ii+1,13,jj) = {current_time}; %end of decision
-    end
-end
 
 % Start of experiment
 points = 0; %This initializes points for accuracy calculation
@@ -232,55 +233,14 @@ DrawCenteredNum('Welcome', win, color, 0.5);
 WaitTill('9');
 DisplayInstructsInt;
 
-%COunterbalance task order
-if order == 0;
-    p.order = {'nline', 'fline', 'control'};
-    [p, points, block_points] = Nline_Loop(filename, win, color, p, points, NlineTime, block_points);
-    %[p, points, block_points] = Fline_Loop(filename, win, color, p, points, FlineTime, block_points);
-    %[p, points, block_points] = Control_Loop(filename, win, color, p, points, ControlTime, block_points);
-end
-
-if order == 1;
-    p.order = {'nline', 'control', 'fline'};
-    [p, points, block_points] = Nline_Loop(filename, win, color, p, points, NlineTime, block_points);
-    %[p, points, block_points] = Control_Loop(filename, win, color, p, points, ControlTime, block_points);
-    %[p, points, block_points] = Fline_Loop(filename, win, color, p, points, FlineTime, block_points);
-end
-
-if order == 2;
-    p.order = {'fline', 'nline', 'control'};
-    %[p, points, block_points] = Fline_Loop(filename, win, color, p, points, FlineTime, block_points);
-    [p, points, block_points] = Nline_Loop(filename, win, color, p, points, NlineTime, block_points);
-    %[p, points, block_points] = Control_Loop(filename, win, color, p, points, ControlTime, block_points);
-end
-
-if order == 3;
-    p.order = {'fline', 'control', 'nline'};
-    %[p, points, block_points] = Fline_Loop(filename, win, color, p, points, FlineTime, block_points);
-    %[p, points, block_points] = Control_Loop(filename, win, color, p, points, ControlTime, block_points);
-    [p, points, block_points] = Nline_Loop(filename, win, color, p, points, NlineTime, block_points);
-end
-
-if order == 4;
-    p.order = {'control', 'nline', 'fline'};
-    %[p, points, block_points] = Control_Loop(filename, win, color, p, points, ControlTime, block_points);
-    [p, points, block_points] = Nline_Loop(filename, win, color, p, points, NlineTime, block_points);
-    %[p, points, block_points] = Fline_Loop(filename, win, color, p, points, FlineTime, block_points);
-end
-
-if order == 5;
-    p.order = {'control', 'fline', 'nline'};
-    %[p, points, block_points] = Control_Loop(filename, win, color, p, points, ControlTime, block_points);
-    %[p, points, block_points] = Fline_Loop(filename, win, color, p, points, FlineTime, block_points);
-    [p, points, block_points] = Nline_Loop(filename, win, color, p, points, NlineTime, block_points);
-end
-
-
-%DrawCenteredNum('Thank You', win, color, 2);
+%Initialize run loop
+[p, points, block_points] = Nline_Loop(filename, win, color, p, points, NlineTest, block_points);
+    
+DrawCenteredNum('Thank You', win, color, 2);
     
 %save results
 save(filename, 'p')
-ListenChar(1)
+ListenChar(1);
 ShowCursor;
 %Show characters on matlab screen again
 close all;

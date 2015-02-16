@@ -1,4 +1,4 @@
-function [p, points, block_points] = Nline_Loop(filename, win, color, p, points, NlineTime, block_points)
+function [p, points, block_points] = Nline_Loop(filename, win, color, p, points, NlineTest, block_points)
 %Controls the loop that executes fraction summation task
 %returns p struct with all the results and stim logged and updated points
 %for measure of accuracy
@@ -75,7 +75,7 @@ try
     blockNbr_Nline = 0;
     
     % The idea is the kk will signal
-    % which portion of the #D matrix TestSum will be used for the
+    % which portion of the 3D matrix will be used for the
     % rest of the code and in principle the rest should not be changed
     %start_t0 = GetSecs;
     p.start_Nline=datestr(now); % for record purpose
@@ -89,20 +89,22 @@ try
         WaitTill('5'); %Use this only if used in a scanner that sends 5
         start_t = GetSecs;
             
-        for ii = 1:(p.nRepeats/p.runs);
+        for ii = 1:(p.ntasks);
             blockNbr_Nline = blockNbr_Nline+1;
             for jj = 1:p.nStim;
                 trialNbr_Nline = (p.nStim * (blockNbr_Nline-1)) + jj; % This counts across blocks
-                trialNbr = (p.nStim * (ii-1)) + jj; %This counts within block
-                end_fix = p.NlineResults{trialNbr+1,12,kk} + start_t;
-                end_decision = p.NlineResults{trialNbr+1,13,kk} + start_t;
+                trialNbr = jj; %This counts within block
+                end_ISI = p.NlineResults{trialNbr+1,19,kk} + start_t;
+                end_consider = p.NlineResults{trialNbr+1,20,kk} + start_t;
+                end_hold = p.NlineResults{trialNbr+1,21,kk} + start_t;
+                end_decision = p.NlineResults{trialNbr+1,22,kk} + start_t;
                 DrawCenteredNum_Abs('X', win, color);
                 p.NlineResults(trialNbr+1,14,kk) = {GetSecs - start_t}; %Real onset of fixation
-                WaitTill(end_fix);
+                WaitTill(end_ISI);
                 %%% I need to pass end_time to the functions so that they can
                 %%% use it to figure when to exit from the script
                 p.NlineResults(trialNbr+1,15,kk) = {GetSecs - start_t}; %Real onset of deciison
-                p.NlineResults(trialNbr+1,3:8,kk) = NumLineSlow_Abs(NlineTime(trialNbr,:,kk), win, color, end_decision, points);
+                p.NlineResults(trialNbr+1,3:8,kk) = NumLineSlow_Abs(NlineTest(trialNbr,:,kk), win, color, end_decision, points);
                 WaitTill(end_decision);
                 p.NlineResults(trialNbr+1,9,kk) = {trialNbr_Nline};
                 p.NlineResults(trialNbr+1,10,kk) = {blockNbr_Nline};

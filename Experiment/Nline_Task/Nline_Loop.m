@@ -94,13 +94,16 @@ try
             for jj = 1:p.nStim;
                 trialNbr_Nline = (p.nStim * (blockNbr_Nline-1)) + jj; % This counts across blocks
                 trialNbr = jj; %This counts within block
-                end_ISI = p.NlineResults{trialNbr+1,19,kk} + start_t;
+                end_ITI = p.NlineResults{trialNbr+1,19,kk} + start_t;
                 end_consider = p.NlineResults{trialNbr+1,20,kk} + start_t;
                 end_hold = p.NlineResults{trialNbr+1,21,kk} + start_t;
                 end_decision = p.NlineResults{trialNbr+1,22,kk} + start_t;
+                % I'M HERE... NEED TO REMOVE THE NEXT LINES AND REPLACE
+                % WITH A TRIALLOOP CALL THAT MAKES SENSE AND LOGS WHAT I
+                % NEED TO LOG
                 DrawCenteredNum_Abs('X', win, color);
                 p.NlineResults(trialNbr+1,14,kk) = {GetSecs - start_t}; %Real onset of fixation
-                WaitTill(end_ISI);
+                WaitTill(end_ITI);
                 %%% I need to pass end_time to the functions so that they can
                 %%% use it to figure when to exit from the script
                 p.NlineResults(trialNbr+1,15,kk) = {GetSecs - start_t}; %Real onset of deciison

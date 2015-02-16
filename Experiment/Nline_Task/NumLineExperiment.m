@@ -96,9 +96,6 @@ for i = 1:length(catch_run)
 end
 
 TestNline = cell(p.runs*p.ntasks*p.nStim,5); %probe, line_pct, catch, catch syllable, task
-% TestNegline = zeros(p.runs*p.nStim,3); %probe, line_pct, catch
-% TestControl = cell(p.runs*p.nStim,4); %probe, line_pct, catch, catch syllable
-
 
 %Construct list of stimuli
 for ii = 1:p.runs;

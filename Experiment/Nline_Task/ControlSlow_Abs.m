@@ -15,21 +15,19 @@ function trialResponse = ControlSlow_Abs(stim, points, left_end, right_end, line
     RT = -1;
     error = -1;
     %time_left = 1;
-    time_fix = 0.01;
-    time_on = time - time_fix;
+    time_fix = 0.005;
     Click = -1;
     RTHold = -1;
     draw = 1;
 
-    
-    probe = stim{1}; % Control is already string
+    probe = stim(1); % Control is already string
     probeMag = stim{2};
-    probeLine = stim{4};% syllable printed on the line
+    probeLine = stim(4);% syllable printed on the line
 
     %Initialize log
     trialResponse = {mouse_pos correct response RT error RTHold Click testX points};
     
-    if probeLine == probe;
+    if probeLine{1} == probe{1}
         correct = probeMag;
         Click =1;
     else
@@ -47,10 +45,11 @@ function trialResponse = ControlSlow_Abs(stim, points, left_end, right_end, line
     
     % Cursor appears in random position within a fixed +/- range
     displacement = JitterCursor();
-    trialResponse{1} = probeMag + displacement;
+    %trialResponse{1} = 0.5 + displacement; %Cursor will always appear outside of nline range.
+    %trialResponse{1} = probeMag + displacement; %Cursor will always appear +/- 20-40 from correct position.
     % Only works if also nline has extended endpoints
 %     trialResponse{1} = 0.8*rand + 0.1; %If rand 0 cursonr starts at 0.1 if rand 1 starts at 0.9
-%     trialResponse{1} = 0.5; %Fixed position
+     trialResponse{1} = 0.5; %Fixed position
 
     %Extended endpoints
     extension = lineLength/2;
@@ -86,7 +85,7 @@ function trialResponse = ControlSlow_Abs(stim, points, left_end, right_end, line
         if or(xPos_old ~=xPos, yPos_old ~= yPos);
             test = 1;
         end;
-        if GetSecs >= t_end - 0.01;
+        if GetSecs >= end_decision - time_fix;
             test = 1;
             draw = 0;
         end;
@@ -146,17 +145,18 @@ function trialResponse = ControlSlow_Abs(stim, points, left_end, right_end, line
 
                 if draw == 1;
                     %Draw cursor line
-                    Screen('Drawline', win, [0 0 0 0], xPos, yline - lineSZ/1.5, xPos, yline + lineSZ/1.5, round(5*ppc_adjust));                
+                    lineSZc = round(30*ppc_adjust);
+                    Screen('Drawline', win, [0 0 0 0], xPos, yline - lineSZc/1.5, xPos, yline + lineSZc/1.5, round(5*ppc_adjust));                
                 
                     %Draw arrow for junk trials and/or syllable for control
                     %task
                     Screen('TextSize',win, 30);
                     Screen('TextStyle',win, 1);
-                    pBox = Screen('TextBounds', win, probeLine);
+                    pBox = Screen('TextBounds', win, probeLine{1});
                     pBox = CenterRectOnPoint(pBox, round(probeMag*(x2-x1) + x1), yline + 30);
                     pX=pBox(RectLeft);
                     yNum=pBox(RectTop);
-                    Screen('DrawText', win, probeLine, pX, yNum, color);
+                    Screen('DrawText', win, probeLine{1}, pX, yNum, color);
                     %DrawArrow(round(correct*(x2-x1) + x1),y,win,ppc_adjust);
                 end
                 

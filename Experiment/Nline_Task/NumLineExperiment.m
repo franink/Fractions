@@ -38,7 +38,7 @@ s_nbr = str2num(filename(7:11));
 % order [0] = match 1st; fraction comparison 2nd
 
 %Setup experiment parameters
-p.ramp_up = 12; %This number needs to be changed once we know TR (this should be TR*4)
+p.ramp_up = 14; 
 p.ISI = 5; %average 5s
 p.hold = 4.5; %Average 4.5s
 p.decision = 2;
@@ -164,7 +164,7 @@ p.task_transition = cell(length(p.tasks)+1,p.runs);
 
 %Get Labels
 for ii = 1:p.runs
-    p.NlineResults(1,:,ii) = {'Task','Probe','Line_pct','catch','iti','hold','mouse_pos','Correct','Response','RT','Error','RTHold','Click','TestX','Points','Trial','Block','ISI_onset','consider_onset','hold_onset','decision_onset','decision_end','ISI_onset_real','consider_onset_real','hold_onset_real','decision_onset_real','decision_end_real','catch_probe'};
+    p.NlineResults(1,:,ii) = {'Task','Probe','Line_pct','catch','iti','hold','mouse_pos','Correct','Response','RT','Error','RTHold','Click','TestX','Points','Trial','Block','ITI_onset','consider_onset','hold_onset','decision_onset','decision_end','ITI_onset_real','consider_onset_real','hold_onset_real','decision_onset_real','decision_end_real','catch_probe'};
 end
 
 p.time_Runs(1,:) ={'Run_1', 'Run_2', 'Run_3', 'Run_4'};
@@ -194,25 +194,27 @@ end
 % events
 % 16 times to be sampled randomly to each of the 16 stim in a particular
 % run and particular task
-ISI_Jits = [3.5:0.5:7 repmat(3:0.5:4.5,1,2)];
+ITI_Jits = [3.5:0.5:7 repmat(3:0.5:4.5,1,2)];
 Hold_Jits = [4:0.5:7.5 repmat(3.5:.5:5,1,2)];
 
 for jj = 1:p.runs
     end_ramp_up = p.ramp_up; % after ramp_up the first fixation begins
     current_time = end_ramp_up; %keeps track of time, starts with time after ramp_up
     for kk = 1:p.ntasks
-        ISI_Jits = datasample(ISI_Jits, 16, 'Replace', false);
+        ITI_Jits = datasample(ITI_Jits, 16, 'Replace', false);
         Hold_Jits = datasample(Hold_Jits, 16, 'Replace', false);
         p.task_transition{kk+1,jj} = {current_time};
         current_time = current_time + 2;
         for ii = 1:p.nStim;
             p.NlineResults((ii+1) + ((kk-1)*p.nStim),18,jj) = {current_time}; %ISI onset
-            ISI = ISI_Jits(ii);
-            current_time = current_time + ISI; %end of ISI
+            ITI = ITI_Jits(ii);
+            p.NlineResults((ii+1) + ((kk-1)*p.nStim),5,jj) = {ITI}; %iti
+            current_time = current_time + ITI; %end of ISI
             p.NlineResults((ii+1) + ((kk-1)*p.nStim),19,jj) = {current_time}; %consider onset
             current_time = current_time + p.consider; %end of consider
             p.NlineResults((ii+1) + ((kk-1)*p.nStim),20,jj) = {current_time}; %hold onset
             HOLD = Hold_Jits(ii);
+            p.NlineResults((ii+1) + ((kk-1)*p.nStim),6,jj) = {HOLD};
             current_time = current_time + HOLD; %end of hold
             p.NlineResults((ii+1) + ((kk-1)*p.nStim),21,jj) = {current_time}; %decision onset
             current_time = current_time + p.decision; %end of decision

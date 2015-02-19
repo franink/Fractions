@@ -31,7 +31,7 @@ function [block_p_points] = Practice_TrialLoop(stim, block_p_points, decision_ti
     while GetSecs < start_t + hold;
         [xPos, yPos] = GetMouse(win);
         DrawNline(left_end, right_end, lineLength, lineSZ, 0, ppc_adjust, win, color, x1, x2, yline, center, winRect, 0);
-        DrawProbeBox('XXX', win, color, yline, center, jitter, winRect);
+        DrawProbeBox('X', win, [255 0 0], yline, center, jitter, winRect);
         Screen('Flip', win);
         if or(abs(xPos_fix - xPos) > 10, abs(yPos_fix - yPos) > 10);
             testX = 1;

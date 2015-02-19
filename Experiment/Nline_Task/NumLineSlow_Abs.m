@@ -16,13 +16,14 @@ function trialResponse = NumLineSlow_Abs(stim, points, left_end, right_end, line
     RT = -1;
     error = -1;
     %time_left = 1;
-    time_fix = 0.01;
+    time_fix = 0.005;
     Click = -1;
     RTHold = -1;
     draw = 1;
     
-    probe = num2str(stim(1));
-    probeMag = stim(2);
+    stim
+    probe = num2str(stim{1});
+    probeMag = stim{2};
 
     %Initialize log
     trialResponse = {mouse_pos correct response RT error RTHold Click testX points};
@@ -42,10 +43,11 @@ function trialResponse = NumLineSlow_Abs(stim, points, left_end, right_end, line
     HideCursor;
     
     displacement = JitterCursor();
-    trialResponse{1} = probeMag + displacement; %Cursor will always appear +/- 20-40 from correct position.
+    trialResponse{1} = 0.5 + displacement; %Cursor will always appear outside of nline range.
+    %trialResponse{1} = probeMag + displacement; %Cursor will always appear +/- 20-40 from correct position.
     % Only works if also nline has extended endpoints
 %     trialResponse{1} = 0.8*rand + 0.1; %If rand 0 cursonr starts at 0.1 if rand 1 starts at 0.9
-%     trialResponse{1} = 0.5; %Fixed position
+     trialResponse{1} = 0.5; %Fixed position
 
     %Extended endpoints
     extension = lineLength/2;
@@ -106,7 +108,7 @@ function trialResponse = NumLineSlow_Abs(stim, points, left_end, right_end, line
                     trialResponse{9} = points + 1;
                 end
                 if testX == 1;
-                    trialResponse{9} = poitns;
+                    trialResponse{9} = points;
                 end
                 mouseResp = 1;
            else
@@ -143,7 +145,8 @@ function trialResponse = NumLineSlow_Abs(stim, points, left_end, right_end, line
 
                 if draw == 1;
                     %Draw cursor line
-                    Screen('Drawline', win, [0 0 0 0], xPos, yline - lineSZ/1.5, xPos, yline + lineSZ/1.5, round(5*ppc_adjust));
+                    lineSZc = round(30*ppc_adjust);
+                    Screen('Drawline', win, [0 0 0 0], xPos, yline - lineSZc/1.5, xPos, yline + lineSZc/1.5, round(5*ppc_adjust));
                 
                 
                     %Draw arrow for junk trials

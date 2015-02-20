@@ -56,7 +56,7 @@ function [trialTiming, trialResults] = TrialLoop(stim, points, left_end, right_e
     if task ==3;
         trialResults = ControlSlow_Abs([stim(1), stim(2), stim(3), stim(4)], points, left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, junk, testX, end_decision); %decision
     end;
-    WaitTill(end_decision - 0.005);
+    WaitTill(end_decision - 0.001);
     trialTiming(5) = {GetSecs - start_t};
     
 end

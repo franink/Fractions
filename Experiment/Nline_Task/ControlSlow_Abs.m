@@ -27,11 +27,11 @@ function trialResponse = ControlSlow_Abs(stim, points, left_end, right_end, line
     %Initialize log
     trialResponse = {mouse_pos correct response RT error RTHold Click testX points};
     
-    if probeLine{1} == probe{1}
+    if junk == 0;
         correct = probeMag;
         Click =1;
     else
-        correct = -1;
+        correct = 0;
         Click = 0;
     end;
     % Log changes to control variables
@@ -46,10 +46,10 @@ function trialResponse = ControlSlow_Abs(stim, points, left_end, right_end, line
     % Cursor appears in random position within a fixed +/- range
     displacement = JitterCursor();
     %trialResponse{1} = 0.5 + displacement; %Cursor will always appear outside of nline range.
-    %trialResponse{1} = probeMag + displacement; %Cursor will always appear +/- 20-40 from correct position.
+    trialResponse{1} = probeMag + displacement; %Cursor will always appear +/- 20-40 from correct position.
     % Only works if also nline has extended endpoints
 %     trialResponse{1} = 0.8*rand + 0.1; %If rand 0 cursonr starts at 0.1 if rand 1 starts at 0.9
-     trialResponse{1} = 0.5; %Fixed position
+%     trialResponse{1} = 0.5; %Fixed position
 
     %Extended endpoints
     extension = lineLength/2;
@@ -103,13 +103,17 @@ function trialResponse = ControlSlow_Abs(stim, points, left_end, right_end, line
            if GetSecs >= end_decision - time_fix;
                 %sprintf('timeout');
                 time_left = 0;
-                trialResponse{3} = -1;
-                trialResponse{5} = trialResponse{3} - correct;
+                trialResponse{3} = 0;
+                if junk;
+                    trialResponse{5} = 0;
+                else
+                    trialResponse{5} = 1;
+                end
                 if abs(trialResponse{5}) <= 0.1;
-                    trialResponse{9} = points + 1;
+                    block_p_points = points + 1;
                 end
                 if testX == 1;
-                    trialResponse{9} = points;
+                    block_p_points = points;
                 end
                 mouseResp = 1;
            else
@@ -127,7 +131,11 @@ function trialResponse = ControlSlow_Abs(stim, points, left_end, right_end, line
                 if click == 1;
                     trialResponse{4} = GetSecs - t_start;
                     trialResponse{3} = (xPos - x1)/(x2-x1);
-                    trialResponse{5} = trialResponse{3} - correct;
+                    if junk; % if catch trial do something if not catch trial do something else
+                        trialResponse{5} = 1;
+                    else
+                        trialResponse{5} = trialResponse{3} - correct;
+                    end
                     if abs(trialResponse{5}) <= 0.1;
                         trialResponse{9} = points + 1;
                     end
@@ -156,7 +164,8 @@ function trialResponse = ControlSlow_Abs(stim, points, left_end, right_end, line
                     pBox = CenterRectOnPoint(pBox, round(probeMag*(x2-x1) + x1), yline + 30);
                     pX=pBox(RectLeft);
                     yNum=pBox(RectTop);
-                    Screen('DrawText', win, probeLine{1}, pX, yNum, color);
+                    %Screen('DrawText', win, probeLine{1}, pX, yNum, color);
+                    Screen('DrawText', win, probeLine{1}, pX, yNum, [0 0 0]);
                     %DrawArrow(round(correct*(x2-x1) + x1),y,win,ppc_adjust);
                 end
                 

@@ -39,8 +39,8 @@ s_nbr = str2num(filename(7:11));
 
 %Setup experiment parameters
 p.ramp_up = 14; 
-p.ISI = 5; %average 5s
-p.hold = 4.5; %Average 4.5s
+p.Mean_ITI = 5; %average 5s
+p.Mean_hold = 4.5; %Average 4.5s
 p.decision = 2;
 p.consider = 0.5;
 %Make sure that repeats is divisible by runs
@@ -48,8 +48,8 @@ p.runs = 4;
 p.nStim = 16;
 p.ntasks = 3;
 p.tasks = {'Nline', 'Negline', 'Control'}; 
-p.trialSecs = p.consider + p.decision +p.hold + p.ISI;
-p.lineLength = 900;
+p.trialSecs = p.consider + p.decision +p.Mean_hold + p.Mean_ITI;
+p.lineLength = 800;
 
 
 order_random = datasample([1,2,3,4,5,6],p.runs,'Replace',false);
@@ -68,7 +68,8 @@ orders = [[1 2 3];...
 
 p.run_order = zeros(p.runs,p.ntasks);
 for i = 1:p.runs
-    p.run_order(i,:) = orders(order_random(i),:);
+    p.run_order(i,:) = [3 1 2];
+    %p.run_order(i,:) = orders(order_random(i),:);
 end
 
 
@@ -198,12 +199,16 @@ ITI_Jits = [3.5:0.5:7 repmat(3:0.5:4.5,1,2)];
 Hold_Jits = [4:0.5:7.5 repmat(3.5:.5:5,1,2)];
 
 for jj = 1:p.runs
-    end_ramp_up = p.ramp_up; % after ramp_up the first fixation begins
-    current_time = end_ramp_up; %keeps track of time, starts with time after ramp_up
+    end_ramp_up = p.ramp_up; % after ramp_up the first nline begins
+    current_time = end_ramp_up - 2; %keeps track of time, starts with time after ramp_up
     for kk = 1:p.ntasks
         ITI_Jits = datasample(ITI_Jits, 16, 'Replace', false);
         Hold_Jits = datasample(Hold_Jits, 16, 'Replace', false);
-        p.task_transition{kk+1,jj} = {current_time};
+        if kk ==1;
+            p.task_transition{kk+1,jj} = {0};
+        else
+            p.task_transition{kk+1,jj} = {current_time};
+        end
         current_time = current_time + 2;
         for ii = 1:p.nStim;
             p.NlineResults((ii+1) + ((kk-1)*p.nStim),18,jj) = {current_time}; %ISI onset
@@ -233,7 +238,7 @@ WaitTill('9');
 DisplayInstructsInt;
 
 %Initialize run loop
-[p, points, block_points] = Nline_Loop(filename, win, color, p, points, NlineTest, block_points);
+[p, points, block_points] = Nline_Loop(filename, win, color, p, points, NlineTest, block_points, p.lineLength);
     
 DrawCenteredNum('Thank You', win, color, 2);
     

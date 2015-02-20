@@ -16,7 +16,7 @@ function block_p_points = NumLineSlow(stim, time, points, left_end, right_end, l
     RT = -1;
     error = -1;
     %time_left = 1;
-    time_fix = 0.01;
+    time_fix = 0.005;
     time_on = time - time_fix;
     Click = -1;
     RTHold = -1;
@@ -33,7 +33,7 @@ function block_p_points = NumLineSlow(stim, time, points, left_end, right_end, l
     
     if junk ==1;
         Click = 0;
-        correct = -1;
+        correct = 0;
     else
         Click = 1;
     end;
@@ -47,10 +47,10 @@ function block_p_points = NumLineSlow(stim, time, points, left_end, right_end, l
     
     displacement = JitterCursor();
     %trialResponse{1} = 0.5 + displacement; %Cursor will always appear outside of nline range.
-    %trialResponse{1} = probeMag + displacement; %Cursor will always appear +/- 20-40 from correct position.
+    trialResponse{1} = probeMag + displacement; %Cursor will always appear +/- 20-40 from correct position.
     % Only works if also nline has extended endpoints
 %     trialResponse{1} = 0.8*rand + 0.1; %If rand 0 cursonr starts at 0.1 if rand 1 starts at 0.9
-     trialResponse{1} = 0.5; %Fixed position
+%     trialResponse{1} = 0.5; %Fixed position
 
     %Extended endpoints
     extension = lineLength/2;
@@ -72,7 +72,7 @@ function block_p_points = NumLineSlow(stim, time, points, left_end, right_end, l
     %Draw numberline
     DrawNline(left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, 1);
     %Draw probe
-    DrawProbeBox('X', win, [0 255 0], yline, center, jitter, winRect);
+    DrawProbeBox('*', win, [0 255 0], yline, center, jitter, winRect);
     Screen('Flip', win);
     
     block_p_points = points;
@@ -85,7 +85,7 @@ function block_p_points = NumLineSlow(stim, time, points, left_end, right_end, l
         if or(xPos_old ~=xPos, yPos_old ~= yPos);
             test = 1;
         end;
-        if GetSecs >= t_end - 0.01;
+        if GetSecs >= t_end - 0.001;
             test = 1;
             draw = 0;
         end;
@@ -102,10 +102,14 @@ function block_p_points = NumLineSlow(stim, time, points, left_end, right_end, l
            if GetSecs >= t_end;
                 %sprintf('timeout');
                 time_left = 0;
-                trialResponse{3} = -1;
-                trialResponse{5} = trialResponse{3} - correct;
+                trialResponse{3} = 0;
+                if junk;
+                    trialResponse{5} = 0;
+                else
+                    trialResponse{5} = 1;
+                end
                 if abs(trialResponse{5}) <= 0.1;
-                        block_p_points = points + 1;
+                    block_p_points = points + 1;
                 end
                 if testX == 1;
                     block_p_points = points;
@@ -126,7 +130,11 @@ function block_p_points = NumLineSlow(stim, time, points, left_end, right_end, l
                 if click == 1;
                     trialResponse{4} = GetSecs - t_start;
                     trialResponse{3} = (xPos - x1)/(x2-x1);
-                    trialResponse{5} = trialResponse{3} - correct;
+                    if junk; % if catch trial do something if not catch trial do something else
+                        trialResponse{5} = 1;
+                    else
+                        trialResponse{5} = trialResponse{3} - correct;
+                    end
                     if abs(trialResponse{5}) <= 0.1;
                         block_p_points = points + 1;
                     end
@@ -140,12 +148,12 @@ function block_p_points = NumLineSlow(stim, time, points, left_end, right_end, l
                 %Draw numberline
                 DrawNline(left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, 1);
                 %Draw probe
-                DrawProbeBox('X', win, [0 255 0], yline, center, jitter, winRect);
+                DrawProbeBox('*', win, [0 255 0], yline, center, jitter, winRect);
 %                 Screen('DrawText', win, probe, probeLeft, probeTop, color);
 
                 if draw == 1;
                     %Draw cursor line
-                    lineSZc = round(30*ppc_adjust);
+                    lineSZc = round(35*ppc_adjust);
                     Screen('Drawline', win, [0 0 0 0], xPos, yline - lineSZc/1.5, xPos, yline + lineSZc/1.5, round(5*ppc_adjust));
                 
                 

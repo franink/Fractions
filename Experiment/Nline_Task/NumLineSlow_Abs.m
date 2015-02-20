@@ -21,7 +21,6 @@ function trialResponse = NumLineSlow_Abs(stim, points, left_end, right_end, line
     RTHold = -1;
     draw = 1;
     
-    stim
     probe = num2str(stim{1});
     probeMag = stim{2};
 
@@ -32,7 +31,7 @@ function trialResponse = NumLineSlow_Abs(stim, points, left_end, right_end, line
     
     if junk ==1;
         Click = 0;
-        correct = -1;
+        correct = 0;
     else
         Click = 1;
     end;
@@ -43,11 +42,11 @@ function trialResponse = NumLineSlow_Abs(stim, points, left_end, right_end, line
     HideCursor;
     
     displacement = JitterCursor();
-    trialResponse{1} = 0.5 + displacement; %Cursor will always appear outside of nline range.
-    %trialResponse{1} = probeMag + displacement; %Cursor will always appear +/- 20-40 from correct position.
+%     trialResponse{1} = 0.5 + displacement; %Cursor will always appear outside of nline range.
+    trialResponse{1} = probeMag + displacement; %Cursor will always appear +/- 20-40 from correct position.
     % Only works if also nline has extended endpoints
 %     trialResponse{1} = 0.8*rand + 0.1; %If rand 0 cursonr starts at 0.1 if rand 1 starts at 0.9
-     trialResponse{1} = 0.5; %Fixed position
+%     trialResponse{1} = 0.5; %Fixed position
 
     %Extended endpoints
     extension = lineLength/2;
@@ -102,13 +101,17 @@ function trialResponse = NumLineSlow_Abs(stim, points, left_end, right_end, line
            if GetSecs >= end_decision - time_fix;
                 %sprintf('timeout');
                 time_left = 0;
-                trialResponse{3} = -1;
-                trialResponse{5} = trialResponse{3} - correct;
+                trialResponse{3} = 0;
+                if junk;
+                    trialResponse{5} = 0;
+                else
+                    trialResponse{5} = 1;
+                end
                 if abs(trialResponse{5}) <= 0.1;
-                    trialResponse{9} = points + 1;
+                    block_p_points = points + 1;
                 end
                 if testX == 1;
-                    trialResponse{9} = points;
+                    block_p_points = points;
                 end
                 mouseResp = 1;
            else
@@ -126,7 +129,11 @@ function trialResponse = NumLineSlow_Abs(stim, points, left_end, right_end, line
                 if click == 1;
                     trialResponse{4} = GetSecs - t_start;
                     trialResponse{3} = (xPos - x1)/(x2-x1);
-                    trialResponse{5} = trialResponse{3} - correct;
+                    if junk; % if catch trial do something if not catch trial do something else
+                        trialResponse{5} = 1;
+                    else
+                        trialResponse{5} = trialResponse{3} - correct;
+                    end
                     if abs(trialResponse{5}) <= 0.1;
                         trialResponse{9} = points + 1;
                     end
@@ -145,7 +152,7 @@ function trialResponse = NumLineSlow_Abs(stim, points, left_end, right_end, line
 
                 if draw == 1;
                     %Draw cursor line
-                    lineSZc = round(30*ppc_adjust);
+                    lineSZc = round(35*ppc_adjust);
                     Screen('Drawline', win, [0 0 0 0], xPos, yline - lineSZc/1.5, xPos, yline + lineSZc/1.5, round(5*ppc_adjust));
                 
                 

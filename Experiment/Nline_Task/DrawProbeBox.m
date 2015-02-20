@@ -10,7 +10,6 @@ yprobe = yline - 250;
 Box = Screen('TextBounds', win, 'XXXX');
 Screen('TextSize',win, 30);
 probeBox = Screen('TextBounds', win, probe);
-
 Box = CenterRectOnPoint(Box, center + jitter, yprobe);
 probeBox = CenterRectOnPoint(probeBox, center + jitter, yprobe);
 probeLeft = probeBox(RectLeft);

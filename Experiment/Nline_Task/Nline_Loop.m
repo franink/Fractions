@@ -1,4 +1,4 @@
-function [p, points, block_points] = Nline_Loop(filename, win, color, p, points, TestNline, block_points)
+function [p, points, block_points] = Nline_Loop(filename, win, color, p, points, TestNline, block_points, lineLength)
 %Controls the loop that executes fraction summation task
 %returns p struct with all the results and stim logged and updated points
 %for measure of accuracy
@@ -6,6 +6,7 @@ function [p, points, block_points] = Nline_Loop(filename, win, color, p, points,
 % Nline task
 
 try
+     task_name_time = 2;
     
     winRect = Screen('Rect', win);
     yline = round(winRect(4)/2);
@@ -13,7 +14,7 @@ try
     
     ppc_adjust = 23/38;
   
-    lineLength = round(800*ppc_adjust);
+    lineLength = round(lineLength*ppc_adjust);
     lineSZ = round(20*ppc_adjust);
     
     rng shuffle;
@@ -53,7 +54,7 @@ try
     block_p_points = Practice_TrialLoop(prac1,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,3,4,1,task);
     block_p_points = Practice_TrialLoop(prac2,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,5,3,0,task);
     block_p_points = Practice_TrialLoop(prac3,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,6,5,0,task);
-%     block_p_points = Practice_TrialLoop(prac4,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,3,4,1,task);
+    block_p_points = Practice_TrialLoop(prac4,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,3,4,1,task);
 %     block_p_points = Practice_TrialLoop(prac5,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,5,3,0,task);
 %     block_p_points = Practice_TrialLoop(prac6,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,6,5,0,task);
 %     block_p_points = Practice_TrialLoop(prac7,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,3,4,1,task);
@@ -122,12 +123,12 @@ try
             blockNbr_Nline = blockNbr_Nline+1;
             task = TestNline{(ii-1)*p.nStim + 1, 5, kk};
             if task == 1;
-                taskname = '0 - 100 task';
+                taskname = '0 to 100 task';
                 left_end = '0';
                 right_end = '100';
             end
             if task == 2;
-                taskname = '-100 - 100 task';
+                taskname = '-100 to 100 task';
                 left_end = '-100';
                 right_end = '100';
             end
@@ -136,7 +137,11 @@ try
                 left_end = 'xx';
                 right_end = 'xx';
             end
-            DrawCenteredNum(taskname,win,color,2);
+            DrawCenteredNum(taskname,win,color,task_name_time); % Task name
+            DrawNline(left_end, right_end, lineLength, lineSZ, 0, ppc_adjust,...
+                win, color, x1, x2, yline, center, winRect, 0);
+            Screen('Flip', win);
+            WaitTill(start_t + p.ramp_up);
             
             for jj = 1:p.nStim;
                 trialNbr = (p.nStim * (blockNbr_Nline-1)) + jj; % This counts across blocks
@@ -145,13 +150,13 @@ try
                 end_consider = p.NlineResults{trialNbr+1,20,kk} + start_t;
                 end_hold = p.NlineResults{trialNbr+1,21,kk} + start_t;
                 end_decision = p.NlineResults{trialNbr+1,22,kk} + start_t;
-                p.NlineResults{trialNbr+1,1,kk} = TestNline{trialNbr+1,5,kk}; %Task number
-                p.NlineResults(trialNbr+1,2:4,kk) = TestNline(trialNbr+1,1:3,kk); %probe, line_pct, catch
-                p.NlineResults{trialNbr+1,28,kk} = TestNline{trialNbr+1,4,kk}; %Catch probe
+                p.NlineResults{trialNbr+1,1,kk} = TestNline{trialNbr,5,kk}; %Task number
+                p.NlineResults(trialNbr+1,2:4,kk) = TestNline(trialNbr,1:3,kk); %probe, line_pct, catch
+                p.NlineResults{trialNbr+1,28,kk} = TestNline{trialNbr,4,kk}; %Catch probe
                 
                 [p.NlineResults(trialNbr+1,23:27,kk), p.NlineResults(trialNbr+1,7:15,kk)] =...
                     TrialLoop(TestNline(trialNbr,:,kk),points, left_end, right_end, lineLength,...
-                    lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, TestNline{trialNbr+1,3,kk},...
+                    lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, TestNline{trialNbr,3,kk},...
                     task, start_t, end_ITI, end_consider, end_hold, end_decision);
                     
                 p.NlineResults(trialNbr+1,16,kk) = {trialNbr_Nline}; %trial number within block

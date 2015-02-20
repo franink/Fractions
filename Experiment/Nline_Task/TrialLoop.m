@@ -39,7 +39,7 @@ function [trialTiming, trialResults] = TrialLoop(stim, points, left_end, right_e
     while GetSecs < end_hold;
         [xPos, yPos] = GetMouse(win);
         DrawNline(left_end, right_end, lineLength, lineSZ, 0, ppc_adjust, win, color, x1, x2, yline, center, winRect, 0);
-        DrawProbeBox('XXX', win, color, yline, center, jitter, winRect);
+        DrawProbeBox('.', win, [255 0 0], yline, center, jitter, winRect);
         Screen('Flip', win);
         if or(abs(xPos_fix - xPos) > 10, abs(yPos_fix - yPos) > 10);
             testX = 1;

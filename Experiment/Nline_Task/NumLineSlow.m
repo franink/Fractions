@@ -47,15 +47,15 @@ function block_p_points = NumLineSlow(stim, time, points, left_end, right_end, l
     
     displacement = JitterCursor();
     %trialResponse{1} = 0.5 + displacement; %Cursor will always appear outside of nline range.
-    trialResponse{1} = probeMag + displacement; %Cursor will always appear +/- 20-40 from correct position.
+%     trialResponse{1} = probeMag + displacement; %Cursor will always appear +/- 20-40 from correct position.
     % Only works if also nline has extended endpoints
 %     trialResponse{1} = 0.8*rand + 0.1; %If rand 0 cursonr starts at 0.1 if rand 1 starts at 0.9
-%     trialResponse{1} = 0.5; %Fixed position
+    trialResponse{1} = 0.5; %Fixed position
 
     %Extended endpoints
     extension = lineLength/2;
-    xStart = x1 - extension;
-    xEnd = x2 + extension;
+    xStart = x1; % - extension;
+    xEnd = x2; % + extension;
     
     MouseStartPosX = round(trialResponse{1}*(x2-x1) + x1); %Mouse starts in random position
 %     MouseStartPosX = round(0.5*(x2-x1) + x1) %Mouse position in center of line this can change
@@ -72,7 +72,7 @@ function block_p_points = NumLineSlow(stim, time, points, left_end, right_end, l
     %Draw numberline
     DrawNline(left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, 1);
     %Draw probe
-    DrawProbeBox('*', win, [0 255 0], yline, center, jitter, winRect);
+    DrawProbeBox('.', win, [0 255 0], yline, center, jitter, winRect);
     Screen('Flip', win);
     
     block_p_points = points;
@@ -148,7 +148,7 @@ function block_p_points = NumLineSlow(stim, time, points, left_end, right_end, l
                 %Draw numberline
                 DrawNline(left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, 1);
                 %Draw probe
-                DrawProbeBox('*', win, [0 255 0], yline, center, jitter, winRect);
+                DrawProbeBox('.', win, [0 255 0], yline, center, jitter, winRect);
 %                 Screen('DrawText', win, probe, probeLeft, probeTop, color);
 
                 if draw == 1;

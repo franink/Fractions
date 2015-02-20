@@ -39,11 +39,11 @@ try
     prac4 = [35 0.35];
     prac5 = [94 0.94];
     prac6 = [22 0.22];
-    prac7 = [5 0.05];
-    prac8 = [76 0.76];
+    prac9 = [5 0.05];
+    prac10 = [76 0.76];
     prac9 = [84 0.84];
     prac10 = [42 0.42];
-    prac11 = [56 0.56];
+    prac9 = [56 0.56];
     prac12 = [13 0.13];
     prac13 = [77 0.77];
     prac14 = [40 0.4];
@@ -51,9 +51,9 @@ try
     prac16 = [36 0.36];
     prac17 = [64 0.64];
     prac18 = [43 0.43];
-    block_p_points = Practice_TrialLoop(prac1,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,3,4,1,task);
-    block_p_points = Practice_TrialLoop(prac2,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,5,3,0,task);
-    block_p_points = Practice_TrialLoop(prac3,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,6,5,0,task);
+    block_p_points = Practice_TrialLoop(prac1,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,3,3.5,0,task);
+    block_p_points = Practice_TrialLoop(prac2,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,5,3,1,task);
+    block_p_points = Practice_TrialLoop(prac3,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,6,4.5,0,task);
     block_p_points = Practice_TrialLoop(prac4,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,3,4,1,task);
 %     block_p_points = Practice_TrialLoop(prac5,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,5,3,0,task);
 %     block_p_points = Practice_TrialLoop(prac6,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,6,5,0,task);
@@ -71,35 +71,40 @@ try
 %     block_p_points = Practice_TrialLoop(prac18,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,6,5,0,task);
     p_points = block_p_points + p_points;
     
-%     DisplayInstructsPractice;
-%     
-%     block_p_points = 0;
-%     left_end = '-100';
-%     right_end = '100';
-%     task = 1;
-%     prac4 = [-20 0.4];
-%     prac5 = [25 0.625];
-%     prac6 = [-95 0.025];
-%     
-%     block_p_points = Practice_TrialLoop(prac4,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,5,3,0,task);
-%     block_p_points = Practice_TrialLoop(prac5,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,4,4,1,task);
-%     block_p_points = Practice_TrialLoop(prac6,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,3,6,0,task);
-%     p_points = block_p_points + p_points;
-%     
-%     %control task
-%     DisplayInstructsPractice;
-%     
-%     block_p_points = 0;
-%     left_end = 'xx';
-%     right_end = 'xx';
-%     task =2;
-%     prac7 = {'me' 0.4 'is'};
-%     prac8 = {'be' 0.75 'be'};
-%     prac9 = {'of' 0.33 'of'}; %I'm here need to change the rest of the code
-%     block_p_points = Practice_TrialLoop(prac7,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,5,3,1,task);
-%     block_p_points = Practice_TrialLoop(prac8,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,4,4,0,task);
-%     block_p_points = Practice_TrialLoop(prac9,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,3,6,0,task);
-%     p_points = block_p_points + p_points;
+    DisplayInstructsPractice;
+    
+    block_p_points = 0;
+    left_end = '-100';
+    right_end = '100';
+    task = 1;
+    prac5 = [-20 0.4];
+    prac6 = [25 0.625];
+    prac9 = [-95 0.025];
+    prac10 = [73 0.865];
+    
+    block_p_points = Practice_TrialLoop(prac5,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,5,3,0,task);
+    block_p_points = Practice_TrialLoop(prac6,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,4,3,1,task);
+    block_p_points = Practice_TrialLoop(prac9,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,3.5,4,1,task);
+    block_p_points = Practice_TrialLoop(prac10,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,3,6,0,task);
+    p_points = block_p_points + p_points;
+    
+    %control task
+    DisplayInstructsPractice;
+    
+    block_p_points = 0;
+    left_end = 'xx';
+    right_end = 'xx';
+    task =2;
+    prac9 = {'me' 0.4 'is'};
+    prac10 = {'be' 0.75 'be'};
+    prac11 = {'of' 0.33 'of'};
+    prac12 = {'my' 0.11 'ox'};
+    
+    block_p_points = Practice_TrialLoop(prac9,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,5,3,1,task);
+    block_p_points = Practice_TrialLoop(prac10,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,3,4,0,task);
+    block_p_points = Practice_TrialLoop(prac11,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,3,3.5,1,task);
+    block_p_points = Practice_TrialLoop(prac12,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,3.5,4,0,task);
+    p_points = block_p_points + p_points;
     DisplayInstructs4; %End of practice ask question and get ready to start   
     
     blockNbr_Nline = 0;

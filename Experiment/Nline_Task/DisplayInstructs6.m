@@ -1,104 +1,72 @@
 
 Instruct = {};
 
-if LR == 0;
-    hands_small = 'RED';
-    hands_large = 'GREEN';
-end;
-if LR == 1;
-    hands_small = 'GREEN';
-    hands_large = 'RED';
-end;
-
-small_txt = sprintf('the %s button.', hands_small);
-large_txt = sprintf('the %s button.', hands_large);
-
-Instruct{1} = {'In each trial of this section, a display containing a pair of numbers',
-                'separated by a horizontal line will appear.'
-                ' ',
-               'Your job is to treat the display as a fraction, and think about the value of the fraction.',
+Instruct{1} = {'In the following trials you will be asked to mark a',
+               'line labeled with "xx" on each end point.',
                ' ',
-               'On many trials, the first display will be replaced by a second display',
-               'containing a white border and a set of dots:.',
+               'During the experiment, this task will be called: Word task.',
                ' ',
-               'Some dots will be EMPTY WHITE.',
-               'Some dots will be FILLED in BLUE.',
-                ' ',
-                'When you see this second display, your job is to decide if the fraction of dots',
-                'which are FILLED in BLUE relative to the TOTAL amount of dots',
-                'is smaller or larger than the value of the previous fraction.',
-                ' ',
-                'Remember, a white border around the screen means',
-                'that it is time to make your decision.',
-                ' ',
-                'PRESS ANY BUTTON to go on to the next screen.'};
-
-Instruct{2} = {'If you think the fraction of filled blue dots is SMALLER',
-                'than the value of the first fraction:',
-                ' ',
-                ['Press ' small_txt],
-                ' ',
-                'If you think the fraction of filled blue dots is LARGER',
-                'than the value of the first fraction:',
-                ' ',
-                ['Press ' large_txt],
-                ' ',
-                'PRESS ANY BUTTON to go on to the next screen.'};
-
-
-Instruct{3} = {'For example:',
+               'All trials have two phases. During the first phase, you will see a 2-letter word',
+               'and you should make sure to memorize it without moving your eyes or the mouse.'
                ' ',
-               'If you see a display containing 5/10 followed by a display in which',
-               'about 3/4 of the dots are filled in blue',
+               'In the second phase you will have to move the cursor to mark the line just above',
+               'a word below the line that will signal the position you need to mark.',
+               ' ',
+               'After the word is presented, a RED dot will appear to signal that you should',
+               'fixate your eyes on the dot and wait until it changes to GREEN. Only after the dot',
+               'changes to GREEN, you should start moving the cursor to mark the line.',
+               ' ',
+               'Please CLICK MOUSE to go on to the next screen.'};
+ 
+Instruct{2} = {'The beginning of each trial is similar to the previous tasks.',
                 ' ',
+                'Once you see the word your job is to THINK about the word and memorize it.',
+                'Remember NOT TO MOVE YOUR EYES. Words will be presented very briefly',
+                'so make sure you keep your eyes fixated on the box on top of the line.',
                 ' ',
-              ['Press ' large_txt],
-              ' ',
-              ' ',
-              'Because 3/4 is GREATER than 5/10',
-              ' ',
-              'PRESS ANY BUTTON to go on to the next screen.'};            
+        		'After a brief presentation of the word, you should keep your eyes fixated',
+                'on the RED dot until it turns GREEN.',
+                ' ',
+                'After the dot turns GREEN, you will only have 2 seconds to mark the line',
+                'so it is important to pay full attention to the dot.'
+                ' ',
+        		'If your mark on the line is within 10% of the correct position signaled by the word',
+        		'just below the line, you will earn a point for the trial.',
+                ' ',
+                'Please CLICK MOUSE to go on to the next screen.'};
+ 
+Instruct{3} =  {'On some trials, once you start to move the cursor to mark the line',
+                'you will see a different word below the line.', 
+        		' ',
+                'If the word is different from the one you memorized,', 
+                'you should place the cursor on top of the word but you',
+                'SHOULD NOT click the mouse.', 
+                ' ',
+            	'If you click the mouse, you will lose the point for that trial.',
+                ' ',
+               'Please CLICK MOUSE to go on to the next screen.'};
+ 
+Instruct{4} = {'Please make your judgment promptly. Make your best guess',
+               'rather than trying to measure exactly',
+               ' ',
+               'In the following screens you will see 4 practice trials.',
+               ' ',
+               'Please CLICK MOUSE to begin the practice trials.'};
 
-Instruct{4} = {' ',
-               ' ',
-               'If you see a display containing 5/10 followed by a display in which',
-               'about 7/20 of the dots are filled in blue',
-               ' ',
-               ' ',
-               ['Press ' small_txt],
-              ' ',
-              ' ',
-              'Because 7/20 is SMALLER than 5/10',
-              ' ',
-              'PRESS ANY BUTTON to go on to the next screen.'};      
-          
-Instruct{5} = {'Finally, on many trials, instead of getting a second display',
-                'with a number for comparison you will see an X.',
-                ' ',
-                'This means you DO NOT need to do anything in this trial.',
-                ' ',
-                ' ',                
-               'If you have any questions please ask now.',
-               ' ',
-                ' ',               
-              'PRESS ANY BUTTON to go on to the next sceen.'};
-          
- Instruct{6} = {'We will start with 3 trials of practice',
-              ' ',
-              ' ',
-              'Remember to answer FAST and ACCURATELY.',
-              'You have 2.5 seconds to make a response.',
-              ' ',
-              ' ',
-              'PRESS ANY BUTTON to begin the practice trials.'};
 
-                               
-
-for ii = 1:length(Instruct);
-    KbReleaseWait;
-    keyResp = 0;
+for ii = 1:length(Instruct)
+    %This is the code if we want to use mouse instead of keyboard
+    clearMouseInput;
     TextDisplay(Instruct{ii}, win, color);
     Screen('Flip', win);
-    WaitSecs(0.5);
-    WaitTill({'1' '2' '3' '4' '6' '7' '8' '9'});
+    WaitSecs(0.5);GetClicks(win,0);
+%     %This is the code if we want to use keyboard instead of mouse to move
+%     %screen
+%     %clear keyboard, display screen four, wait for z or / to be pressed
+%     KbReleaseWait;
+%     keyResp = 0;
+%     TextDisplay(Instruct{ii}, win, color);
+%     Screen('Flip', win);
+%     WaitSecs(0.5);
+%     WaitTill({'1' '2' '3' '4' '6' '7' '8' '9'});
 end

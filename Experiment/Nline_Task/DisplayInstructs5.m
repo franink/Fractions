@@ -1,97 +1,36 @@
 Instruct = {};
 
-if LR == 0;
-    hands_small = 'RED';
-    hands_large = 'GREEN';
-end;
-if LR == 1;
-    hands_small = 'GREEN';
-    hands_large = 'RED';
-end;
-
-small_txt = sprintf('the %s button.', hands_small);
-large_txt = sprintf('the %s button.', hands_large);
-
-Instruct{1} = {'In each trial of this section, a display containing a pair of numbers',
-                'separated by a horizontal line will appear.'
-                ' ',
-               'Your job is to treat the display as a fraction, and think about the value of the fraction.',
+Instruct{1} = {'In the following trials you will be asked to mark a',
+               'number line to indicate the magnitude of a number.',
+               'The procedures of this task are exactly the same as for',
+               'the previous task.'
                ' ',
-               'On many trials, the first display will be replaced by a second display',
-               'containing a white border and a second fraction.',
-                ' ',
-                'When you see this second display, your job is to decide if the value of the second fraction',
-                'is smaller or larger than the value of the previous fraction.'
-                ' ',
-                'Remember, a white border around the screen means',
-                'that it is time to make your decision.' 
-                ' ',
-                'PRESS ANY BUTTON to go on to the next screen.'};
-
-Instruct{2} = {'If you think the second fraction is SMALLER',
-                'than the value of the first fraction:',
-                ' ',
-                ['Press ' small_txt],
-                ' ',
-                'If you think the second fraction is LARGER',
-                'than the value of the first fraction:',
-                ' ',
-                ['Press ' large_txt],
-                ' ',
-                'PRESS ANY BUTTON to go on to the next screen.'};
-
-
-Instruct{3} = {'For example:',
+               'The only difference is that the number line will now span',
+               'from -100 to 100.',
+               'During the experiment, this task will be called: -100 to 100 task.',
                ' ',
-               'If you see a display containing 5/10 followed by 3/4',
-                ' ',
-                ' ',
-              ['Press ' large_txt],
-              ' ',
-              ' ',
-              'Because 3/4 is GREATER than 5/10',
-              ' ',
-              'PRESS ANY BUTTON to go on to the next screen.'};            
-
-Instruct{4} = {' ',
+               'Please CLICK MOUSE to go on to the next screen.'};
+ 
+Instruct{2} = {'Please make your judgment promptly. Make your best guess',
+               'rather than trying to calculate or measure exactly',
                ' ',
-               'If you see a display containing 5/10 followed by 7/20',
+               'In the following screens you will see 4 practice trials',
                ' ',
-               ' ',
-               ['Press ' small_txt],
-              ' ',
-              ' ',
-              'Because 7/20 is SMALLER than 5/10',
-              ' ',
-              'PRESS ANY BUTTON to go on to the next screen.'};      
-          
-Instruct{5} = {'Finally, on many trials, instead of getting a second display',
-                'with a number for comparison you will see an X.',
-                ' ',
-                'This means you DO NOT need to do anything in this trial.',
-                ' ',
-                ' ',
-               'If you have any questions please ask now.',
-               ' ',
-                ' ',
-              'PRESS ANY BUTTON to go on to the next sceen.'};
-          
- Instruct{6} = {'We will start with 3 trials of practice',
-              ' ',
-              ' ',
-              'Remember to answer FAST and ACCURATELY.',
-              'You have 2.5 seconds to make a response.',
-              ' ',
-              ' ',
-              'PRESS ANY BUTTON to begin the practice trials.'};
+               'Please CLICK MOUSE to begin the practice trials.'};
 
-
-
-for ii = 1:length(Instruct);
-    KbReleaseWait;
-    keyResp = 0;
+for ii = 1:length(Instruct)
+    %This is the code if we want to use mouse instead of keyboard
+    clearMouseInput;
     TextDisplay(Instruct{ii}, win, color);
     Screen('Flip', win);
-    WaitSecs(0.5);
-    WaitTill({'1' '2' '3' '4' '6' '7' '8' '9'});
+    WaitSecs(0.5);GetClicks(win,0);
+%     %This is the code if we want to use keyboard instead of mouse to move
+%     %screen
+%     %clear keyboard, display screen four, wait for z or / to be pressed
+%     KbReleaseWait;
+%     keyResp = 0;
+%     TextDisplay(Instruct{ii}, win, color);
+%     Screen('Flip', win);
+%     WaitSecs(0.5);
+%     WaitTill({'1' '2' '3' '4' '6' '7' '8' '9'});
 end

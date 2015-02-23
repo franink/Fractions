@@ -1,4 +1,4 @@
-function [trialTiming, trialResults] = TrialLoop(stim, points, left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, junk, task, start_t, end_ITI, end_consider, end_hold, end_decision)
+function [trialTiming, trialResults] = TrialLoop(stim, points, left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, junk, task, start_t, end_ITI, end_consider, end_hold, end_decision, move, slow, wrong)
 %Controls all stages of a single trial
 % This includes ITI, probe box, probe, hold signal, and decision
  
@@ -48,13 +48,13 @@ function [trialTiming, trialResults] = TrialLoop(stim, points, left_end, right_e
     
     trialTiming(4) = {GetSecs - start_t}; %Decision_onset_real
     if task ==1;
-        trialResults = NumLineSlow_Abs([stim(1), stim(2)], points, left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, junk, testX, end_decision); %decision
+        trialResults = NumLineSlow_Abs([stim(1), stim(2)], points, left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, junk, testX, end_decision, move, slow, wrong); %decision
     end;
     if task ==2;
-        trialResults = NumLineSlow_Abs([stim(1), stim(2)], points, left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, junk, testX, end_decision); %decision
+        trialResults = NumLineSlow_Abs([stim(1), stim(2)], points, left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, junk, testX, end_decision, move, slow, wrong); %decision
     end;
     if task ==3;
-        trialResults = ControlSlow_Abs([stim(1), stim(2), stim(3), stim(4)], points, left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, junk, testX, end_decision); %decision
+        trialResults = ControlSlow_Abs([stim(1), stim(2), stim(3), stim(4)], points, left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, junk, testX, end_decision, move, slow, wrong); %decision
     end;
     WaitTill(end_decision - 0.001);
     trialTiming(5) = {GetSecs - start_t};

@@ -44,7 +44,7 @@ p.Mean_hold = 4.5; %Average 4.5s
 p.decision = 2;
 p.consider = 0.5;
 %Make sure that repeats is divisible by runs
-p.runs = 4; 
+p.runs = 2; 
 p.nStim = 16;
 p.ntasks = 3;
 p.tasks = {'Nline', 'Negline', 'Control'}; 
@@ -68,8 +68,8 @@ orders = [[1 2 3];...
 
 p.run_order = zeros(p.runs,p.ntasks);
 for i = 1:p.runs
-    p.run_order(i,:) = [3 1 2];
-    %p.run_order(i,:) = orders(order_random(i),:);
+    %p.run_order(i,:) = [3 1 2];
+    p.run_order(i,:) = orders(order_random(i),:);
 end
 
 
@@ -86,7 +86,8 @@ load NlineStim;
 load NeglineStim;
 load WordStim;
 
-catch_run = repmat(1:p.runs,1,p.runs);
+ctch_nbr = p.runs * p.nStim/4;
+catch_run = [zeros(1, p.nStim - ctch_nbr) repmat(1:p.runs,1,p.nStim/4)];
 catch_run = catch_run(randperm(length(catch_run)));
 NlineStim(:,2) = catch_run;
 catch_run = catch_run(randperm(length(catch_run)));
@@ -158,18 +159,20 @@ for ii = 1:p.runs
 end
 
 % Create Results files
-p.NlineResults = cell(p.nStim*p.ntasks+1,28,p.runs);
+p.NlineResults = cell(p.nStim*p.ntasks+1,31,p.runs);
 
 p.time_Runs = cell(2,p.runs);
 p.task_transition = cell(length(p.tasks)+1,p.runs);
 
 %Get Labels
 for ii = 1:p.runs
-    p.NlineResults(1,:,ii) = {'Task','Probe','Line_pct','catch','iti','hold','mouse_pos','Correct','Response','RT','Error','RTHold','Click','TestX','Points','Trial','Block','ITI_onset','consider_onset','hold_onset','decision_onset','decision_end','ITI_onset_real','consider_onset_real','hold_onset_real','decision_onset_real','decision_end_real','catch_probe'};
+    p.NlineResults(1,:,ii) = {'Task','Probe','Line_pct','catch','iti','hold','mouse_pos','Correct','Response','RT','Error','RTHold','Click','TestX','Points','Move','Slow','Wrong','Trial','Block','ITI_onset','consider_onset','hold_onset','decision_onset','decision_end','ITI_onset_real','consider_onset_real','hold_onset_real','decision_onset_real','decision_end_real','catch_probe'};
 end
 
-p.time_Runs(1,:) ={'Run_1', 'Run_2', 'Run_3', 'Run_4'};
-p.task_transition(1,:) = {'Run_1', 'Run_2', 'Run_3', 'Run_4'};
+% p.time_Runs(1,:) ={'Run_1', 'Run_2', 'Run_3', 'Run_4'};
+p.time_Runs(1,:) ={'Run_1', 'Run_2'};
+% p.task_transition(1,:) = {'Run_1', 'Run_2', 'Run_3', 'Run_4'};
+p.task_transition(1,:) = {'Run_1', 'Run_2'};
 
 % Separate runs into different 3D matrices to control time indpeendently
 % for each run
@@ -207,24 +210,25 @@ for jj = 1:p.runs
         if kk ==1;
             p.task_transition{kk+1,jj} = {0};
         else
-            p.task_transition{kk+1,jj} = {current_time};
+            p.task_transition{kk+1,jj} = {current_time - 4};
         end
         current_time = current_time + 2;
         for ii = 1:p.nStim;
-            p.NlineResults((ii+1) + ((kk-1)*p.nStim),18,jj) = {current_time}; %ISI onset
+            p.NlineResults((ii+1) + ((kk-1)*p.nStim),21,jj) = {current_time}; %ITI onset
             ITI = ITI_Jits(ii);
-            p.NlineResults((ii+1) + ((kk-1)*p.nStim),5,jj) = {ITI}; %iti
-            current_time = current_time + ITI; %end of ISI
-            p.NlineResults((ii+1) + ((kk-1)*p.nStim),19,jj) = {current_time}; %consider onset
+            p.NlineResults((ii+1) + ((kk-1)*p.nStim),5,jj) = {ITI}; %ITI
+            current_time = current_time + ITI; %end of ITI
+            p.NlineResults((ii+1) + ((kk-1)*p.nStim),22,jj) = {current_time}; %consider onset
             current_time = current_time + p.consider; %end of consider
-            p.NlineResults((ii+1) + ((kk-1)*p.nStim),20,jj) = {current_time}; %hold onset
+            p.NlineResults((ii+1) + ((kk-1)*p.nStim),23,jj) = {current_time}; %hold onset
             HOLD = Hold_Jits(ii);
             p.NlineResults((ii+1) + ((kk-1)*p.nStim),6,jj) = {HOLD};
             current_time = current_time + HOLD; %end of hold
-            p.NlineResults((ii+1) + ((kk-1)*p.nStim),21,jj) = {current_time}; %decision onset
+            p.NlineResults((ii+1) + ((kk-1)*p.nStim),24,jj) = {current_time}; %decision onset
             current_time = current_time + p.decision; %end of decision
-            p.NlineResults((ii+1) + ((kk-1)*p.nStim),22,jj) = {current_time}; %end of decision
+            p.NlineResults((ii+1) + ((kk-1)*p.nStim),25,jj) = {current_time}; %end of decision
         end
+        current_time = current_time + 4; %feedback_end
     end
 end
 

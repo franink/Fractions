@@ -2,14 +2,18 @@ Instruct = {};
 
 pts_txt = sprintf('You have earned %d points in this section', block_points);
 block_pts_txt = sprintf('In total, you have earned %d points', points);
+error_txt = sprintf('Moved too soon: %d     Too Slow: %d     Wrong press: %d', move, slow, wrong);
 
-Instruct{1} = {'REST BREAK',
-               ' ',
+Instruct{1} = {' ',
                pts_txt,
                ' ',
                block_pts_txt,
                ' ',
-               'Please PRESS ANY BUTTON when you are ready to continue'};
+               ' ',
+               ' ',
+               error_txt,
+               ' ',
+               ' ',};
 
 
 for ii = 1:length(Instruct)
@@ -18,7 +22,7 @@ for ii = 1:length(Instruct)
     keyResp = 0;
     TextDisplay(Instruct{ii}, win, color);
     Screen('Flip', win);
-    WaitSecs(0.5);
-    WaitTill({'1' '2' '3' '4' '6' '7' '8' '9'});
+    WaitSecs(feedback_end);
+    %WaitTill({'1' '2' '3' '4' '6' '7' '8' '9'});
 end
     

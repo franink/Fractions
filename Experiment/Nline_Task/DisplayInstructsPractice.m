@@ -2,12 +2,19 @@ Instruct = {};
 
 pts_txt = sprintf('You have earned %d practice points in this section', block_p_points);
 block_pts_txt = sprintf('In total, you have earned %d practice points', p_points);
+error_txt = sprintf('Moved too soon: %d     Too Slow: %d     Wrong press: %d', p_move, p_slow, p_wrong);
 
 Instruct{1} = {'REST BREAK',
                ' ',
                pts_txt,
                ' ',
                block_pts_txt,
+               ' ',
+               ' ',
+               ' ',
+               error_txt,
+               ' ',
+               ' ',
                ' ',
                'If you have any questions please ask now',
                ' ',

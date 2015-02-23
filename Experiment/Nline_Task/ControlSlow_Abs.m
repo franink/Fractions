@@ -1,4 +1,4 @@
-function trialResponse = ControlSlow_Abs(stim, points, left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, junk, testX, end_decision)
+function trialResponse = ControlSlow_Abs(stim, points, left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, junk, testX, end_decision, move, slow, wrong)
 %plots a line starting at x1, finishing at x2, with cursor starting on
 %either left (lrStart = 0) or right (lrStart = 1) side.
 
@@ -25,7 +25,7 @@ function trialResponse = ControlSlow_Abs(stim, points, left_end, right_end, line
     probeLine = stim(4);% syllable printed on the line
 
     %Initialize log
-    trialResponse = {mouse_pos correct response RT error RTHold Click testX points};
+    trialResponse = {mouse_pos correct response RT error RTHold Click testX points move slow wrong};
     
     if junk == 0;
         correct = probeMag;
@@ -108,12 +108,14 @@ function trialResponse = ControlSlow_Abs(stim, points, left_end, right_end, line
                     trialResponse{5} = 0;
                 else
                     trialResponse{5} = 1;
+                    trialResponse{11} = slow + 1;
                 end
                 if abs(trialResponse{5}) <= 0.1;
-                    block_p_points = points + 1;
+                    trialResponse{9} = points + 1;
                 end
                 if testX == 1;
-                    block_p_points = points;
+                    trialResponse{9} = points;
+                    trialResponse{10} = move + 1;
                 end
                 mouseResp = 1;
            else
@@ -138,9 +140,12 @@ function trialResponse = ControlSlow_Abs(stim, points, left_end, right_end, line
                     end
                     if abs(trialResponse{5}) <= 0.1;
                         trialResponse{9} = points + 1;
+                    else
+                        trialResponse{12} = wrong + 1;
                     end
                     if testX == 1;
                         trialResponse{9} = points;
+                        trialResponse{10} = move + 1;
                     end
                     mouseResp = 1;
                 end

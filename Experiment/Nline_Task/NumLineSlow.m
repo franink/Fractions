@@ -1,4 +1,4 @@
-function block_p_points = NumLineSlow(stim, time, points, left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, junk, testX)
+function [block_p_points, p_move, p_slow, p_wrong] = NumLineSlow(stim, time, points, left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, junk, testX, p_move, p_slow, p_wrong)
 %plots a line starting at x1, finishing at x2, with cursor starting on
 %either left (lrStart = 0) or right (lrStart = 1) side.
 
@@ -107,12 +107,14 @@ function block_p_points = NumLineSlow(stim, time, points, left_end, right_end, l
                     trialResponse{5} = 0;
                 else
                     trialResponse{5} = 1;
+                    p_slow = p_slow + 1;
                 end
                 if abs(trialResponse{5}) <= 0.1;
                     block_p_points = points + 1;
                 end
                 if testX == 1;
                     block_p_points = points;
+                    p_move = p_move + 1;
                 end
                 mouseResp = 1;
            else
@@ -137,9 +139,12 @@ function block_p_points = NumLineSlow(stim, time, points, left_end, right_end, l
                     end
                     if abs(trialResponse{5}) <= 0.1;
                         block_p_points = points + 1;
+                    else
+                        p_wrong = p_wrong + 1;
                     end
                     if testX == 1;
                         block_p_points = points;
+                        p_move = p_move + 1;
                     end
                     mouseResp = 1;
                 end

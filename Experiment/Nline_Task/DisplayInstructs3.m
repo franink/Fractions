@@ -1,6 +1,10 @@
 
 Instruct = {};
 
+pts_txt = sprintf('You have earned %d points in this section', block_points);
+block_pts_txt = sprintf('In total, you have earned %d points', points);
+error_txt = sprintf('Moved too fast: %d     No response: %d     Wrong response: %d', move, slow, wrong);
+
 Instruct{1} = {'REST BREAK',
                ' ',
                pts_txt,

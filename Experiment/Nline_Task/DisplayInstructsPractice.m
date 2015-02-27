@@ -2,7 +2,7 @@ Instruct = {};
 
 pts_txt = sprintf('You have earned %d practice points in this section', block_p_points);
 block_pts_txt = sprintf('In total, you have earned %d practice points', p_points);
-error_txt = sprintf('Moved too soon: %d     Too Slow: %d     Wrong press: %d', p_move, p_slow, p_wrong);
+error_txt = sprintf('Moved too fast: %d     No response: %d     Wrong response: %d', p_move, p_slow, p_wrong);
 
 Instruct{1} = {'REST BREAK',
                ' ',
@@ -20,10 +20,6 @@ Instruct{1} = {'REST BREAK',
                ' ',
                'Please CLICK MOUSE when you are ready to continue'};
            
-Instruct{2} = {'Now you will see another 3 practice trials',
-                'before the start of the experiment',
-               ' ',
-               'Please CLICK MOUSE when you are ready to continue'};
 
 
 for ii = 1:length(Instruct)

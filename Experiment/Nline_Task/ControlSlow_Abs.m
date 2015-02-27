@@ -48,7 +48,7 @@ function trialResponse = ControlSlow_Abs(stim, points, left_end, right_end, line
     %trialResponse{1} = 0.5 + displacement; %Cursor will always appear outside of nline range.
 %     trialResponse{1} = probeMag + displacement; %Cursor will always appear +/- 20-40 from correct position.
     % Only works if also nline has extended endpoints
-%     trialResponse{1} = 0.8*rand + 0.1; %If rand 0 cursonr starts at 0.1 if rand 1 starts at 0.9
+%     trialResponse{1} = 0.9*rand + 0.1; %If rand 0 cursonr starts at 0.1 if rand 1 starts at 0.9
     trialResponse{1} = 0.5; %Fixed position
 
     %Extended endpoints
@@ -79,13 +79,15 @@ function trialResponse = ControlSlow_Abs(stim, points, left_end, right_end, line
     
     test = 0;
     % Wait for subject to move mouse before displaying cursor
-    [xPos_old, yPos_old] = GetMouse(win);
+    %[xPos_old, yPos_old] = GetMouse(win);
     while ~test;
-        [xPos, yPos] = GetMouse(win);
-        if or(xPos_old ~=xPos, yPos_old ~= yPos);
+        [xPos, yPos, click] = GetMouse(win);
+        click = sum(click);
+        %if or(xPos_old ~=xPos, yPos_old ~= yPos);
+        if click == 1;
             test = 1;
         end;
-        if GetSecs >= end_decision - time_fix;
+        if GetSecs >= end_decision - 0.001;
             test = 1;
             draw = 0;
         end;
@@ -96,6 +98,10 @@ function trialResponse = ControlSlow_Abs(stim, points, left_end, right_end, line
     RTHold = GetSecs - t_start;
     trialResponse{6} = RTHold;   
     
+    clearMouseInput;
+
+    FlushEvents;
+    click = 0;
     
     while ~mouseResp;
         [xPos, yPos, click] = GetMouse(win);

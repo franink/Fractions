@@ -39,9 +39,9 @@ s_nbr = str2num(filename(7:11));
 
 %Setup experiment parameters
 p.ramp_up = 14; 
-p.Mean_ITI = 5; %average 5s
+p.Mean_ITI = 4.5; %average 5s This are with decision of 2
 p.Mean_hold = 4.5; %Average 4.5s
-p.decision = 2;
+p.decision = 2.5;
 p.consider = 0.5;
 %Make sure that repeats is divisible by runs
 p.runs = 2; 
@@ -49,7 +49,7 @@ p.nStim = 16;
 p.ntasks = 3;
 p.tasks = {'Nline', 'Negline', 'Control'}; 
 p.trialSecs = p.consider + p.decision +p.Mean_hold + p.Mean_ITI;
-p.lineLength = 900;
+p.lineLength = 800;
 
 
 order_random = datasample([1,2,3,4,5,6],p.runs,'Replace',false);
@@ -159,14 +159,14 @@ for ii = 1:p.runs
 end
 
 % Create Results files
-p.NlineResults = cell(p.nStim*p.ntasks+1,31,p.runs);
+p.NlineResults = cell(p.nStim*p.ntasks+1,32,p.runs);
 
 p.time_Runs = cell(2,p.runs);
 p.task_transition = cell(length(p.tasks)+1,p.runs);
 
 %Get Labels
 for ii = 1:p.runs
-    p.NlineResults(1,:,ii) = {'Task','Probe','Line_pct','catch','iti','hold','mouse_pos','Correct','Response','RT','Error','RTHold','Click','TestX','Points','Move','Slow','Wrong','Trial','Block','ITI_onset','consider_onset','hold_onset','decision_onset','decision_end','ITI_onset_real','consider_onset_real','hold_onset_real','decision_onset_real','decision_end_real','catch_probe'};
+    p.NlineResults(1,:,ii) = {'Task','Probe','Line_pct','catch','iti','hold','mouse_pos','Correct','Response','RT','Error','RTHold','Click','TestX','Points','Move','Slow','Wrong','BadPress','Trial','Block','ITI_onset','consider_onset','hold_onset','decision_onset','decision_end','ITI_onset_real','consider_onset_real','hold_onset_real','decision_onset_real','decision_end_real','catch_probe'};
 end
 
 % p.time_Runs(1,:) ={'Run_1', 'Run_2', 'Run_3', 'Run_4'};
@@ -198,8 +198,8 @@ end
 % events
 % 16 times to be sampled randomly to each of the 16 stim in a particular
 % run and particular task
-ITI_Jits = [3.5:0.5:7 repmat(3:0.5:4.5,1,2)];
-Hold_Jits = [4:0.5:7.5 repmat(3.5:.5:5,1,2)];
+ITI_Jits = [3.5:0.5:7 repmat(3:0.5:4.5,1,2)]; % Make sure to change this to values for fMRI
+Hold_Jits = [3.5:0.5:7 repmat(3:0.5:4.5,1,2)];% Make sure to change this to values for fMRI
 
 for jj = 1:p.runs
     end_ramp_up = p.ramp_up; % after ramp_up the first nline begins
@@ -214,19 +214,19 @@ for jj = 1:p.runs
         end
         current_time = current_time + 2;
         for ii = 1:p.nStim;
-            p.NlineResults((ii+1) + ((kk-1)*p.nStim),21,jj) = {current_time}; %ITI onset
+            p.NlineResults((ii+1) + ((kk-1)*p.nStim),22,jj) = {current_time}; %ITI onset
             ITI = ITI_Jits(ii);
             p.NlineResults((ii+1) + ((kk-1)*p.nStim),5,jj) = {ITI}; %ITI
             current_time = current_time + ITI; %end of ITI
-            p.NlineResults((ii+1) + ((kk-1)*p.nStim),22,jj) = {current_time}; %consider onset
+            p.NlineResults((ii+1) + ((kk-1)*p.nStim),23,jj) = {current_time}; %consider onset
             current_time = current_time + p.consider; %end of consider
-            p.NlineResults((ii+1) + ((kk-1)*p.nStim),23,jj) = {current_time}; %hold onset
+            p.NlineResults((ii+1) + ((kk-1)*p.nStim),24,jj) = {current_time}; %hold onset
             HOLD = Hold_Jits(ii);
             p.NlineResults((ii+1) + ((kk-1)*p.nStim),6,jj) = {HOLD};
             current_time = current_time + HOLD; %end of hold
-            p.NlineResults((ii+1) + ((kk-1)*p.nStim),24,jj) = {current_time}; %decision onset
+            p.NlineResults((ii+1) + ((kk-1)*p.nStim),25,jj) = {current_time}; %decision onset
             current_time = current_time + p.decision; %end of decision
-            p.NlineResults((ii+1) + ((kk-1)*p.nStim),25,jj) = {current_time}; %end of decision
+            p.NlineResults((ii+1) + ((kk-1)*p.nStim),26,jj) = {current_time}; %end of decision
         end
         current_time = current_time + 4; %feedback_end
     end

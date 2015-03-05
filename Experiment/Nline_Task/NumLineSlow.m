@@ -1,4 +1,4 @@
-function [block_p_points, p_move, p_slow, p_wrong] = NumLineSlow(stim, time, points, left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, junk, testX, p_move, p_slow, p_wrong)
+function [block_p_points, p_move, p_slow, p_wrong, p_badpress] = NumLineSlow(stim, time, points, left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, junk, testX, p_move, p_slow, p_wrong, p_badpress)
 %plots a line starting at x1, finishing at x2, with cursor starting on
 %either left (lrStart = 0) or right (lrStart = 1) side.
 
@@ -78,7 +78,7 @@ function [block_p_points, p_move, p_slow, p_wrong] = NumLineSlow(stim, time, poi
     block_p_points = points;
     test = 0;
     
-    % Wait for subject to move mouse before displaying cursor
+    % Wait for subject to click mouse before displaying cursor
     %[xPos_old, yPos_old] = GetMouse(win);
     while ~test;
         [xPos, yPos, click] = GetMouse(win);
@@ -102,6 +102,7 @@ function [block_p_points, p_move, p_slow, p_wrong] = NumLineSlow(stim, time, poi
 
     FlushEvents;
     click = 0;
+    SetMouse(MouseStartPosX,yline,win);
     
     while ~mouseResp;
         [xPos, yPos, click] = GetMouse(win);
@@ -116,7 +117,7 @@ function [block_p_points, p_move, p_slow, p_wrong] = NumLineSlow(stim, time, poi
                     trialResponse{5} = 1;
                     p_slow = p_slow + 1;
                 end
-                if abs(trialResponse{5}) <= 0.1;
+                if abs(trialResponse{5}) <= 0.05;
                     block_p_points = points + 1;
                 end
                 if testX == 1;
@@ -144,10 +145,14 @@ function [block_p_points, p_move, p_slow, p_wrong] = NumLineSlow(stim, time, poi
                     else
                         trialResponse{5} = trialResponse{3} - correct;
                     end
-                    if abs(trialResponse{5}) <= 0.1;
+                    if abs(trialResponse{5}) <= 0.05;
                         block_p_points = points + 1;
                     else
-                        p_wrong = p_wrong + 1;
+                        if junk;
+                            p_badpress = p_badpress + 1;
+                        else
+                            p_wrong = p_wrong + 1;
+                        end
                     end
                     if testX == 1;
                         block_p_points = points;

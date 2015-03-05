@@ -2,8 +2,8 @@
 Instruct = {};
 
 
-Instruct{1} = {%'This experiment is about 20 minutes long, broken into two 9 minute sections.',
-               'This experiment is about 45 minutes long, broken into four 10 minute sections.',
+Instruct{1} = {'This experiment is about 20 minutes long, broken into two 10 minute sections.',
+               %'This experiment is about 45 minutes long, broken into four 10 minute sections.',
                ' ',
                'During each section you will have to complete',
                '3 different tasks.' 

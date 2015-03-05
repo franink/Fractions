@@ -1,4 +1,4 @@
-function trialResponse = NumLineSlow_Abs(stim, points, left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, junk, testX, end_decision, move, slow, wrong)
+function trialResponse = NumLineSlow_Abs(stim, points, left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, junk, testX, end_decision, move, slow, wrong, badpress)
 
 %plots a line starting at x1, finishing at x2, with cursor starting on
 %either left (lrStart = 0) or right (lrStart = 1) side.
@@ -25,7 +25,7 @@ function trialResponse = NumLineSlow_Abs(stim, points, left_end, right_end, line
     probeMag = stim{2};
 
     %Initialize log
-    trialResponse = {mouse_pos correct response RT error RTHold Click testX points move slow wrong};
+    trialResponse = {mouse_pos correct response RT error RTHold Click testX points move slow wrong badpress};
 
     correct = probeMag;
     
@@ -76,7 +76,7 @@ function trialResponse = NumLineSlow_Abs(stim, points, left_end, right_end, line
     Screen('Flip', win);
     
     test = 0;
-    % Wait for subject to move mouse before displaying cursor
+    % Wait for subject to click mouse before displaying cursor
     %[xPos_old, yPos_old] = GetMouse(win);
     while ~test;
         [xPos, yPos, click] = GetMouse(win);
@@ -100,6 +100,7 @@ function trialResponse = NumLineSlow_Abs(stim, points, left_end, right_end, line
 
     FlushEvents;
     click = 0;
+    SetMouse(MouseStartPosX,yline,win);
 
     while ~mouseResp;
         [xPos, yPos, click] = GetMouse(win);
@@ -114,7 +115,7 @@ function trialResponse = NumLineSlow_Abs(stim, points, left_end, right_end, line
                     trialResponse{5} = 1;
                     trialResponse{11} = slow + 1;
                 end
-                if abs(trialResponse{5}) <= 0.1;
+                if abs(trialResponse{5}) <= 0.05;
                     trialResponse{9} = points + 1;
                 end
                 if testX == 1;
@@ -142,10 +143,14 @@ function trialResponse = NumLineSlow_Abs(stim, points, left_end, right_end, line
                     else
                         trialResponse{5} = trialResponse{3} - correct;
                     end
-                    if abs(trialResponse{5}) <= 0.1;
+                    if abs(trialResponse{5}) <= 0.05;
                         trialResponse{9} = points + 1;
                     else
-                        trialResponse{12} = wrong + 1;
+                        if junk;
+                            trialResponse{13} = badpress + 1;
+                        else
+                            trialResponse{12} = wrong + 1;
+                        end
                     end
                     if testX == 1;
                         trialResponse{9} = points;

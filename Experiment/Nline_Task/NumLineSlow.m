@@ -103,9 +103,11 @@ function [block_p_points, p_move, p_slow, p_wrong, p_badpress] = NumLineSlow(sti
     FlushEvents;
     click = 0;
     SetMouse(MouseStartPosX,yline,win);
-    
+    %xPos = MouseStartPosX;
     while ~mouseResp;
         [xPos, yPos, click] = GetMouse(win);
+        %[xPosNew, yPosNew, click] = GetMouse(win);
+        %xPos = MouseStartPosX + (xPosNew-MouseStartPosX)*20;
         if ~isempty(click) || GetSecs >= t_end;
            if GetSecs >= t_end;
                 %sprintf('timeout');

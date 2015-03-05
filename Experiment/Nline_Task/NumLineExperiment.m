@@ -49,7 +49,7 @@ p.nStim = 16;
 p.ntasks = 3;
 p.tasks = {'Nline', 'Negline', 'Control'}; 
 p.trialSecs = p.consider + p.decision +p.Mean_hold + p.Mean_ITI;
-p.lineLength = 800;
+p.lineLength = 1300;
 
 
 order_random = datasample([1,2,3,4,5,6],p.runs,'Replace',false);

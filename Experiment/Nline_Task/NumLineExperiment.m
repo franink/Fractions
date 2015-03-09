@@ -39,6 +39,7 @@ s_nbr = str2num(filename(7:11));
 
 %Setup experiment parameters
 p.ramp_up = 14; 
+
 p.Mean_ITI = 4.5; %average 5s This are with decision of 2
 p.Mean_hold = 4.5; %Average 4.5s
 p.decision = 2.5;
@@ -199,6 +200,7 @@ end
 % events
 % 16 times to be sampled randomly to each of the 16 stim in a particular
 % run and particular task
+
 ITI_Jits = [3.5:0.5:7 repmat(3:0.5:4.5,1,2)]; % Make sure to change this to values for fMRI
 Hold_Jits = [3.5:0.5:7 repmat(3:0.5:4.5,1,2)];% Make sure to change this to values for fMRI
 

@@ -1,4 +1,4 @@
-function trialResponse = ControlSlow_Abs(stim, points, left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, junk, testX, end_decision, move, slow, wrong, badpress)
+function trialResponse = ControlSlow_Abs(stim, points, left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, junk, testX, end_decision, move, slow, wrong, badpress, speed)
 %plots a line starting at x1, finishing at x2, with cursor starting on
 %either left (lrStart = 0) or right (lrStart = 1) side.
 
@@ -103,9 +103,11 @@ function trialResponse = ControlSlow_Abs(stim, points, left_end, right_end, line
     FlushEvents;
     click = 0;
     SetMouse(MouseStartPosX,yline,win);
-    
+    %xPos = MouseStartPosX;
     while ~mouseResp;
-        [xPos, yPos, click] = GetMouse(win);
+        %[xPos, yPos, click] = GetMouse(win);
+        [xPosNew, yPosNew, click] = GetMouse(win);
+        xPos = MouseStartPosX + (xPosNew-MouseStartPosX)* speed;
         if ~isempty(click) || GetSecs >= end_decision - time_fix;
            if GetSecs >= end_decision - time_fix;
                 %sprintf('timeout');

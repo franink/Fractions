@@ -1,4 +1,4 @@
-function [block_p_points, p_move, p_slow, p_wrong, p_badpress] = ControlSlow(stim, time, points, left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, junk, testX, p_move, p_slow, p_wrong, p_badpress)
+function [block_p_points, p_move, p_slow, p_wrong, p_badpress] = ControlSlow(stim, time, points, left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, junk, testX, p_move, p_slow, p_wrong, p_badpress, speed)
 %plots a line starting at x1, finishing at x2, with cursor starting on
 %either left (lrStart = 0) or right (lrStart = 1) side.
 
@@ -105,9 +105,11 @@ function [block_p_points, p_move, p_slow, p_wrong, p_badpress] = ControlSlow(sti
     FlushEvents;
     click = 0;
     SetMouse(MouseStartPosX,yline,win);
-    
+    %xPos = MouseStartPosX;
     while ~mouseResp;
-        [xPos, yPos, click] = GetMouse(win);
+        %[xPos, yPos, click] = GetMouse(win);
+        [xPosNew, yPosNew, click] = GetMouse(win);
+        xPos = MouseStartPosX + (xPosNew-MouseStartPosX)* speed;
         if ~isempty(click) || GetSecs >= t_end;
            if GetSecs >= t_end;
                 %sprintf('timeout');

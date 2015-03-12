@@ -133,10 +133,12 @@ function [block_p_points, p_move, p_slow, p_wrong, p_badpress] = ControlSlow(sti
 
                 if xPos < xStart;
                     xPos = xStart;
+                    xPosNew = xStart;
                 end
 
                 if xPos > xEnd;
                     xPos = xEnd;
+                    xPosNew = xEnd;
                 end
 
                 click = sum(click);

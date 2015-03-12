@@ -131,10 +131,12 @@ function trialResponse = ControlSlow_Abs(stim, points, left_end, right_end, line
 
                 if xPos < xStart;
                     xPos = xStart;
+                    xPosNew = xStart;
                 end
 
                 if xPos > xEnd;
                     xPos = xEnd;
+                    xPosNew = xEnd;
                 end
 
                 click = sum(click);

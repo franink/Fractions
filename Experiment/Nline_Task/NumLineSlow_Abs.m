@@ -173,7 +173,7 @@ function trialResponse = NumLineSlow_Abs(stim, points, left_end, right_end, line
                 if draw == 1;
                     %Draw cursor line
                     lineSZc = round(35*ppc_adjust);
-                    Screen('Drawline', win, [0 0 0 0], xPos, yline - lineSZc/1.5, xPos, yline + lineSZc/1.5, round(5*ppc_adjust));
+                    Screen('Drawline', win, [0 0 0 0], xPos, yline - lineSZc/1.5, xPos, yline + lineSZc/1.5, round(8*ppc_adjust));
                 
                 
                     %Draw arrow for junk trials

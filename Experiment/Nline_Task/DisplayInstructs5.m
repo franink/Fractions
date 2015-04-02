@@ -11,10 +11,7 @@ Instruct{1} = {'In the following trials you will be asked to mark a',
                ' ',
                'Please CLICK MOUSE to go on to the next screen.'};
  
-Instruct{2} = {'Please make your judgment promptly. Make your best guess',
-               'rather than trying to calculate or measure exactly',
-               ' ',
-               'In the following screens you will see 4 practice trials',
+Instruct{2} = {'In the following screens you will see 4 practice trials',
                ' ',
                'Please CLICK MOUSE to begin the practice trials.'};
 

@@ -2,13 +2,14 @@
 Instruct = {};
 
 
-Instruct{1} = {'This experiment is about 20 minutes long, broken into two 10 minute sections.',
-               %'This experiment is about 45 minutes long, broken into four 10 minute sections.',
+Instruct{1} = {%'This experiment is about 20 minutes long, broken into two 10 minute sections.',
+               'This experiment is about 45 minutes long, broken into four 10 minute sections.',
                ' ',
                'During each section you will have to complete',
                '3 different tasks.' 
                ' ',
-               'We will begin with instructions and a brief practice session for each task',
+               'We will begin with a brief reminder of the instructions',
+               'and a brief practice session for each task',
                ' ',
                'Read these instructions carefully',
                'and make sure you understand them.',
@@ -19,15 +20,15 @@ Instruct{2} = {'Across all tasks, you will be paid for correct answers.',
                ' ',
                'When you answer correctly, you will receive 1 point.',
                ' ',
-               'We will keep track of these points and you will recieve 5 cents per point'
-               'at the end of the experiment, and $6 for each section',
+               'We will keep track of these points and you will receive 5 cents per point'
+               'at the end of the experiment, plus $6 for each section',
                ' ',
                ' ',
                'CLICK MOUSE to go on to the next screen.'};
                 
 Instruct{3} = {' ',
                ' ',
-               %'fMRI studies are very expensive and difficult to conduct.',
+               'fMRI studies are very expensive and difficult to conduct.',
                ' ',
                ' ',               
                'Please try your best.',

@@ -8,12 +8,13 @@ Screen('TextStyle',win, 1);
 yline = round(winRect(4)/2);
 yprobe = yline - 250;
 Box = Screen('TextBounds', win, 'XXXX');
-Screen('TextSize',win, 30);
-if probe == '.'
-    Screen('TextSize',win, 45);
-end
+Screen('TextSize',win, 32);
 probeBox = Screen('TextBounds', win, probe);
 Box = CenterRectOnPoint(Box, center + jitter, yprobe);
+if probe == '.'
+    Screen('TextSize',win, 60);
+    yprobe = yprobe - 30;
+end
 probeBox = CenterRectOnPoint(probeBox, center + jitter, yprobe);
 probeLeft = probeBox(RectLeft);
 probeTop = probeBox(RectTop);

@@ -10,55 +10,39 @@ Instruct{1} = {'In the following trials you will be asked to mark a',
                ' '
                'All trials have two phases. During the first phase, you will see',
                'a number and think about where to place it on the number line',
-               'without moving your eyes or the mouse.'
+               'WITHOUT moving your EYES or the MOUSE.'
                ' ',
-               'In the second phase you will move the cursor and click to mark the number line.'
+               'It is important for you to remember to THINK about the number',
+               'while you wait for the green dot.',
                ' ',
-               'After the number is presented, a RED dot will appear to signal',
-               'that you should fixate your eyes on the dot and wait until it changes',
-               'to GREEN. Only after the dot changes to GREEN, you should click the mouse',
-               'and start moving the cursor to mark the number line.'
+               'In the second phase you will move the cursor and click to mark the number line.',
+               'Remember that as soon as the dot turns green you will need to click the mouse',
+               'to activate the cursor, and you need to click again once you have decided',
+               'where to mark the number line.'
                ' ',
                'Please CLICK MOUSE to go on to the next screen.'};
 
                        
-Instruct{2} = {'At the beginning of each trial you will see the number line',
-                'in the middle of the screen. After some variable time an empty box',
-                'will appear above the number line to indicate that a number will appear soon.',
+Instruct{2} = {'In order to do the task correctly you need to follow these instructions:',
                 ' ',
-                'Once you see the number, your job is to THINK about where you would place it',
-        		'on the number line WITHOUT MOVING YOUR EYES. Numbers will be presented very briefly,',
-                'so make sure you keep your eyes fixated on the box above of the number line.',
+                'While the dot is RED, keep your eyes fixated on the red dot, and',
+                'THINK about the position of the number, but DO NOT move your EYES',
+                'or the MOUSE. We will be monitoring your eyes with a camera',
+                'and your mouse movements.',
                 ' ',
-                'After a brief presentation of the number, you should keep your eyes fixated',
-            	'on the RED dot until it turns GREEN. Once the dot turns GREEN you can',
-         		'activate the cursor by clicking the mouse.', 
-        		' ',
-        		'If you move the mouse BEFORE the dot turns GREEN, you will lose',
-        		'the point corresponding to that trial.',
-        		' ',
-        		'After the dot turns GREEN, you will only have 2 seconds to make a response,',
-        		'so it is important to pay full attention to the dot. Also, since you will', 
-        		'only have 2 seconds to respond, it is important that you take advantage of the waiting period',
-        		'after the number appears to THINK about where you want to place the cursor.',
-        		' ',
-        		'If your mark on the number line is within 5% of the correct position',
-                'and happens within the 2 second period, you will earn a point for the trial.',
+                'As soon as the dot turns GREEN, click the mouse to activate the cursor',
+                'and move to the position where you would like to mark the number line.',
+                ' ',
+                'If there is a black arrow below the line DO NOT click the mouse to mark the line.',
+                'If there is NO black arrow, then click the mouse to mark the line.',
+                ' ',
+                'If you follow these instructions AND you mark the number line',
+                'within 5% of the correct position and before the 3 second period ends,',
+                'you will earn a point for the trial.'
                 ' ',
                 'Please CLICK MOUSE to go on to the next screen.'};
             
-Instruct{3} =  {'On some trials, once you click the mouse',
-        		'you will see a black arrow. If you see the arrow', 
-        		'you should place the cursor above of the arrow but', 
-        		'you SHOULD NOT click the mouse. If you click the mouse',
-        		'you will lose the point for that trial.',
-                ' ',
-                'Please CLICK MOUSE to go on to the next screen.'};            
-   
-Instruct{4} = {'Please make your judgment promptly. Make your best guess',
-               'rather than trying to calculate or measure exactly',
-               ' ',
-               'In the following screens you will see 4 practice trials,'
+Instruct{3} =  {'In the following screens you will see 4 practice trials,'
                ' ',
                'Please CLICK MOUSE to begin the practice trials.'};
           

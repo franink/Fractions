@@ -178,7 +178,7 @@ function [block_p_points, p_move, p_slow, p_wrong, p_badpress] = ControlSlow(sti
                 if draw == 1;
                     %Draw cursor line
                     lineSZc = round(35*ppc_adjust);
-                    Screen('Drawline', win, [0 0 0 0], xPos, yline - lineSZc/1.5, xPos, yline + lineSZc/1.5, round(5*ppc_adjust));                
+                    Screen('Drawline', win, [0 0 0 0], xPos, yline - lineSZc/1.5, xPos, yline + lineSZc/1.5, round(8*ppc_adjust));                
                 
                     %Draw arrow for junk trials and/or syllable for control
                     %task

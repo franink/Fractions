@@ -41,17 +41,17 @@ s_nbr = str2num(filename(7:11));
 p.ramp_up = 14; 
 
 p.Mean_ITI = 4.5; %average 5s This are with decision of 2
-p.Mean_hold = 4.5; %Average 4.5s
-p.decision = 2.5;
+p.Mean_hold = 4; %Average 4.5s
+p.decision = 3;
 p.consider = 0.5;
 %Make sure that repeats is divisible by runs
-p.runs = 2; 
+p.runs = 4; 
 p.nStim = 16;
 p.ntasks = 3;
 p.tasks = {'Nline', 'Negline', 'Control'}; 
 p.trialSecs = p.consider + p.decision +p.Mean_hold + p.Mean_ITI;
-p.lineLength = 1300;
-p.speed = 1;
+p.lineLength = 1500;
+p.speed = 6;
 
 
 order_random = datasample([1,2,3,4,5,6],p.runs,'Replace',false);
@@ -171,10 +171,10 @@ for ii = 1:p.runs
     p.NlineResults(1,:,ii) = {'Task','Probe','Line_pct','catch','iti','hold','mouse_pos','Correct','Response','RT','Error','RTHold','Click','TestX','Points','Move','Slow','Wrong','BadPress','Trial','Block','ITI_onset','consider_onset','hold_onset','decision_onset','decision_end','ITI_onset_real','consider_onset_real','hold_onset_real','decision_onset_real','decision_end_real','catch_probe'};
 end
 
-% p.time_Runs(1,:) ={'Run_1', 'Run_2', 'Run_3', 'Run_4'};
-p.time_Runs(1,:) ={'Run_1', 'Run_2'};
-% p.task_transition(1,:) = {'Run_1', 'Run_2', 'Run_3', 'Run_4'};
-p.task_transition(1,:) = {'Run_1', 'Run_2'};
+p.time_Runs(1,:) ={'Run_1', 'Run_2', 'Run_3', 'Run_4'};
+%p.time_Runs(1,:) ={'Run_1', 'Run_2'};
+p.task_transition(1,:) = {'Run_1', 'Run_2', 'Run_3', 'Run_4'};
+%p.task_transition(1,:) = {'Run_1', 'Run_2'};
 
 % Separate runs into different 3D matrices to control time indpeendently
 % for each run
@@ -202,7 +202,7 @@ end
 % run and particular task
 
 ITI_Jits = [3.5:0.5:7 repmat(3:0.5:4.5,1,2)]; % Make sure to change this to values for fMRI
-Hold_Jits = [3.5:0.5:7 repmat(3:0.5:4.5,1,2)];% Make sure to change this to values for fMRI
+Hold_Jits = [3:0.5:6.5 repmat(2.5:0.5:4,1,2)];% Make sure to change this to values for fMRI
 
 for jj = 1:p.runs
     end_ramp_up = p.ramp_up; % after ramp_up the first nline begins

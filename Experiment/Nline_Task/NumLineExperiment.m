@@ -161,14 +161,14 @@ for ii = 1:p.runs
 end
 
 % Create Results files
-p.NlineResults = cell(p.nStim*p.ntasks+1,32,p.runs);
+p.NlineResults = cell(p.nStim*p.ntasks+1,33,p.runs);
 
 p.time_Runs = cell(2,p.runs);
 p.task_transition = cell(length(p.tasks)+1,p.runs);
 
 %Get Labels
 for ii = 1:p.runs
-    p.NlineResults(1,:,ii) = {'Task','Probe','Line_pct','catch','iti','hold','mouse_pos','Correct','Response','RT','Error','RTHold','Click','TestX','Points','Move','Slow','Wrong','BadPress','Trial','Block','ITI_onset','consider_onset','hold_onset','decision_onset','decision_end','ITI_onset_real','consider_onset_real','hold_onset_real','decision_onset_real','decision_end_real','catch_probe'};
+    p.NlineResults(1,:,ii) = {'Task','Probe','Line_pct','catch','iti','hold','mouse_pos','Correct','Response','RT','Error','RTHold','Click','TestX','Points','Move','Slow','Wrong','BadPress','MouseTrack','Trial','Block','ITI_onset','consider_onset','hold_onset','decision_onset','decision_end','ITI_onset_real','consider_onset_real','hold_onset_real','decision_onset_real','decision_end_real','catch_probe'};
 end
 
 p.time_Runs(1,:) ={'Run_1', 'Run_2', 'Run_3', 'Run_4'};
@@ -217,19 +217,19 @@ for jj = 1:p.runs
         end
         current_time = current_time + 2;
         for ii = 1:p.nStim;
-            p.NlineResults((ii+1) + ((kk-1)*p.nStim),22,jj) = {current_time}; %ITI onset
+            p.NlineResults((ii+1) + ((kk-1)*p.nStim),23,jj) = {current_time}; %ITI onset
             ITI = ITI_Jits(ii);
             p.NlineResults((ii+1) + ((kk-1)*p.nStim),5,jj) = {ITI}; %ITI
             current_time = current_time + ITI; %end of ITI
-            p.NlineResults((ii+1) + ((kk-1)*p.nStim),23,jj) = {current_time}; %consider onset
+            p.NlineResults((ii+1) + ((kk-1)*p.nStim),24,jj) = {current_time}; %consider onset
             current_time = current_time + p.consider; %end of consider
-            p.NlineResults((ii+1) + ((kk-1)*p.nStim),24,jj) = {current_time}; %hold onset
+            p.NlineResults((ii+1) + ((kk-1)*p.nStim),25,jj) = {current_time}; %hold onset
             HOLD = Hold_Jits(ii);
             p.NlineResults((ii+1) + ((kk-1)*p.nStim),6,jj) = {HOLD};
             current_time = current_time + HOLD; %end of hold
-            p.NlineResults((ii+1) + ((kk-1)*p.nStim),25,jj) = {current_time}; %decision onset
+            p.NlineResults((ii+1) + ((kk-1)*p.nStim),26,jj) = {current_time}; %decision onset
             current_time = current_time + p.decision; %end of decision
-            p.NlineResults((ii+1) + ((kk-1)*p.nStim),26,jj) = {current_time}; %end of decision
+            p.NlineResults((ii+1) + ((kk-1)*p.nStim),27,jj) = {current_time}; %end of decision
         end
         current_time = current_time + 4; %feedback_end
     end

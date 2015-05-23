@@ -19,13 +19,14 @@ function trialResponse = ControlSlow_Abs(stim, points, left_end, right_end, line
     Click = -1;
     RTHold = -1;
     draw = 1;
+    mousetrack = [];
 
     probe = stim(1); % Control is already string
     probeMag = stim{2};
     probeLine = stim(4);% syllable printed on the line
 
     %Initialize log
-    trialResponse = {mouse_pos correct response RT error RTHold Click testX points move slow wrong badpress};
+    trialResponse = {mouse_pos correct response RT error RTHold Click testX points move slow wrong badpress mousetrack};
     
     if junk == 0;
         correct = probeMag;
@@ -58,7 +59,7 @@ function trialResponse = ControlSlow_Abs(stim, points, left_end, right_end, line
     
     MouseStartPosX = round(trialResponse{1}*(x2-x1) + x1); %Mouse starts in random position
     SetMouse(MouseStartPosX,yline,win);
-
+    
     Screen('TextSize',win, 30);
     Screen('TextStyle',win, 1);
 
@@ -103,11 +104,13 @@ function trialResponse = ControlSlow_Abs(stim, points, left_end, right_end, line
     FlushEvents;
     click = 0;
     SetMouse(MouseStartPosX,yline,win);
+    mousetrack = [(MouseStartPosX - x1)/(x2-x1)];
     %xPos = MouseStartPosX;
     while ~mouseResp;
         %[xPos, yPos, click] = GetMouse(win);
         [xPosNew, yPosNew, click] = GetMouse(win);
         xPos = MouseStartPosX + (xPosNew-MouseStartPosX)* speed;
+        mousetrack = [mousetrack (xPos - x1)/(x2-x1)];
         if ~isempty(click) || GetSecs >= end_decision - time_fix;
            if GetSecs >= end_decision - time_fix;
                 %sprintf('timeout');
@@ -192,6 +195,7 @@ function trialResponse = ControlSlow_Abs(stim, points, left_end, right_end, line
                 Screen('Flip', win);
            end
         end
+        trialResponse{14} = mousetrack;
     end
     
     %This is if I want fixation to be included

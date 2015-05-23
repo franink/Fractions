@@ -159,21 +159,21 @@ try
             for jj = 1:p.nStim;
                 trialNbr = (p.nStim * (blockNbr_Nline-1)) + jj; % This counts across blocks
                 trialNbr_Nline = jj; %This counts within block
-                end_ITI = p.NlineResults{trialNbr+1,23,kk} + start_t;
-                end_consider = p.NlineResults{trialNbr+1,24,kk} + start_t;
-                end_hold = p.NlineResults{trialNbr+1,25,kk} + start_t;
-                end_decision = p.NlineResults{trialNbr+1,26,kk} + start_t;
+                end_ITI = p.NlineResults{trialNbr+1,24,kk} + start_t;
+                end_consider = p.NlineResults{trialNbr+1,25,kk} + start_t;
+                end_hold = p.NlineResults{trialNbr+1,26,kk} + start_t;
+                end_decision = p.NlineResults{trialNbr+1,27,kk} + start_t;
                 p.NlineResults{trialNbr+1,1,kk} = TestNline{trialNbr,5,kk}; %Task number
                 p.NlineResults(trialNbr+1,2:4,kk) = TestNline(trialNbr,1:3,kk); %probe, line_pct, catch
-                p.NlineResults{trialNbr+1,32,kk} = TestNline{trialNbr,4,kk}; %Catch probe
+                p.NlineResults{trialNbr+1,33,kk} = TestNline{trialNbr,4,kk}; %Catch probe
                 
-                [p.NlineResults(trialNbr+1,27:31,kk), p.NlineResults(trialNbr+1,7:19,kk)] =...
+                [p.NlineResults(trialNbr+1,28:32,kk), p.NlineResults(trialNbr+1,7:20,kk)] =...
                     TrialLoop(TestNline(trialNbr,:,kk),points, left_end, right_end, lineLength,...
                     lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, TestNline{trialNbr,3,kk},...
                     task, start_t, end_ITI, end_consider, end_hold, end_decision, move, slow, wrong, badpress,p.speed);
                     
-                p.NlineResults(trialNbr+1,20,kk) = {trialNbr_Nline}; %trial number within block
-                p.NlineResults(trialNbr+1,21,kk) = {blockNbr_Nline}; %block number
+                p.NlineResults(trialNbr+1,21,kk) = {trialNbr_Nline}; %trial number within block
+                p.NlineResults(trialNbr+1,22,kk) = {blockNbr_Nline}; %block number
                 points = p.NlineResults{trialNbr+1,15,kk};
                 move = p.NlineResults{trialNbr+1,16,kk};
                 slow = p.NlineResults{trialNbr+1,17,kk};

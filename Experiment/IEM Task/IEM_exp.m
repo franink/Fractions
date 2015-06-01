@@ -18,7 +18,10 @@ filename = getFilename();
 %Setup experiment parameters
 
 p.ramp_up = 16; %MUX2 with TR 2sec requires 16secs (8TRs) of rampup
+p.ITI_Min = 1.5;
+p.ITI_Max = 4.5;
 p.mean_ITI = 3; %1.5-4.5 range
+p.ITI_Jits = [3.5:0.5:7 repmat(3:0.5:4.5,1,2)];
 p.stim_t = 4;
 p.runs = 4; %This number has to be decided
 p.nLocArm = 3;
@@ -39,8 +42,12 @@ p.responseWindow = 1.0;
 p.repetitions = 1;
 p.nNull = ceil(p.repetitions * p.nLoc * p.null);
 p.nTrials = p.repetitions * p.nLoc + p.nNull;
+p.ITI_Jits = [3.5:0.5:7 repmat(3:0.5:4.5,1,2)];
 p.runDur = p.nTrials * p.trialSecs;
 
+%This code is not finalized
+numberofITITrepeats = floor(p.nTrials/length(p.ITI_Min:0.5:p.ITI_Max));
+numberofITIremainders = mod(p.nTrials,length(p.ITI_Min:0.5:p.ITI_Max));
 
 %Cursor helps no one here - kill it
 HideCursor;

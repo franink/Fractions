@@ -196,7 +196,7 @@ catch
 end
 
 % Setup the onsets for each stimulus
-% simulates going through the whole run and kees track of time and catch
+% simulates going through the whole run and keeps track of time and catch
 % events
 % 16 times to be sampled randomly to each of the 16 stim in a particular
 % run and particular task

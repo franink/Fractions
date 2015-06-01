@@ -13,7 +13,7 @@ clear Instruct;
 
 
 %Filename to save data
-filename = getNlineFilename();
+filename = getFilename();
 
 %Setup experiment parameters
 
@@ -33,6 +33,8 @@ p.stimContrastChange = 0.5; %prob of trials with contrast change
 p.contrastChangeWindow = [0.5 p.stim_t-0.75]; % period over which contrast can change
 p.minTargFrame = p.contrastChangeWindow(1)*p.flickerFreq + 1; % these are period index (which period can we start target?)
 p.maxTargFrame = p.contrastChangeWindow(2)*p.flickerFreq + 1; % +1 is because want cycle *starting at* this point in time
+p.minTargSep = 1; % number of periods
+p.nTargs = 1;
 p.responseWindow = 1.0;
 p.repetitions = 1;
 p.nNull = ceil(p.repetitions * p.nLoc * p.null);
@@ -47,7 +49,7 @@ HideCursor;
 ListenChar(2);
 
 % monitor stuff
-p.refreshRate = 100; % refresh rate is normally 100 but change this to 60 when on laptop!
+p.refreshRate = 60; % refresh rate is normally 100 but change this to 60 when on laptop!
 p.vDistCM = 277; %CNI
 p.screenWidthCM = 58.6; % CNI
 p.usedScreenSizeDeg = 12;
@@ -80,7 +82,7 @@ p.textColor = p.LUT(p.textColor)';
 try
     screenid = min(Screen('Screens')); %Originally it was max instead of min changed it for testing purposes (max corresponds to secondary display)
     
-    [win, p.SRect] = Screen('OpenWindow', screenid, WhiteIndex(screenid)/2);
+    [win, p.sRect] = Screen('OpenWindow', screenid, WhiteIndex(screenid)/2);
     
     color = [255 255 255 255]; %Cam's value was 0 200 255
 catch
@@ -96,7 +98,7 @@ p.ifi=Screen('GetFlipInterval', win);   % inter-frame-time
 if p.fps==0                           % if fps does not register, then set the fps based on ifi
     p.fps=1/p.ifi;
 end
-p.flickerFrames = 1/p.flickerFreq*p.fps;
+p.flickerFrames = round(1/p.flickerFreq*p.fps);
 
 % make sure the refreshrate is ok
 if abs(p.fps-p.refreshRate)>5
@@ -129,15 +131,104 @@ Screen('TextColor', win, p.textColor);
 % start a block loop. I will probably send this loops to a different file
 % like I did in my previous experiments (this laso just mught be the
 % creation of run stimuli sequences, if so then leave here but translate to
-% my stile
+% my style
 for r=p.runs
-    p.stimLocsX = linspace(-p.nLocArm,p.nLocArm, p.nLocArm*2+1); %Need to get rid of repeated center presentation
-    p.stimLocsY = linspace(-p.nLocArm,p.nLocArm, p.nLocArm*2+1);
-    p.stimLocsX = [p.stimLocsX zeros(1,length(p.stimLocsX))];
-    p.stimLocsY = [zeros(1,length(p.stimLocsY)) p.stimLocsY];
-    p.dimStim = Shuffle([ones(1, length(p.stimLocsX)/2) zeros(1,length(p.stimLocsX)/2)]);
+    armNeg = linspace(-p.nLocArm, 1, p.nLocArm);
+    armPos = linspace(1, p.nLocArm, p.nLocArm);
+    p.stimLocsX = [armNeg armPos];
+    p.stimLocsY = zeros(1, length(p.stimLocsX));
+    p.stimLocsX = [p.stimLocsX zeros(1,length(p.stimLocsY)) 0]';
+    p.stimLocsY = [p.stimLocsY armNeg armPos 0]';
+    p.dimStim = Shuffle([ones(ceil(length(p.stimLocsX)/2),1); zeros(floor(length(p.stimLocsX)/2),1)]); %If odd number of locations more dimcontrasts (ceil(dimcontrasts))
     
+    % mark null trials
+    p.stimLocsX(end+1:p.nTrials) = NaN;
+    p.stimLocsY(end+1:p.nTrials) = NaN;
+    p.null = zeros(p.nTrials,1); p.null(isnan(p.stimLocsX)) = 1;
+    p.dimStim(end+1:p.nTrials) = 0;
     
+    % shuffle trial order
+    p.rndInd = randperm(p.nTrials);
+    p.stimLocsX = p.stimLocsX(p.rndInd);
+    p.stimLocsY = p.stimLocsY(p.rndInd);
+    p.null = p.null(p.rndInd);
+    p.dimStim = p.dimStim(p.rndInd);
+    
+    %allocate some arrays for storing the subject response
+    p.hits =        0;
+    p.misses =      0;
+    p.falseAlarms = 0;
+    p.correctRejections = 0; % sum of these by end of expt = p.nTrials
+    p.rt =          nan(p.nTrials, 1);       % store the rt on each trial
+    p.resp =        zeros(p.nTrials, p.stimExpose);     % store the response
+    p.trialStart =  nan(p.nTrials,1);
+    p.trialEnd =  nan(p.nTrials,1);
+    p.stimStart =  nan(p.nTrials,1);
+    p.stimEnd =  nan(p.nTrials,1);
+    
+    % generate checkerboards we use...
+    p.stimContrast = 1;
+    p.targetContrast = p.stimContrast - p.stimContrastChange; 
+    c = make_checkerboard(p.radPix,p.sfPix,p.stimContrast);
+    stim(1)=Screen('MakeTexture', win, c{1});
+    stim(2)=Screen('MakeTexture', win, 127*ones(size(c{2})));
+    stim(3)=Screen('MakeTexture', win, c{2});
+    t = make_checkerboard(p.radPix,p.sfPix,p.targetContrast);
+    dimStim(1)=Screen('MakeTexture', win, t{1});
+    dimStim(2)=stim(2);
+    dimStim(3)=Screen('MakeTexture', win, t{2});
+    
+    % generate a distribution for choosing the target time
+    nStims = (p.stimExpose/p.refreshRate)*(p.flickerFreq ); % nStims = # periods to show (# of stim1/stim2 or targ1/targ2 alternations)
+    p.targX = p.minTargFrame:p.minTargSep:p.maxTargFrame;   % this will be used to select when to show target(s) 
+    for ii=1:p.nTrials
+        tmp = randperm(length(p.targX));
+        %p.targFrame(ii,:) = sort(p.targX(tmp(1:p.nTargs)))*(p.flickerFreq*2)-(p.flickerFreq*2)+1;
+        p.targFrame(ii,:) = sort(p.targX(tmp(1:p.nTargs)))*(p.flickerFrames) - p.flickerFrames+1;
+        p.targOnTime(ii,:) = p.targFrame(ii,:).*(1/p.refreshRate);
+        p.targMaxRespTime(ii,:) = (p.targFrame(ii,:).*(1/p.refreshRate))+p.responseWindow;
+    end
+    
+    % pick the stimulus sequence for every trial (the exact grating to be shown)
+    for i=1:p.nTrials
+        p.flickerSequ = repmat([ones(1,round(p.flickerFrames/2)) 2*ones(1,round(p.flickerFrames/2))],1,round(p.stimExpose/p.flickerFrames));
+        p.stimSequ(1,:)=p.flickerSequ;
+        p.flickerSequ = repmat([ones(1,round(p.flickerFrames/2)) 2*ones(1,round(p.flickerFrames/2)) 3*ones(1,round(p.flickerFrames/2)) 2*ones(1,round(p.flickerFrames/2))],1,(0.5)*round(p.stimExpose/p.flickerFrames));
+        p.stimDimSequ(i,:) = zeros(1,size(p.flickerSequ,2));
+        % mark the tarket spots with low contrast stims
+        for j=1:p.nTargs
+            p.stimDimSequ(i,p.targFrame(i,j):p.targFrame(i,j)+2*p.flickerFrames-1) = 1;
+            %p.stimSequ(i,p.targFrame(i,j):p.targFrame(i,j)+2*p.flickerFrames-1)=p.stimSequ(i,p.targFrame(i,j):p.targFrame(i,j)+2*p.flickerFrames-1)+2;
+            % +2 above --> change to "target"
+        end
+    end
+    
+    %after all initialization is done, sit and wait for scanner synch
+    resp=0;
+    
+    FlushEvents;
+    GetChar;
+    
+    disp('starting block');
+    cumTime = GetSecs;
+    p.startExp = cumTime;
+    
+    for t = 1:p.nTrials:
+        
+        p = TrialLoop(p,center,t, stim, dimstim);
+        
+    end
+    
+    p.endRun(r) = GetSecs;
+    
+end
+    
+p.endExp = GetSecs;
+
+save(fName, 'p');
+
+ListenChar(0);
+Screen('CloseAll');
     
     
     

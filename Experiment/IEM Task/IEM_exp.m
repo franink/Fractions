@@ -18,16 +18,13 @@ filename = getFilename();
 %Setup experiment parameters
 
 p.ramp_up = 16; %MUX2 with TR 2sec requires 16secs (8TRs) of rampup
-p.ITI_Min = 1.5;
-p.ITI_Max = 4.5;
-p.mean_ITI = 3; %1.5-4.5 range
-p.ITI_Jits = [3.5:0.5:7 repmat(3:0.5:4.5,1,2)];
+
 p.stim_t = 4;
 p.runs = 4; %This number has to be decided
 p.nLocArm = 3;
 p.nLoc = p.nLocArm * 4 + 1; %'+' horizontal-vertical meridian each arm has 3 plus center
 p.ntasks = 1;
-p.null = 0.25; 
+p.null = 0.4; 
 p.tasks = {'attend stim'}; 
 p.trialSecs = p.stim_t + p.mean_ITI;
 p.flickerFreq   = 6; % Hz
@@ -40,14 +37,23 @@ p.minTargSep = 1; % number of periods
 p.nTargs = 1;
 p.responseWindow = 1.0;
 p.repetitions = 1;
-p.nNull = ceil(p.repetitions * p.nLoc * p.null);
+p.nNull = round(p.repetitions * p.nLoc * p.null);
 p.nTrials = p.repetitions * p.nLoc + p.nNull;
 p.ITI_Jits = [3.5:0.5:7 repmat(3:0.5:4.5,1,2)];
 p.runDur = p.nTrials * p.trialSecs;
+p.ITI_Min = 1.5;
+p.ITI_Max = 4.5;
+p.mean_ITI = 3;
+itis = [p.ITI_Min:0.5:p.mean_ITI-.5 p.mean_ITI+.5:.5:p.ITI_Max]; %Set of unique iti values
+nmbr_ITIrepeats = floor(p.nTrials/length(itis));
+nmbr_ITIremainders = mod(p.nTrials,length(itis));
+if nmbr_ITIremainders == 0;
+    p.ITI_Jits = repmat(itis,1,nmbr_ITIrepeats);
+else
+    p.ITI_Jits = [repmat(itis,1,nmbr_ITIrepeats) repmat(3,1,nmbr_ITIremainders)];
+end
+        
 
-%This code is not finalized
-numberofITITrepeats = floor(p.nTrials/length(p.ITI_Min:0.5:p.ITI_Max));
-numberofITIremainders = mod(p.nTrials,length(p.ITI_Min:0.5:p.ITI_Max));
 
 %Cursor helps no one here - kill it
 HideCursor;
@@ -139,9 +145,11 @@ Screen('TextColor', win, p.textColor);
 % like I did in my previous experiments (this laso just mught be the
 % creation of run stimuli sequences, if so then leave here but translate to
 % my style
+
+armNeg = linspace(-p.nLocArm, 1, p.nLocArm);
+armPos = linspace(1, p.nLocArm, p.nLocArm);
+
 for r=p.runs
-    armNeg = linspace(-p.nLocArm, 1, p.nLocArm);
-    armPos = linspace(1, p.nLocArm, p.nLocArm);
     p.stimLocsX = [armNeg armPos];
     p.stimLocsY = zeros(1, length(p.stimLocsX));
     p.stimLocsX = [p.stimLocsX zeros(1,length(p.stimLocsY)) 0]';

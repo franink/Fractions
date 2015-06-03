@@ -176,29 +176,29 @@ for r=p.runs
         dimStim(rep,:) = p.dimStim(rep,p.rndInd);
     end
     
-    %Then combine all repetitioms in one line for each block
+    %Then combine
         
-%         
-%         
-%     p.stimLocsX(r,:) = [armNeg armPos];
-%     p.stimLocsY(r,:) = zeros(1, length(p.stimLocsX));
-%     p.stimLocsX(r,:) = [p.stimLocsX zeros(1,length(p.stimLocsY)) 0]';
-%     p.stimLocsY(r,:) = [p.stimLocsY armNeg armPos 0]';
-%     p.dimStim(r,:) = Shuffle([ones(ceil(length(p.stimLocsX)/2),1); zeros(floor(length(p.stimLocsX)/2),1)]); %If odd number of locations more dimcontrasts (ceil(dimcontrasts))
-%     
-%     % mark null trials
-%     p.stimLocsX(r,end+1:p.nTrials) = NaN;
-%     p.stimLocsY(r,end+1:p.nTrials) = NaN;
-%     p.null = zeros(r,p.nTrials,1); p.null(isnan(p.stimLocsX)) = 1;
-%     p.dimStim(r,end+1:p.nTrials) = 0;
-%     
-%     % shuffle trial order
-%     p.rndInd(r,:) = randperm(p.nTrials);
-%     p.ITI_Jits(r,:) = p.ITI_Jits(r,p.rndInd);
-%     p.stimLocsX(r,:) = p.stimLocsX(r,p.rndInd);
-%     p.stimLocsY(r,:) = p.stimLocsY(r,p.rndInd);
-%     p.null(r,:) = p.null(r,p.rndInd);
-%     p.dimStim(r,:) = p.dimStim(r,p.rndInd);
+        
+        
+    p.stimLocsX(r,:) = [armNeg armPos];
+    p.stimLocsY(r,:) = zeros(1, length(p.stimLocsX));
+    p.stimLocsX(r,:) = [p.stimLocsX zeros(1,length(p.stimLocsY)) 0]';
+    p.stimLocsY(r,:) = [p.stimLocsY armNeg armPos 0]';
+    p.dimStim(r,:) = Shuffle([ones(ceil(length(p.stimLocsX)/2),1); zeros(floor(length(p.stimLocsX)/2),1)]); %If odd number of locations more dimcontrasts (ceil(dimcontrasts))
+    
+    % mark null trials
+    p.stimLocsX(r,end+1:p.nTrials) = NaN;
+    p.stimLocsY(r,end+1:p.nTrials) = NaN;
+    p.null = zeros(r,p.nTrials,1); p.null(isnan(p.stimLocsX)) = 1;
+    p.dimStim(r,end+1:p.nTrials) = 0;
+    
+    % shuffle trial order
+    p.rndInd(r,:) = randperm(p.nTrials);
+    p.ITI_Jits(r,:) = p.ITI_Jits(r,p.rndInd);
+    p.stimLocsX(r,:) = p.stimLocsX(r,p.rndInd);
+    p.stimLocsY(r,:) = p.stimLocsY(r,p.rndInd);
+    p.null(r,:) = p.null(r,p.rndInd);
+    p.dimStim(r,:) = p.dimStim(r,p.rndInd);
     
     %allocate some arrays for storing the subject response
     p.hits(r) =        0;

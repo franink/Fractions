@@ -1,27 +1,27 @@
-function [p] = TrialLoop(p,center,t, stim, dimstim)
+function [p] = TrialLoop(p,center,t, stim, dimStim, end_ITI, end_Stim, start_t)
 %Controls all stages of a single trial
 % This includes ITI, Stim presentation and collection of response
 % Returns results parameters in p struct
 
 left = [center(1)-p.xOffsetPix, center(2)];
-Screen('DrawDots', win, [0,0], p.fixSizePix, p.fixColor, left, 0); %change fixation point
-Screen('DrawingFinished', win);
-Screen('Flip', win);
-
-resp = 0;
 
 xLoc = p.stimLocsX(t);
 yLoc = p.stimLocsY(t);
-        
-p.trialStart(t) = GetSecs;
 
 stimRect = [center(1) + p.radPix*(xLoc) - p.radPix, center(2) + p.radPix*(yLoc) - p.radPix,...
             center(1) + p.radPix*(xLoc) + p.radPix, center(2) + p.radPix*(yLoc) + p.radPix];
 %stimRect = round(stimRect + p.staggered*p.radPix/4.*[1 1 1 1]); % staggered is -1 for up/left, +1 for down/right
 
+Screen('DrawDots', win, [0,0], p.fixSizePix, p.fixColor, left, 0); %change fixation point
+Screen('DrawingFinished', win);
+Screen('Flip', win);
+p.ITI_StartReal(t) = GetSecs - start_t;
+WaitTill(end_ITI);
+
 frmCnt=1; %frame count
-p.stimStart(t) = GetSecs;   % start a clock to get the stim onset time
+p.stim_StartReal(t) = GetSecs - start_t;   % start a clock to get the stim onset time
 % STIMULUS
+%% NEED TO FIGURE OUT IF END OF STIM SHOULD BE CONTROLLED BY FRAMES OR TIME (end_Stim)
     while frmCnt<=p.stimExpose % if we want multiple exposure durations, add that here
 
         

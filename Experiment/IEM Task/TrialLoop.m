@@ -53,11 +53,11 @@ function [p] = TrialLoop(p,center,t, stim, dimStim, end_ITI, end_Stim, start_t)
 %             [resp, timeStamp] = checkForResp(p.keys, p.escape); % checks both buttons...
             if~isempty(resp);
                 p.resp(t) = resp;
-                p.respTime(t) = timeStamp;
+                p.respTime(t) = timeStamp; %from stim onset in seconds
                 %p.RT(t) = Need to figure out what is the time in which
                 %stim dims. Also, need to figure what to do for when there
                 %is no dimstim (maybe don't need RT at all
-                p.respFrame(t) = frmCnt;
+                p.respFrame(t) = frmCnt; %from stim onset in frames
             end
             
         end
@@ -73,7 +73,7 @@ function [p] = TrialLoop(p,center,t, stim, dimStim, end_ITI, end_Stim, start_t)
     
 %% Have not checked the code for hits, etc...    
      % hits:
-    if  p.validTarget(t) && ~isempty(p.actualRespFrm(t).d)
+    if  p.dimStim(t) && ~isempty(p.actualRespFrm(t).d) %still not sure of this
         p.hits = p.hits+1;
         p.rt(t) = 0; %??
         %p.rt(t) = (p.actualRespFrm(t).d(1) - p.targetOnset(t)) * 1/p.fps;

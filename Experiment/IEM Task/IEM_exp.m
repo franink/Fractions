@@ -276,7 +276,9 @@ for r= 1:p.runs
     p.falseAlarms(r) = 0;
     p.correctRejections(r) = 0; % sum of these by end of expt = p.nTrials
     p.rt(:,r) =          nan(p.nTrials, 1);       % store the rt on each trial
-    p.resp(:,:,r) =        zeros(p.nTrials, p.stimExpose, r);     % store the response
+    p.resp(:,r) =        zeros(p.nTrials, 1);     % store the response
+    p.respTime(:,r) =    zeros(p.nTrials, 1); %from stim onset in seconds
+    p.respFrame(:,r) =   zeros(p.nTrials, 1); %from stim onset in frames
     p.trialStart(:,r) =  nan(p.nTrials,1);
     p.trialEnd(:,r) =  nan(p.nTrials,1);
     p.stimStart(:,r) =  nan(p.nTrials,1);

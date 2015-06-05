@@ -204,6 +204,49 @@ for r= 1:p.runs
     
     tmp = condition';
     p.conditon(r,:) = tmp(:)'; 
+    
+%% Need to check if this section is correct specifically if this should be 
+    %done inside the run block, the repetition block or outside of any of
+    %this
+    
+    % generate checkerboards we use...
+    p.stimContrast = 1;
+    p.targetContrast = p.stimContrast - p.stimContrastChange; 
+    c = make_checkerboard(p.radPix,p.sfPix,p.stimContrast);
+    stim(1)=Screen('MakeTexture', win, c{1});
+    stim(2)=Screen('MakeTexture', win, 127*ones(size(c{2})));
+    stim(3)=Screen('MakeTexture', win, c{2});
+    t = make_checkerboard(p.radPix,p.sfPix,p.targetContrast);
+    dimStim(1)=Screen('MakeTexture', win, t{1});
+    dimStim(2)=stim(2);
+    dimStim(3)=Screen('MakeTexture', win, t{2});
+ 
+    % generate a distribution for choosing the target time
+    nStims = (p.stimExpose/p.refreshRate)*(p.flickerFreq ); % nStims = # periods to show (# of stim1/stim2 or targ1/targ2 alternations)
+    p.targX = p.minTargFrame:p.minTargSep:p.maxTargFrame;   % this will be used to select when to show target(s) 
+    for ii=1:p.nTrials
+        tmp = randperm(length(p.targX));
+        %p.targFrame(ii,:) = sort(p.targX(tmp(1:p.nTargs)))*(p.flickerFreq*2)-(p.flickerFreq*2)+1;
+        p.targFrame(ii,:) = sort(p.targX(tmp(1:p.nTargs)))*(p.flickerFrames) - p.flickerFrames+1;
+        p.targOnTime(ii,:) = p.targFrame(ii,:).*(1/p.refreshRate);
+        p.targMaxRespTime(ii,:) = (p.targFrame(ii,:).*(1/p.refreshRate))+p.responseWindow;
+    end
+    
+    % pick the stimulus sequence for every trial (the exact grating to be shown)
+    for i=1:p.nTrials
+        p.flickerSequ = repmat([ones(1,round(p.flickerFrames/2)) 2*ones(1,round(p.flickerFrames/2))],1,round(p.stimExpose/p.flickerFrames));
+        p.stimSequ(1,:)=p.flickerSequ;
+        p.flickerSequ = repmat([ones(1,round(p.flickerFrames/2)) 2*ones(1,round(p.flickerFrames/2)) 3*ones(1,round(p.flickerFrames/2)) 2*ones(1,round(p.flickerFrames/2))],1,(0.5)*round(p.stimExpose/p.flickerFrames));
+        p.stimDimSequ(i,:) = zeros(1,size(p.flickerSequ,2));
+        % mark the tarket spots with low contrast stims
+        for j=1:p.nTargs
+            p.stimDimSequ(i,p.targFrame(i,j):p.targFrame(i,j)+2*p.flickerFrames-1) = 1;
+            %p.stimSequ(i,p.targFrame(i,j):p.targFrame(i,j)+2*p.flickerFrames-1)=p.stimSequ(i,p.targFrame(i,j):p.targFrame(i,j)+2*p.flickerFrames-1)+2;
+            % +2 above --> change to "target"
+        end
+    end
+    
+%% end of section I need to check
         
 %         
 %         

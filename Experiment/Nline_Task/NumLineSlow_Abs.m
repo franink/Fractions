@@ -125,7 +125,7 @@ function trialResponse = NumLineSlow_Abs(stim, points, left_end, right_end, line
                     trialResponse{9} = points + 1;
                 end
                 if testX == 1;
-                    troalResponse{9} = points;
+                    trialResponse{9} = points;
                     trialResponse{10} = move + 1;
                 end
                 mouseResp = 1;

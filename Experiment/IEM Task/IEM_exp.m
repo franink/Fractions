@@ -26,7 +26,6 @@ p.nLoc = p.nLocArm * 4 + 1; %'+' horizontal-vertical meridian each arm has 3 plu
 p.ntasks = 1;
 p.percentnull = 0.4; 
 p.tasks = {'attend stim'}; 
-p.trialSecs = p.stim_t + p.mean_ITI;
 p.flickerFreq   = 6; % Hz
 p.flickerPer  = 1/p.flickerFreq; % s
 p.stimContrastChange = 0.5; %prob of trials with contrast change
@@ -36,15 +35,16 @@ p.maxTargFrame = p.contrastChangeWindow(2)*p.flickerFreq + 1; % +1 is because wa
 p.minTargSep = 1; % number of periods
 p.nTargs = 1;
 p.responseWindow = 1.0;
-p.repetitions = 1;
+p.repetitions = 2;
+p.TrialSet = p.nLoc + round(p.percentnull*p.nLoc);
 p.nNull = round(p.repetitions * p.nLoc * p.percentnull);
-p.TrialSet = p.nLoc + p.nNull;
-p.nTrials = p.repetitions * p.nLoc + p.nNull;
+p.nTrials = p.repetitions * (p.TrialSet);
 p.ITI_Jits = [3.5:0.5:7 repmat(3:0.5:4.5,1,2)];
-p.runDur = p.nTrials * p.trialSecs;
 p.ITI_Min = 1.5;
 p.ITI_Max = 4.5;
 p.mean_ITI = 3;
+p.trialSecs = p.stim_t + p.mean_ITI;
+p.runDur = p.nTrials * p.trialSecs;
 itis = [p.ITI_Min:0.5:p.mean_ITI-.5 p.mean_ITI+.5:.5:p.ITI_Max]; %Set of unique iti values
 nmbr_ITIrepeats = floor(p.nTrials/length(itis));
 nmbr_ITIremainders = mod(p.nTrials,length(itis));
@@ -79,9 +79,9 @@ p.fixColor      = [180 180 180];%[155, 155, 155];
 p.fixSizeDeg    = .1131;
 
 % font stuff
-p.fontSize = 24;    
-p.fontName = 'ARIAL';   
-p.textColor = [100, 100, 100];
+p.fontSize = 40;    
+p.fontName = 'HELVETICA';   
+p.textColor = [255, 255, 255];
 
 
 % --------------------Screen properties----------------------------%
@@ -147,106 +147,88 @@ Screen('TextColor', win, p.textColor);
 % creation of run stimuli sequences, if so then leave here but translate to
 % my style
 
-armNeg = linspace(-p.nLocArm, 1, p.nLocArm);
+armNeg = linspace(-p.nLocArm, -1, p.nLocArm);
 armPos = linspace(1, p.nLocArm, p.nLocArm);
 
-p.StimOnset = zeros(p.runs,p.nTrials);
-p.StimEnd = zeros(p.runs,p.nTrials);
-p.ITI_Onset = zeors(p.runs,p.nTrials);
-p.Condition = zeros(p.runs,p.nTrials); %order left-right;up-down;center;null
+p.StimOnset = zeros(p.nTrials,p.runs);
+p.StimEnd = zeros(p.nTrials,p.runs);
+p.ITI_Onset = zeros(p.nTrials,p.runs);
+p.Condition = zeros(p.nTrials,p.runs); %order left-right;up-down;center;null
 
 % prepare run before start of scan
+
+%allocate some arrays for storing the subject response
+    p.hits =        0;
+    p.misses =      0;
+    p.falseAlarms = 0;
+    p.correctRejections = 0; % sum of these by end of expt = p.nTrials
+    p.rt =          nan(p.nTrials, p.runs);       % store the rt on each trial
+    p.resp =        zeros(p.nTrials, p.runs);     % store the response
+    p.respTime =    zeros(p.nTrials, p.runs); %from stim onset in seconds
+    p.respFrame =   zeros(p.nTrials, p.runs); %from stim onset in frames
+    p.trialStart =  nan(p.nTrials,p.runs);
+    p.trialEnd =  nan(p.nTrials,p.runs);
+    p.stimStart =  nan(p.nTrials,p.runs);
+    p.stimEnd =  nan(p.nTrials,p.runs);
+    p.stim_StartReal = zeros(p.nTrials, p.runs);
+    p.stim_EndReal = zeros(p.nTrials, p.runs);
+    p.targOnTimeReal = zeros(p.nTrials, p.runs);
+    
+    
 for r= 1:p.runs
     % Need to distinguish here from runs and repettions.
     % I should probably shuffle independently for each repetition but then
     % combine all results and files in a format the is separate only for
     % runs and not repettions
+    tmpx = [armNeg armPos];
+    tmpy = zeros(1, length(tmpx));
+    tmpx = [tmpx, zeros(1,length(tmpy)) 0]';
+    tmpy = [tmpy, armNeg armPos 0]';
+    stimLocsX = zeros(p.nLoc,p.repetitions);
+    stimLocsX = zeros(p.nLoc,p.repetitions);
+    dimStim = zeros(p.TrialSet,p.repetitions);
     for rep = 1:p.repetitions
-        stimLocsX(rep,:) = [armNeg armPos];
-        stimLocsY(rep,:) = zeros(1, length(p.stimLocsX));
-        stimLocsX(rep,:) = [p.stimLocsX zeros(1,length(p.stimLocsY)) 0]';
-        stimLocsY(rep,:) = [p.stimLocsY armNeg armPos 0]';
-        dimStim(rep,:) = Shuffle([ones(ceil(length(p.stimLocsX)/2),1); zeros(floor(length(p.stimLocsX)/2),1)]); %If odd number of locations more dimcontrasts (ceil(dimcontrasts))
-        condition(rep,:) = 1:p.nLoc; %order left-right;up-down;center;
+        stimLocsX(1:p.nLoc,rep) = tmpx;
+        stimLocsY(1:p.nLoc,rep) = tmpy;
+%         stimLocsX(rep,:) = [armNeg armPos];
+%         stimLocsY(rep,:) = zeros(1, length(stimLocsX));
+%         stimLocsX(rep,:) = [stimLocsX(rep,:) zeros(1,length(stimLocsY)) 0]';
+%         stimLocsY(rep,:) = [stimLocsY(rep,:) armNeg armPos 0]';
+        dimStim(1:ceil(p.nLoc/2),rep) = ones;
+        dimStimOnes = ceil(p.nLoc/2);
+        dimStim(:,rep) = Shuffle([ones(dimStimOnes,1); zeros(p.TrialSet-dimStimOnes,1)]); %If odd number of locations more dimcontrasts (ceil(dimcontrasts))
+        condition(1:p.nLoc,rep) = 1:p.nLoc; %order left-right;up-down;center;
     
         % mark null trials
-        stimLocsX(rep,end+1:p.TrialSet) = NaN;
-        stimLocsY(rep,end+1:p.TrialSet) = NaN;
-        null = zeros(p.repetitions,p.TrialSet,1); null(isnan(stimLocsX)) = 1;
-        dimStim(rep,end+1:p.TrialSet) = 0;
-        condition(rep,end+1:p.TrialSet) = p.nLoc + 1; %order left-right;up-down;center;
+        stimLocsX(p.nLoc+1:p.TrialSet,rep) = NaN;
+        stimLocsY(p.nLoc+1:p.TrialSet,rep) = NaN;
+        null = zeros(p.TrialSet,p.repetitions,1); null(isnan(stimLocsX)) = 1;
+        %dimStim(end+1:p.TrialSet,rep) = 0;
+        condition(p.nLoc+1:p.TrialSet,rep) = p.nLoc + 1; %order left-right;up-down;center;
         
     
         % shuffle trial order
-        rndInd(rep,:) = randperm(p.TrialSet);
-        stimLocsX(rep,:) = stimLocsX(rep,rndInd);
-        stimLocsY(rep,:) = stimLocsY(rep,rndInd);
-        null(rep,:) = null(rep,rndInd);
-        dimStim(rep,:) = dimStim(rep,rndInd);
-        condition(rep,:) = condition(rep,rndInd);
+        rndInd(:,rep) = randperm(p.TrialSet);
+        stimLocsX(:,rep) = stimLocsX(rndInd(:,rep),rep);
+        stimLocsY(:,rep) = stimLocsY(rndInd(:,rep),rep);
+        null(:,rep) = null(rndInd(:,rep),rep);
+        dimStim(:,rep) = dimStim(rndInd(:,rep),rep);
+        condition(:,rep) = condition(rndInd(:,rep),rep);
     end
     
     %Then combine all repetitioms in one line for each block
-    tmp = rndInd';
-    p.rndInd(r,:) = tmp(:)';
+    p.rndInd(:,r) = rndInd(:);
     
-    tmp = stimLocsX';
-    p.stimLocsX(r,:) = tmp(:)';
+    p.stimLocsX(:,r) = stimLocsX(:);
     
-    tmp = stimLocsY';
-    p.stimLocsY(r,:) = tmp(:)';
+    p.stimLocsY(:,r) = stimLocsY(:);
     
-    tmp = null';
-    p.null(r,:) = tmp(:)';
+    p.null(:,r) = null(:);
     
-    tmp = dimStim';
-    p.dimStim(r,:) = tmp(:)';
+    p.dimStim(:,r) = dimStim(:);
     
-    tmp = condition';
-    p.conditon(r,:) = tmp(:)'; 
+    p.conditon(:,r) = condition(:); 
     
-%% Need to check if this section is correct specifically if this should be 
-    %done inside the run block, the repetition block or outside of any of
-    %this
-    
-    % generate checkerboards we use...
-    p.stimContrast = 1;
-    p.targetContrast = p.stimContrast - p.stimContrastChange; 
-    c = make_checkerboard(p.radPix,p.sfPix,p.stimContrast);
-    stim(1)=Screen('MakeTexture', win, c{1});
-    stim(2)=Screen('MakeTexture', win, 127*ones(size(c{2})));
-    stim(3)=Screen('MakeTexture', win, c{2});
-    t = make_checkerboard(p.radPix,p.sfPix,p.targetContrast);
-    dimStim(1)=Screen('MakeTexture', win, t{1});
-    dimStim(2)=stim(2);
-    dimStim(3)=Screen('MakeTexture', win, t{2});
- 
-    % generate a distribution for choosing the target time
-    nStims = (p.stimExpose/p.refreshRate)*(p.flickerFreq ); % nStims = # periods to show (# of stim1/stim2 or targ1/targ2 alternations)
-    p.targX = p.minTargFrame:p.minTargSep:p.maxTargFrame;   % this will be used to select when to show target(s) 
-    for ii=1:p.nTrials
-        tmp = randperm(length(p.targX));
-        %p.targFrame(ii,:) = sort(p.targX(tmp(1:p.nTargs)))*(p.flickerFreq*2)-(p.flickerFreq*2)+1;
-        p.targFrame(ii,:) = sort(p.targX(tmp(1:p.nTargs)))*(p.flickerFrames) - p.flickerFrames+1;
-        p.targOnTime(ii,:) = p.targFrame(ii,:).*(1/p.refreshRate);
-        p.targMaxRespTime(ii,:) = (p.targFrame(ii,:).*(1/p.refreshRate))+p.responseWindow;
-    end
-    
-    % pick the stimulus sequence for every trial (the exact grating to be shown)
-    for i=1:p.nTrials
-        p.flickerSequ = repmat([ones(1,round(p.flickerFrames/2)) 2*ones(1,round(p.flickerFrames/2))],1,round(p.stimExpose/p.flickerFrames));
-        p.stimSequ(1,:)=p.flickerSequ;
-        p.flickerSequ = repmat([ones(1,round(p.flickerFrames/2)) 2*ones(1,round(p.flickerFrames/2)) 3*ones(1,round(p.flickerFrames/2)) 2*ones(1,round(p.flickerFrames/2))],1,(0.5)*round(p.stimExpose/p.flickerFrames));
-        p.stimDimSequ(i,:) = zeros(1,size(p.flickerSequ,2));
-        % mark the tarket spots with low contrast stims
-        for j=1:p.nTargs
-            p.stimDimSequ(i,p.targFrame(i,j):p.targFrame(i,j)+2*p.flickerFrames-1) = 1;
-            %p.stimSequ(i,p.targFrame(i,j):p.targFrame(i,j)+2*p.flickerFrames-1)=p.stimSequ(i,p.targFrame(i,j):p.targFrame(i,j)+2*p.flickerFrames-1)+2;
-            % +2 above --> change to "target"
-        end
-    end
-    
-%% end of section I need to check
         
 %         
 %         
@@ -270,30 +252,16 @@ for r= 1:p.runs
 %     p.null(r,:) = p.null(r,p.rndInd);
 %     p.dimStim(r,:) = p.dimStim(r,p.rndInd);
     
-    %allocate some arrays for storing the subject response
-    p.hits(r) =        0;
-    p.misses(r) =      0;
-    p.falseAlarms(r) = 0;
-    p.correctRejections(r) = 0; % sum of these by end of expt = p.nTrials
-    p.rt(:,r) =          nan(p.nTrials, 1);       % store the rt on each trial
-    p.resp(:,r) =        zeros(p.nTrials, 1);     % store the response
-    p.respTime(:,r) =    zeros(p.nTrials, 1); %from stim onset in seconds
-    p.respFrame(:,r) =   zeros(p.nTrials, 1); %from stim onset in frames
-    p.trialStart(:,r) =  nan(p.nTrials,1);
-    p.trialEnd(:,r) =  nan(p.nTrials,1);
-    p.stimStart(:,r) =  nan(p.nTrials,1);
-    p.stimEnd(:,r) =  nan(p.nTrials,1);
-    
     %Generate timing for each trial in absolute time...
     end_ramp_up = p.ramp_up;
     current_time = end_ramp_up;
-    p.ITI_JITS(r,:) = datasample(ITI_Jits, p.nTrials, 'Replace', false);
+    p.ITI_JITS(:,r) = datasample(ITI_Jits, p.nTrials, 'Replace', false);
     for ii = 1:p.nTrials
-        p.ITI_Onset(r,ii) = current_time;
-        current_time = current_time + p.ITI_JITS(r,ii);
-        p.StimOnset(r,ii) = current_time;
+        p.ITI_Onset(ii,r) = current_time;
+        current_time = current_time + p.ITI_JITS(ii,r);
+        p.StimOnset(ii,r) = current_time;
         current_time = current_time + p.stim_t;
-        p.StimEnd(r,ii) = current_time;
+        p.StimEnd(ii,r) = current_time;
     end
        
 end

@@ -18,7 +18,7 @@ h = winRect(RectBottom);
 %Text size is 40, style is 1, color is color
 Screen('TextSize',Window, p.fontSize);
 Screen('TextStyle',Window,1);
-Screen('TextFont',win, p.fontName);
+Screen('TextFont',Window, p.fontName);
 
 %Draw text into backbuffer
 fbox11 = Screen('TextBounds', Window, Fract); 

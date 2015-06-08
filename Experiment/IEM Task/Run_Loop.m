@@ -14,7 +14,7 @@ try
     
     
     for r= 1:p.runs
-    
+        %% check this section
         % generate checkerboards we use...
         p.stimContrast = 1;
         p.targetContrast = p.stimContrast - p.stimContrastChange;
@@ -51,7 +51,7 @@ try
                 % +2 above --> change to "target"
             end
         end
-        
+        %% end of section to be checked
         % wait for scanner trigger '5'
         DrawCenteredNum('Waiting for experimenter', win, p, 0.3);
         WaitTill('9');
@@ -69,12 +69,12 @@ try
         p.startRun(r) = start_t;
         WaitTill(start_t + p.ramp_up);
         
-        for t = 1:p.nTrials:
+        for t = 1:p.nTrials
             
-            end_ITI = p.StimOnset(r,t) + start_t;
-            end_Stim = p.StimEnd(r,t) + start_t;
+            end_ITI = p.StimOnset(t,r) + start_t;
+            end_Stim = p.StimEnd(t,r) + start_t;
             
-            p = TrialLoop(p,center,t, stim, dimStim, end_ITI, end_Stim, start_t); %This loop draws a fixation and draws a stim
+            p = TrialLoop(p,center,t,r,stim, dimStim, end_ITI, end_Stim, start_t); %This loop draws a fixation and draws a stim
             
         end
         

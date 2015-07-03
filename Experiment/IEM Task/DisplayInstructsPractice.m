@@ -25,7 +25,7 @@ Instruct{1} = {'REST BREAK',
 for ii = 1:length(Instruct)
     %This is the code if we want to use mouse instead of keyboard
     clearMouseInput;
-    TextDisplay(Instruct{ii}, win, color);
+    TextDisplay(Instruct{ii}, win, p.textColor);
     Screen('Flip', win);
     WaitSecs(0.5);GetClicks(win,0);
 %     %This is the code if we want to use keyboard instead of mouse to move

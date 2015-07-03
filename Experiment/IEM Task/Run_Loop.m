@@ -57,12 +57,15 @@ try
         WaitTill('9');
         DrawCenteredNum('Waiting for scanner', win, p, 0.3);
         WaitTill('5'); %Use this only if used in a scanner that sends 5
+        5
+        DrawCenteredNum('Ready', win, p, 0.3);
+        
         
         % Send trigger to scanner
-        s = serial('/dev/tty.usbmodem12341', 'BaudRate', 57600);
-        fopen(s);
-        fprintf(s, '[t]');
-        fclose(s);
+%         s = serial('/dev/tty.usbmodem12341', 'BaudRate', 57600);
+%         fopen(s);
+%         fprintf(s, '[t]');
+%         fclose(s);
         
         start_t = GetSecs;
         
@@ -74,7 +77,7 @@ try
             end_ITI = p.StimOnset(t,r) + start_t;
             end_Stim = p.StimEnd(t,r) + start_t;
             
-            p = TrialLoop(p,center,t,r,stim, dimStim, end_ITI, end_Stim, start_t); %This loop draws a fixation and draws a stim
+            p = TrialLoop(p,t,r,stim, dimStim, end_ITI, end_Stim, start_t, win, c); %This loop draws a fixation and draws a stim
             
         end
         

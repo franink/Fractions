@@ -1,8 +1,8 @@
 Instruct = {};
 
-pts_txt = sprintf('You have earned %d practice points in this section', block_p_points);
-block_pts_txt = sprintf('In total, you have earned %d practice points', p_points);
-error_txt = sprintf('Too soon: %d    Too slow: %d    Wrong position: %d    Should not press: %d', p_move, p_slow, p_wrong, p_badpress);
+pts_txt = sprintf('You have earned %d practice points in this section', 10);
+block_pts_txt = sprintf('In total, you have earned %d practice points', 20);
+error_txt = sprintf('Too soon: %d    Too slow: %d    Wrong position: %d    Should not press: %d', 5, 6, 7, 8);
 
 Instruct{1} = {'END OF PRACTICE',
                ' ',
@@ -27,7 +27,7 @@ Instruct{1} = {'END OF PRACTICE',
 for ii = 1:length(Instruct)
     %This is the code if we want to use mouse instead of keyboard
     clearMouseInput;
-    TextDisplay(Instruct{ii}, win, color);
+    TextDisplay(Instruct{ii}, win, p.textColor);
     Screen('Flip', win);
     WaitSecs(0.5);GetClicks(win,0);
 end

@@ -1,18 +1,18 @@
-function [p] = TrialLoop(p,center,t,r,stim,dimStim,end_ITI,end_Stim,start_t)
+function [p] = TrialLoop(p,t,r,stim,dimStim,end_ITI,end_Stim,start_t, win, c)
 %Controls all stages of a single trial
 % This includes ITI, Stim presentation and collection of response
 % Returns results parameters in p struct
 
-    left = [center(1)-p.xOffsetPix, center(2)];
+    left = [p.center(1), p.center(2)];
 
     xLoc = p.stimLocsX(t,r);
     yLoc = p.stimLocsY(t,r);
 
-    stimRect = [center(1) + p.radPix*(xLoc) - p.radPix, center(2) + p.radPix*(yLoc) - p.radPix,...
-                center(1) + p.radPix*(xLoc) + p.radPix, center(2) + p.radPix*(yLoc) + p.radPix];
+    stimRect = [p.center(1) + p.radPix*(xLoc) - p.radPix, p.center(2) + p.radPix*(yLoc) - p.radPix,...
+                p.center(1) + p.radPix*(xLoc) + p.radPix, p.center(2) + p.radPix*(yLoc) + p.radPix];
     %stimRect = round(stimRect + p.staggered*p.radPix/4.*[1 1 1 1]); % staggered is -1 for up/left, +1 for down/right
 
-    Screen('DrawDots', win, [0,0], p.fixSizePix, p.fixColor, left, 0); %change fixation point
+    Screen('DrawDots', win, [0,0], p.fixSizePix, p.fixColor, left, 0);
     Screen('DrawingFinished', win);
     Screen('Flip', win);
     p.ITI_StartReal(t,r) = GetSecs - start_t;
@@ -39,20 +39,20 @@ function [p] = TrialLoop(p,center,t,r,stim,dimStim,end_ITI,end_Stim,start_t)
             end
             
             % apperture around fixation
-            Screen('DrawDots', win, [0 0], p.appSizePix, p.backColor, left, 1);
-
+            Screen('DrawDots', win, [0,0], p.fixSizePix, p.fixColor, left, 0); %change fixation point
+            
 %             if ~p.dimStim(t) && p.stimSequ(t,frmCnt)>2
 %                Screen('DrawTexture',w, stim(p.stimSequ(t,frmCnt)-2),Screen('Rect',stim(p.stimSequ(t,frmCnt))),stimRect);
 %             else
 %                Screen('DrawTexture',w, stim(p.stimSequ(t,frmCnt)),Screen('Rect',stim(p.stimSequ(t,frmCnt))),stimRect);
 %             end
 
-            Screen('DrawingFinished', w); % Tell PTB that no further drawing commands will follow before Screen('Flip')
-            Screen('Flip', w);
+            Screen('DrawingFinished', win); % Tell PTB that no further drawing commands will follow before Screen('Flip')
+            Screen('Flip', win);
 
             % check response...
             
-            [resp, timeStamp] = WaitTill({'1','2'}); % buttons need to be decided
+            [resp, timeStamp] = WaitTill({'1','2'}) % buttons need to be decided
 %             [resp, timeStamp] = checkForResp(p.keys, p.escape); % checks both buttons...
             if~isempty(resp);
                 p.resp(t,r) = resp;
@@ -69,8 +69,8 @@ function [p] = TrialLoop(p,center,t,r,stim,dimStim,end_ITI,end_Stim,start_t)
     p.stim_EndReal(t,r) = GetSecs - start_t;
     
     % clear out screen
-    Screen('DrawDots', w, [0,0], p.fixSizePix, p.fixColor, left, 0); %draw fixation point
-    Screen('Flip',w);
+    Screen('DrawDots', win, [0,0], p.fixSizePix, p.fixColor, left); %draw fixation point
+    Screen('Flip',win);
     
 %% Have not checked the code for hits, etc...
      % hits:

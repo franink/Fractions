@@ -73,10 +73,13 @@ p.usedScreenSizeDeg = 12;
 p.radDeg = p.usedScreenSizeDeg/(p.nLocArm*2+2); %edge of stim touches borders of screen
 p.sfDeg = .6785; %TS parameter value, might need to be changed
 
+p.backColor     = [128, 128, 128];      % background color
+
 %fixation point properties
 p.fixColor      = [180 180 180];%[155, 155, 155];
 % p.fixSizeDeg    = .25 * .4523;                  % size of dot
 p.fixSizeDeg    = .1131;
+p.appSizeDeg    = p.fixSizeDeg * 4;     % size of apperture surrounding dot
 
 % font stuff
 p.fontSize = 40;    
@@ -134,7 +137,7 @@ p = deg2pix(p);
 
 % compute and store the center of the screen: p.sRect contains the upper
 % left coordinates (x,y) and the lower right coordinates (x,y)
-center = [(p.sRect(3) - p.sRect(1))/2, (p.sRect(4) - p.sRect(2))/2];
+p.center = [(p.sRect(3) - p.sRect(1))/2, (p.sRect(4) - p.sRect(2))/2];
 
 Screen('TextSize', win, p.fontSize);
 Screen('TextStyle', win, 1);
@@ -186,7 +189,7 @@ for r= 1:p.runs
     tmpy = [tmpy, armNeg armPos 0]';
     stimLocsX = zeros(p.nLoc,p.repetitions);
     stimLocsX = zeros(p.nLoc,p.repetitions);
-    dimStim = zeros(p.TrialSet,p.repetitions);
+    dimstim = zeros(p.TrialSet,p.repetitions);
     for rep = 1:p.repetitions
         stimLocsX(1:p.nLoc,rep) = tmpx;
         stimLocsY(1:p.nLoc,rep) = tmpy;
@@ -194,9 +197,9 @@ for r= 1:p.runs
 %         stimLocsY(rep,:) = zeros(1, length(stimLocsX));
 %         stimLocsX(rep,:) = [stimLocsX(rep,:) zeros(1,length(stimLocsY)) 0]';
 %         stimLocsY(rep,:) = [stimLocsY(rep,:) armNeg armPos 0]';
-        dimStim(1:ceil(p.nLoc/2),rep) = ones;
+        dimstim(1:ceil(p.nLoc/2),rep) = ones;
         dimStimOnes = ceil(p.nLoc/2);
-        dimStim(:,rep) = Shuffle([ones(dimStimOnes,1); zeros(p.TrialSet-dimStimOnes,1)]); %If odd number of locations more dimcontrasts (ceil(dimcontrasts))
+        dimstim(:,rep) = Shuffle([ones(dimStimOnes,1); zeros(p.TrialSet-dimStimOnes,1)]); %If odd number of locations more dimcontrasts (ceil(dimcontrasts))
         condition(1:p.nLoc,rep) = 1:p.nLoc; %order left-right;up-down;center;
     
         % mark null trials
@@ -212,7 +215,7 @@ for r= 1:p.runs
         stimLocsX(:,rep) = stimLocsX(rndInd(:,rep),rep);
         stimLocsY(:,rep) = stimLocsY(rndInd(:,rep),rep);
         null(:,rep) = null(rndInd(:,rep),rep);
-        dimStim(:,rep) = dimStim(rndInd(:,rep),rep);
+        dimstim(:,rep) = dimstim(rndInd(:,rep),rep);
         condition(:,rep) = condition(rndInd(:,rep),rep);
     end
     
@@ -225,7 +228,7 @@ for r= 1:p.runs
     
     p.null(:,r) = null(:);
     
-    p.dimStim(:,r) = dimStim(:);
+    p.dimStim(:,r) = dimstim(:);
     
     p.conditon(:,r) = condition(:); 
     

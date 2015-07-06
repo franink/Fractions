@@ -171,7 +171,6 @@ p.Condition = zeros(p.nTrials,p.runs); %order left-right;up-down;center;null
     p.respFrame =   zeros(p.nTrials, p.runs); %from stim onset in frames
     p.trialStart =  nan(p.nTrials,p.runs);
     p.trialEnd =  nan(p.nTrials,p.runs);
-    p.stimStart =  nan(p.nTrials,p.runs);
     p.stimEnd =  nan(p.nTrials,p.runs);
     p.stim_StartReal = zeros(p.nTrials, p.runs);
     p.stim_EndReal = zeros(p.nTrials, p.runs);
@@ -189,7 +188,7 @@ for r= 1:p.runs
     tmpy = [tmpy, armNeg armPos 0]';
     stimLocsX = zeros(p.nLoc,p.repetitions);
     stimLocsX = zeros(p.nLoc,p.repetitions);
-    dimstim = zeros(p.TrialSet,p.repetitions);
+    dimstim = zeros(p.nLoc,p.repetitions);
     for rep = 1:p.repetitions
         stimLocsX(1:p.nLoc,rep) = tmpx;
         stimLocsY(1:p.nLoc,rep) = tmpy;
@@ -199,14 +198,14 @@ for r= 1:p.runs
 %         stimLocsY(rep,:) = [stimLocsY(rep,:) armNeg armPos 0]';
         dimstim(1:ceil(p.nLoc/2),rep) = ones;
         dimStimOnes = ceil(p.nLoc/2);
-        dimstim(:,rep) = Shuffle([ones(dimStimOnes,1); zeros(p.TrialSet-dimStimOnes,1)]); %If odd number of locations more dimcontrasts (ceil(dimcontrasts))
+        %dimstim(:,rep) = Shuffle([ones(dimStimOnes,1); zeros(p.TrialSet-dimStimOnes,1)]); %If odd number of locations more dimcontrasts (ceil(dimcontrasts))
         condition(1:p.nLoc,rep) = 1:p.nLoc; %order left-right;up-down;center;
     
         % mark null trials
         stimLocsX(p.nLoc+1:p.TrialSet,rep) = NaN;
         stimLocsY(p.nLoc+1:p.TrialSet,rep) = NaN;
         null = zeros(p.TrialSet,p.repetitions,1); null(isnan(stimLocsX)) = 1;
-        %dimStim(end+1:p.TrialSet,rep) = 0;
+        dimstim(end+1:p.TrialSet,rep) = 0;
         condition(p.nLoc+1:p.TrialSet,rep) = p.nLoc + 1; %order left-right;up-down;center;
         
     
@@ -230,7 +229,7 @@ for r= 1:p.runs
     
     p.dimStim(:,r) = dimstim(:);
     
-    p.conditon(:,r) = condition(:); 
+    p.Conditon(:,r) = condition(:); 
     
         
 %         
@@ -269,6 +268,51 @@ for r= 1:p.runs
        
 end
 
+%% check this section
+% generate checkerboards we use...
+p.stimContrast = 1;
+p.targetContrast = p.stimContrast - p.stimContrastChange;
+c = make_checkerboard(p.radPix,p.sfPix,p.stimContrast);
+%c{1}
+stim(1)=Screen('MakeTexture', win, c{1});
+stim(2)=Screen('MakeTexture', win, 127*ones(size(c{2})));
+stim(3)=Screen('MakeTexture', win, c{2});
+%stim(3)
+T = make_checkerboard(p.radPix,p.sfPix,p.targetContrast);
+%T{1}
+dimStim(1)=Screen('MakeTexture', win, T{1});
+dimStim(2)=stim(2);
+dimStim(3)=Screen('MakeTexture', win, T{2});
+%dimStim(3)
+        
+p.targX = p.minTargFrame:p.minTargSep:p.maxTargFrame;   % this will be used to select when to show target(s)
+
+p.flickerSequ = repmat([ones(1,round(p.flickerFrames/2)) 2*ones(1,round(p.flickerFrames/2)) 3*ones(1,round(p.flickerFrames/2)) 2*ones(1,round(p.flickerFrames/2))],1,(0.5)*round(p.stimExpose/p.flickerFrames));
+p.stimDimSequ = zeros(p.nTrials, p.runs, size(p.flickerSequ,2));
+    for r= 1:p.runs
+        % generate a distribution for choosing the target time
+        for ii=1:p.nTrials
+            tmp = randperm(length(p.targX));
+            %p.targFrame(ii,:) = sort(p.targX(tmp(1:p.nTargs)))*(p.flickerFreq*2)-(p.flickerFreq*2)+1;
+            p.targFrame(ii,r) = sort(p.targX(tmp(1:p.nTargs)))*(p.flickerFrames) - p.flickerFrames+1;
+            p.targOnTime(ii,r) = p.targFrame(ii,r).*(1/p.refreshRate);
+            p.targMaxRespTime(ii,r) = (p.targFrame(ii,r).*(1/p.refreshRate))+p.responseWindow;
+        end
+        
+        % pick the stimulus sequence for every trial (the exact grating to be shown)
+        
+        for i=1:p.nTrials
+            p.flickerSequ = repmat([ones(1,round(p.flickerFrames/2)) 2*ones(1,round(p.flickerFrames/2))],1,round(p.stimExpose/p.flickerFrames));
+            p.stimSequ(i,r,:)=p.flickerSequ;
+            %p.flickerSequ = repmat([ones(1,round(p.flickerFrames/2)) 2*ones(1,round(p.flickerFrames/2)) 3*ones(1,round(p.flickerFrames/2)) 2*ones(1,round(p.flickerFrames/2))],1,(0.5)*round(p.stimExpose/p.flickerFrames));
+            % mark the tarket spots with low contrast stims
+            p.stimDimSequ(i,r,p.targFrame(i,r):p.targFrame(i,r)+2*p.flickerFrames-1) = 1;
+            %p.stimSequ(i,p.targFrame(i,j):p.targFrame(i,j)+2*p.flickerFrames-1)=p.stimSequ(i,p.targFrame(i,j):p.targFrame(i,j)+2*p.flickerFrames-1)+2;
+            % +2 above --> change to "target"
+        end
+    end
+%% end of section to check
+
 % Start of experiment
 %Introductory instructions
 DrawCenteredNum('Welcome', win, p, 0.5);
@@ -277,7 +321,7 @@ DisplayInstructsInt; %% Need to write instructions
 
 %start run loop for start of scan
 
-p = Run_Loop(filename, win, p);
+p = Run_Loop(filename, win, p, stim, dimStim);
 
 
 DrawCenteredNum('Thank You', win, color, 2);

@@ -1,4 +1,4 @@
-function [p] = TrialLoop(p,t,r,stim,dimStim,end_ITI,end_Stim,start_t, win, c)
+function [p] = TrialLoop(p,t,r,stim,dimStim,end_ITI,end_Stim,start_t, win)
 %Controls all stages of a single trial
 % This includes ITI, Stim presentation and collection of response
 % Returns results parameters in p struct
@@ -20,18 +20,21 @@ function [p] = TrialLoop(p,t,r,stim,dimStim,end_ITI,end_Stim,start_t, win, c)
 
     frmCnt=1; %frame count
     p.stim_StartReal(t,r) = GetSecs - start_t;   % start a clock to get the stim onset time
-    p.targOnTimeReal(t,r) = p.targOnTime(t,r) + start_t;
+    p.targOnTimeReal(t,r) = p.targOnTime(t,r) + stim_StartReal(t,r);
     % STIMULUS
     FlushEvents;
     
     
     while frmCnt<=p.stimExpose % if we want multiple exposure durations, add that here
-
         if GetSecs >= end_Stim;
             break
         end
-        
+        %frmCnt
         if ~p.null(t)
+            p.dimStim(t,r)
+            p.stimDimSequ(t,r,frmCnt)
+            dimStim(p.flickerSequ(1,frmCnt))
+            stim(p.flickerSequ(1,frmCnt))
             if p.dimStim(t,r) && p.stimDimSequ(t,r,frmCnt) % if stim is dimmed right now, draw a dimStim
                 Screen('DrawTexture',win,dimStim(p.flickerSequ(1,frmCnt)),Screen('Rect',dimStim(p.flickerSequ(1,frmCnt))),stimRect);
             else % otherwise, draw a regular stim (both determined by flickerSequ)
@@ -52,14 +55,20 @@ function [p] = TrialLoop(p,t,r,stim,dimStim,end_ITI,end_Stim,start_t, win, c)
 
             % check response...
             
-            [resp, timeStamp] = WaitTill({'1','2'}) % buttons need to be decided
+            [resp, timeStamp] = ReadKey('1'); % buttons need to be decided
 %             [resp, timeStamp] = checkForResp(p.keys, p.escape); % checks both buttons...
             if~isempty(resp);
-                p.resp(t,r) = resp;
+                p.resp(t,r) = str2num(resp);
                 p.respTime(t,r) = timeStamp; %from stim onset in seconds
                 p.rt(t,r) = timeStamp - p.targOnTimeReal(t,r); %from stim dims time
                 p.respFrame(t,r) = frmCnt; %from stim onset in frames
             end
+        else
+            resp = NaN;
+            p.resp(t,r) = NaN;
+            p.respTime(t,r) = NaN; %from stim onset in seconds
+            p.rt(t,r) = NaN; %from stim dims time
+            p.respFrame(t,r) = NaN; %from stim onset in frames
             
         end
         frmCnt = frmCnt + 1;

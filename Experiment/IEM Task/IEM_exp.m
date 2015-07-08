@@ -39,12 +39,12 @@ p.repetitions = 2;
 p.TrialSet = p.nLoc + round(p.percentnull*p.nLoc);
 p.nNull = round(p.repetitions * p.nLoc * p.percentnull);
 p.nTrials = p.repetitions * (p.TrialSet);
-p.ITI_Jits = [3.5:0.5:7 repmat(3:0.5:4.5,1,2)];
+%p.ITI_Jits = [3.5:0.5:7 repmat(3:0.5:4.5,1,2)];
 p.ITI_Min = 1.5;
 p.ITI_Max = 4.5;
 p.mean_ITI = 3;
 p.trialSecs = p.stim_t + p.mean_ITI;
-p.runDur = p.nTrials * p.trialSecs;
+p.runDur = (p.nTrials * p.trialSecs) + p.ramp_up;
 itis = [p.ITI_Min:0.5:p.mean_ITI-.5 p.mean_ITI+.5:.5:p.ITI_Max]; %Set of unique iti values
 nmbr_ITIrepeats = floor(p.nTrials/length(itis));
 nmbr_ITIremainders = mod(p.nTrials,length(itis));
@@ -64,8 +64,10 @@ ListenChar(2);
 
 % monitor stuff
 p.refreshRate = 60; % refresh rate is normally 100 but change this to 60 when on laptop!
-p.vDistCM = 277; %CNI
-p.screenWidthCM = 58.6; % CNI
+%p.vDistCM = 277; %CNI
+%p.screenWidthCM = 58.6; % CNI
+p.vDistCM = 120; %desktop
+p.screenWidthCM = 40; % desktop
 p.usedScreenSizeDeg = 12;
 
 %stimulus geometry (in degrees, note that these vars have the phrase 'Deg'
@@ -165,16 +167,20 @@ p.Condition = zeros(p.nTrials,p.runs); %order left-right;up-down;center;null
     p.misses =      0;
     p.falseAlarms = 0;
     p.correctRejections = 0; % sum of these by end of expt = p.nTrials
-    p.rt =          nan(p.nTrials, p.runs);       % store the rt on each trial
+    p.rt =          nan(p.nTrials, p.runs);       % store the rt on each trial (from target onset in seconds)
     p.resp =        zeros(p.nTrials, p.runs);     % store the response
     p.respTime =    zeros(p.nTrials, p.runs); %from stim onset in seconds
     p.respFrame =   zeros(p.nTrials, p.runs); %from stim onset in frames
-    p.trialStart =  nan(p.nTrials,p.runs);
-    p.trialEnd =  nan(p.nTrials,p.runs);
-    p.stimEnd =  nan(p.nTrials,p.runs);
+    p.ITI_Onset = nan(p.nTrials,p.runs);
+    p.StimOnset = nan(p.nTrials,p.runs);
+    p.StimEnd =  nan(p.nTrials,p.runs);
     p.stim_StartReal = zeros(p.nTrials, p.runs);
     p.stim_EndReal = zeros(p.nTrials, p.runs);
     p.targOnTimeReal = zeros(p.nTrials, p.runs);
+    p.hit =        zeros(p.nTrials, p.runs);
+    p.miss =      zeros(p.nTrials, p.runs);
+    p.falseAlarm = zeros(p.nTrials, p.runs);
+    p.correctRejection = zeros(p.nTrials, p.runs);
     
     
 for r= 1:p.runs
@@ -299,6 +305,7 @@ p.stimDimSequ = zeros(p.nTrials, p.runs, size(p.flickerSequ,2));
             p.targMaxRespTime(ii,r) = (p.targFrame(ii,r).*(1/p.refreshRate))+p.responseWindow;
         end
         
+        
         % pick the stimulus sequence for every trial (the exact grating to be shown)
         
         for i=1:p.nTrials
@@ -309,6 +316,15 @@ p.stimDimSequ = zeros(p.nTrials, p.runs, size(p.flickerSequ,2));
             p.stimDimSequ(i,r,p.targFrame(i,r):p.targFrame(i,r)+2*p.flickerFrames-1) = 1;
             %p.stimSequ(i,p.targFrame(i,j):p.targFrame(i,j)+2*p.flickerFrames-1)=p.stimSequ(i,p.targFrame(i,j):p.targFrame(i,j)+2*p.flickerFrames-1)+2;
             % +2 above --> change to "target"
+        end
+        
+        %When null trial, remove target information
+        for t=1:p.nTrials
+            if p.null(t,r) == 1 || p.dimStim(t,r) == 0
+                p.targFrame(t,r) = NaN;
+                p.targOnTime(t,r) = NaN;
+                p.targMaxRespTime(t,r) = NaN;
+            end
         end
     end
 %% end of section to check

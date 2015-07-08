@@ -20,7 +20,7 @@ function [p] = TrialLoop(p,t,r,stim,dimStim,end_ITI,end_Stim,start_t, win)
 
     frmCnt=1; %frame count
     p.stim_StartReal(t,r) = GetSecs - start_t;   % start a clock to get the stim onset time
-    p.targOnTimeReal(t,r) = p.targOnTime(t,r) + stim_StartReal(t,r);
+    p.targOnTimeReal(t,r) = p.targOnTime(t,r) + p.stim_StartReal(t,r);
     % STIMULUS
     FlushEvents;
     
@@ -31,10 +31,6 @@ function [p] = TrialLoop(p,t,r,stim,dimStim,end_ITI,end_Stim,start_t, win)
         end
         %frmCnt
         if ~p.null(t)
-            p.dimStim(t,r)
-            p.stimDimSequ(t,r,frmCnt)
-            dimStim(p.flickerSequ(1,frmCnt))
-            stim(p.flickerSequ(1,frmCnt))
             if p.dimStim(t,r) && p.stimDimSequ(t,r,frmCnt) % if stim is dimmed right now, draw a dimStim
                 Screen('DrawTexture',win,dimStim(p.flickerSequ(1,frmCnt)),Screen('Rect',dimStim(p.flickerSequ(1,frmCnt))),stimRect);
             else % otherwise, draw a regular stim (both determined by flickerSequ)
@@ -58,10 +54,12 @@ function [p] = TrialLoop(p,t,r,stim,dimStim,end_ITI,end_Stim,start_t, win)
             [resp, timeStamp] = ReadKey('1'); % buttons need to be decided
 %             [resp, timeStamp] = checkForResp(p.keys, p.escape); % checks both buttons...
             if~isempty(resp);
-                p.resp(t,r) = str2num(resp);
-                p.respTime(t,r) = timeStamp; %from stim onset in seconds
-                p.rt(t,r) = timeStamp - p.targOnTimeReal(t,r); %from stim dims time
-                p.respFrame(t,r) = frmCnt; %from stim onset in frames
+                if p.resp(t,r) == 0; %Prevent that participant clicks more than once
+                    p.resp(t,r) = str2num(resp);
+                    p.respTime(t,r) = (timeStamp - start_t) - p.stim_StartReal(t,r); %from stim onset in seconds
+                    p.rt(t,r) = (timeStamp - start_t) - p.targOnTimeReal(t,r); %from stim dims time
+                    p.respFrame(t,r) = frmCnt; %from stim onset in frames
+                end
             end
         else
             resp = NaN;
@@ -69,6 +67,10 @@ function [p] = TrialLoop(p,t,r,stim,dimStim,end_ITI,end_Stim,start_t, win)
             p.respTime(t,r) = NaN; %from stim onset in seconds
             p.rt(t,r) = NaN; %from stim dims time
             p.respFrame(t,r) = NaN; %from stim onset in frames
+            p.hit(t,r) = NaN;
+            p.miss(t,r) = NaN;
+            p.falseAlarm(t,r) = NaN;
+            p.correctRejection(t,r) = NaN;
             
         end
         frmCnt = frmCnt + 1;
@@ -81,25 +83,32 @@ function [p] = TrialLoop(p,t,r,stim,dimStim,end_ITI,end_Stim,start_t, win)
     Screen('DrawDots', win, [0,0], p.fixSizePix, p.fixColor, left); %draw fixation point
     Screen('Flip',win);
     
-%% Have not checked the code for hits, etc...
      % hits:
-    if  p.dimStim(t,r) && ~isempty(resp)
-        p.hits = p.hits+1;
-        %p.rt(t) = (p.actualRespFrm(t).d(1) - p.targetOnset(t)) * 1/p.fps;
+    if  p.dimStim(t,r) && p.resp(t,r) == 1
+        if p.rt(t,r) <= p.responseWindow
+            p.hits = p.hits+1;
+            p.hit(t,r) = 1;
+        else
+            p.misses = p.misses+1;
+            p.miss(t,r) = 1;
+        end
+
     % misses:
-    elseif p.dimStim(t,r) && isempty(resp)
+    elseif p.dimStim(t,r) && p.resp(t,r) == 0
         p.misses = p.misses+1;
-        %p.rt(t) = -1; p.rt stays as NaN (for nanmean)
+        p.miss(t,r) = 1;
+
     % false alarms
-    elseif ~p.dimStim(t,r) && ~isempty(resp)
+    elseif ~p.dimStim(t,r) && p.resp(t,r) == 1
         p.falseAlarms = p.falseAlarms+1;
-        %p.rt(t) = p.actualRespFrm(t).d(1) * 1/p.fps;
+        p.falseAlarm(t,r) = 1;
+
     % correct rejections
-    elseif ~p.dimStim(t,r) && isempty(resp)
+    elseif ~p.dimStim(t,r) && p.resp(t,r) == 0
         p.correctRejections = p.correctRejections+1;
-        %p.rt(t) = -1;
+        p.correctRejection(t,r) = 1;
+
     end 
-    %% End of section that need to fix
     %end trial loop
 
 end

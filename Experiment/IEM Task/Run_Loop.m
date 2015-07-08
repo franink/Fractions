@@ -4,24 +4,63 @@ function [p] = Run_Loop(filename, win, p, stim, dimStim)
 
 try
         
-    DisplayInstructsPractice;
+    DisplayInstructs1;
     
     %any practice we decide to do goes here
+    left = [p.center(1), p.center(2)];
+
+    xLoc = 2;
+    yLoc = 0;
+
+    stimRect = [p.center(1) + p.radPix*(xLoc) - p.radPix, p.center(2) + p.radPix*(yLoc) - p.radPix,...
+                p.center(1) + p.radPix*(xLoc) + p.radPix, p.center(2) + p.radPix*(yLoc) + p.radPix];
     
-    DisplayInstructs4; %End of practice ask question and get ready to start this name can change if I don't have anythin else to show
+    practdimsequence = zeros(1, p.stimExpose);
+    practdimsequence(100:120) = 1;
+    start_prac = GetSecs;
+    Screen('DrawDots', win, [0,0], p.fixSizePix, p.fixColor, left, 0);
+    Screen('DrawingFinished', win);
+    Screen('Flip', win);
+    WaitTill(start_prac + 3);
+    
+    FlushEvents;
+    pracResp = 0;
+    frmCnt=1; %frame count
+    while frmCnt<=p.stimExpose
+        if practdimsequence(frmCnt)
+            Screen('DrawTexture',win,dimStim(p.flickerSequ(1,frmCnt)),Screen('Rect',dimStim(p.flickerSequ(1,frmCnt))),stimRect);
+        else
+            Screen('DrawTexture',win,stim(p.flickerSequ(1,frmCnt)),Screen('Rect',stim(p.flickerSequ(1,frmCnt))),stimRect);
+        end
+        
+        %Redraw fixation
+        Screen('DrawDots', win, [0,0], p.fixSizePix, p.fixColor, left, 0); %change fixation point
+        Screen('DrawingFinished', win); % Tell PTB that no further drawing commands will follow before Screen('Flip')
+        Screen('Flip', win);
+        
+      
+        [prac, timeStamp] = ReadKey('1'); % buttons need to be decided
+        if~isempty(prac);
+            %pracResp;
+            pracResp = 1;
+        end
+        frmCnt = frmCnt + 1;
+    end
+    pracResp
+    DisplayInstructsPract; 
     
     p.start_Exp =datestr(now); % for record purpose
     
-    
-    
-    for r= 1:p.runs
+    DrawCenteredNum('Start Run? (1-4)', win, p, 0.3);
+    [pract secs] = WaitTill({'1' '2' '3' '4'});
+    pract = str2num(pract);
+    for r= pract:p.runs
         
         % wait for scanner trigger '5'
         DrawCenteredNum('Waiting for experimenter', win, p, 0.3);
         WaitTill('9');
         DrawCenteredNum('Waiting for scanner', win, p, 0.3);
         WaitTill('5'); %Use this only if used in a scanner that sends 5
-        5
         DrawCenteredNum('Ready', win, p, 0.3);
         
 %% Remember to uncomment this for the scanner        

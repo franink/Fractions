@@ -7,6 +7,19 @@ function [p] = TrialLoop(p,t,r,stim,dimStim,end_ITI,end_Stim,start_t, win)
 
     xLoc = p.stimLocsX(t,r);
     yLoc = p.stimLocsY(t,r);
+    
+    if xLoc == 0
+        if yLoc ~= 0
+            yLoc = yLoc + (rand - 0.5);
+        end
+    else
+        xLoc = xLoc + (rand - 0.5);
+    end
+    
+    p.stimLocsX(t,r) = xLoc;
+    p.stimsLocY(t,r) = yLoc;
+    
+    
 
     stimRect = [p.center(1) + p.radPix*(xLoc) - p.radPix, p.center(2) + p.radPix*(yLoc) - p.radPix,...
                 p.center(1) + p.radPix*(xLoc) + p.radPix, p.center(2) + p.radPix*(yLoc) + p.radPix];

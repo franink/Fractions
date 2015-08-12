@@ -19,8 +19,6 @@ function [p] = TrialLoop(p,t,r,stim,dimStim,end_ITI,end_Stim,start_t, win)
     p.stimLocsX(t,r) = xLoc;
     p.stimsLocY(t,r) = yLoc;
     
-    
-
     stimRect = [p.center(1) + p.radPix*(xLoc) - p.radPix, p.center(2) + p.radPix*(yLoc) - p.radPix,...
                 p.center(1) + p.radPix*(xLoc) + p.radPix, p.center(2) + p.radPix*(yLoc) + p.radPix];
     %stimRect = round(stimRect + p.staggered*p.radPix/4.*[1 1 1 1]); % staggered is -1 for up/left, +1 for down/right
@@ -28,6 +26,7 @@ function [p] = TrialLoop(p,t,r,stim,dimStim,end_ITI,end_Stim,start_t, win)
     Screen('DrawDots', win, [0,0], p.fixSizePix, p.fixColor, left, 0);
     Screen('DrawingFinished', win);
     Screen('Flip', win);
+    WaitTill(start_t + p.ramp_up);
     p.ITI_StartReal(t,r) = GetSecs - start_t;
     WaitTill(end_ITI);
 
@@ -37,6 +36,21 @@ function [p] = TrialLoop(p,t,r,stim,dimStim,end_ITI,end_Stim,start_t, win)
     % STIMULUS
     FlushEvents;
     
+    %% Eye tracker section
+        if p.eyetrack
+            % Sending a 'TRIALID' message to mark the start of a trial in Data 
+            % Viewer.  This is different than the start of recording message 
+            % START that is logged when the trial recording begins. The viewer
+            % will not parse any messages, events, or samples, that exist in 
+            % the data file prior to this message. 
+            Eyelink('Message', 'TRIALID %d', t);
+
+            % This supplies the title at the bottom of the eyetracker display
+            Eyelink('command', 'record_status_message "TRIAL %d"', t);
+            
+            Eyelink('Message', 'Stim Onset');
+        end      
+        %% End Eye tracker section  
     
     while frmCnt<=p.stimExpose % if we want multiple exposure durations, add that here
         if GetSecs >= end_Stim;
@@ -91,6 +105,12 @@ function [p] = TrialLoop(p,t,r,stim,dimStim,end_ITI,end_Stim,start_t, win)
     
     WaitTill(end_Stim);
     p.stim_EndReal(t,r) = GetSecs - start_t;
+    
+    %% eye track section
+    if p.eyetrack
+        Eyelink('Message', 'Stim End');
+    end
+    %% end eye track section
     
     % clear out screen
     Screen('DrawDots', win, [0,0], p.fixSizePix, p.fixColor, left); %draw fixation point

@@ -55,13 +55,55 @@ try
     [pract secs] = WaitTill({'1' '2' '3' '4'});
     pract = str2num(pract);
     for r= pract:p.runs
-        
-        % wait for scanner trigger '5'
+        %Allow program to move to wait for scanner screen
         DrawCenteredNum('Waiting for experimenter', win, p, 0.3);
         WaitTill('9');
+        %% Eye tracker section
+        if p.eyetrack
+            % Sending a 'TRIALID' message to mark the start of a trial in Data 
+            % Viewer.  This is different than the start of recording message 
+            % START that is logged when the trial recording begins. The viewer
+            % will not parse any messages, events, or samples, that exist in 
+            % the data file prior to this message. 
+            Eyelink('Message', 'RUNID %d', r);
+
+            % This supplies the title at the bottom of the eyetracker display
+            Eyelink('command', 'record_status_message "RUN %d"', r); 
+            % Before recording, we place reference graphics on the host display
+            % Must be offline to draw to EyeLink screen
+            Eyelink('Command', 'set_idle_mode');
+            % clear tracker display and draw box at center
+            Eyelink('Command', 'clear_screen 0')
+            width = p.sRect(3) - p.sRect(1);
+            height = p.sRect(4) - p.sRect(2);
+            Eyelink('command', 'draw_box %d %d %d %d 15', width/2-50, height/2-50, width/2+50, height/2+50);
+
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+            % Do a drift correction at the beginning of each trial
+            % Performing drift correction (checking) is optional for
+            % EyeLink 1000 eye trackers.
+            EyelinkDoDriftCorrection(el);
+            
+            % start recording eye position (preceded by a short pause so that 
+            % the tracker can finish the mode transition)
+            % The paramerters for the 'StartRecording' call controls the
+            % file_samples, file_events, link_samples, link_events availability
+            Eyelink('Command', 'set_idle_mode');
+            WaitSecs(0.05);
+    %         Eyelink('StartRecording', 1, 1, 1, 1);    
+            Eyelink('StartRecording');    
+            % record a few samples before we actually start displaying
+            % otherwise you may lose a few msec of data 
+            
+            
+        end
+        
+        %% End of eye tracker
+        % wait for scanner trigger '5'
         DrawCenteredNum('Waiting for scanner', win, p, 0.3);
         WaitTill('5'); %Use this only if used in a scanner that sends 5
-        DrawCenteredNum('Ready', win, p, 0.3);
+        %DrawCenteredNum('Ready', win, p, 0.3);
         
 %% Remember to uncomment this for the scanner        
         % Send trigger to scanner
@@ -74,7 +116,7 @@ try
         start_t = GetSecs;
         
         p.startRun(r) = start_t;
-        WaitTill(start_t + p.ramp_up);
+        %WaitTill(start_t + p.ramp_up);
         
         for t = 1:p.nTrials
             
@@ -88,6 +130,13 @@ try
         p.endRun(r) = GetSecs;
         p.durRun(r) = p.endRun(r) - p.startRun(r);
         
+        %%eye tracker section
+        if p.eyetrack
+            WaitSecs(0.1);
+            % stop the recording of eye-movements for the current trial
+            Eyelink('StopRecording');
+        end
+        %% end of eye track section
         DisplayInstructs3; %Rest break (Again Number of file might change once I figure how many instructions I need
     end
     
@@ -96,9 +145,12 @@ try
     catch
     ple
     ShowCursor;
-    sca
     save([filename '_catch']);
     save(filename, 'p');
+    if p.eyetrack
+        Eyelink('ShutDown');
+    end
+    sca
     ListenChar(1);
 
 end

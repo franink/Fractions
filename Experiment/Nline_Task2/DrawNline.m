@@ -25,9 +25,9 @@ oneBox = CenterRectOnPoint(oneBox, x2, yline + 40);
 
 zX=zeroBox(RectLeft); oX = oneBox(RectLeft); yNum=oneBox(RectTop);
 
-Screen('Drawline', win, color, x1, yline, x2, yline, round(8*ppc_adjust)); %instead of color he had [0 0 200 255]
-Screen('Drawline', win, color, x1, yline - lineSZ, x1, yline + lineSZ, round(8*ppc_adjust));
-Screen('Drawline', win, color, x2, yline - lineSZ, x2, yline + lineSZ, round(8*ppc_adjust));
+Screen('Drawline', win, color, x1, yline, x2, yline, round(8)); %instead of color he had [0 0 200 255]
+Screen('Drawline', win, color, x1, yline - lineSZ, x1, yline + lineSZ, round(7));
+Screen('Drawline', win, color, x2, yline - lineSZ, x2, yline + lineSZ, round(7));
 
 Screen('DrawText', win, left_end, zX, yNum, color);
 Screen('DrawText', win, right_end, oX, yNum, color);

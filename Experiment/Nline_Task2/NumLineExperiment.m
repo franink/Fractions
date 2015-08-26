@@ -4,7 +4,7 @@
 % Tanks to Xiangrui Li for the codes for WaitTill and ReadKey.
 
 %make sure no Java problems
-Screen('Preference','SkipSyncTests',1);
+%Screen('Preference','SkipSyncTests',1);
 PsychJavaTrouble;
 rng shuffle;
 

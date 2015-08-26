@@ -33,10 +33,10 @@ function [block_p_points, p_slow, p_wrong, p_badpress] = Practice_TrialLoop(stim
 %     WaitSecs(hold); % Hold time this is variable jittered time
     
     if task ==1;
-        [block_p_points, p_slow, p_wrong, p_badpress] = NumLineSlow(stim, decision_time, block_p_points, left_end, right_end, lineLength, lineSZ, 0, ppc_adjust, win, color, x1, x2, yline, center, winRect, junk, p_slow, p_wrong, p_badpress,speed); %decision
+        [block_p_points, p_slow, p_wrong, p_badpress] = NumLineSlow(stim, decision_time, block_p_points, left_end, right_end, lineLength, lineSZ, 0, ppc_adjust, win, color, x1, x2, yline, center, winRect, junk, p_slow, p_wrong, p_badpress); %decision
     end;
     if task ==2;
-        [block_p_points, p_slow, p_wrong, p_badpress] = ControlSlow(stim, decision_time, block_p_points, left_end, right_end, lineLength, lineSZ, 0, ppc_adjust, win, color, x1, x2, yline, center, winRect, junk, p_slow, p_wrong, p_badpress,speed); %decision
+        [block_p_points, p_slow, p_wrong, p_badpress] = ControlSlow(stim, decision_time, block_p_points, left_end, right_end, lineLength, lineSZ, 0, ppc_adjust, win, color, x1, x2, yline, center, winRect, junk, p_slow, p_wrong, p_badpress); %decision
     end;
 
 end

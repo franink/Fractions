@@ -15,7 +15,7 @@ try
     
   
     %lineLength = round(lineLength*p.ppc_adjust);
-    lineSZ = round(20*p.ppc_adjust);
+    lineSZ = round(20);
     
     rng shuffle;
     jitter = 0; %0 = no jitter
@@ -53,10 +53,10 @@ try
         prac2 = [55 0.55];
         prac3 = [80 0.8];
         prac4 = [35 0.35];
-        [block_p_points, p_slow, p_wrong, p_badpress] = Practice_TrialLoop(prac1,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,p.ppc_adjust,win,color,x1,x2,yline,center,winRect,3,3.5,0,task,p_wrong,p_badpress);
-        [block_p_points, p_slow, p_wrong, p_badpress] = Practice_TrialLoop(prac2,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,p.ppc_adjust,win,color,x1,x2,yline,center,winRect,4,3,1,task,p_wrong,p_badpress);
-        [block_p_points, p_slow, p_wrong, p_badpress] = Practice_TrialLoop(prac3,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,p.ppc_adjust,win,color,x1,x2,yline,center,winRect,1,4,0,task,p_wrong,p_badpress);
-        [block_p_points, p_slow, p_wrong, p_badpress] = Practice_TrialLoop(prac4,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,p.ppc_adjust,win,color,x1,x2,yline,center,winRect,2,3.5,1,task,p_wrong,p_badpress);
+        [block_p_points, p_slow, p_wrong, p_badpress] = Practice_TrialLoop(prac1,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,p.ppc_adjust,win,color,x1,x2,yline,center,winRect,3,3.5,0,task,p_slow,p_wrong,p_badpress);
+        [block_p_points, p_slow, p_wrong, p_badpress] = Practice_TrialLoop(prac2,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,p.ppc_adjust,win,color,x1,x2,yline,center,winRect,4,3,1,task,p_slow,p_wrong,p_badpress);
+        [block_p_points, p_slow, p_wrong, p_badpress] = Practice_TrialLoop(prac3,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,p.ppc_adjust,win,color,x1,x2,yline,center,winRect,1,4,0,task,p_slow,p_wrong,p_badpress);
+        [block_p_points, p_slow, p_wrong, p_badpress] = Practice_TrialLoop(prac4,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,p.ppc_adjust,win,color,x1,x2,yline,center,winRect,2,3.5,1,task,p_slow,p_wrong,p_badpress);
         p_points = block_p_points + p_points;
         
         DisplayInstructsPractice;
@@ -120,14 +120,17 @@ try
         WaitTill('9');
         DrawCenteredNum('Waiting for scanner', win, color, 0.3);
         WaitTill('5'); %Use this only if used in a scanner that sends 5
-        s = serial('/dev/tty.usbmodem12341', 'BaudRate', 57600);
-        fopen(s);
-        fprintf(s, '[t]');
-        fclose(s);
+        %% Uncomment for scanner
+%         s = serial('/dev/tty.usbmodem12341', 'BaudRate', 57600);
+%         fopen(s);
+%         fprintf(s, '[t]');
+%         fclose(s);
+%%
         start_t = GetSecs;
             
         for ii = 1:(p.ntasks);
             block_points = points;
+            slow = 0;
             wrong = 0;
             badpress = 0;
             blockNbr_Nline = blockNbr_Nline+1;

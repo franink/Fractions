@@ -100,8 +100,8 @@ try
         prac11 = {'of' 0.33 'of'};
         prac12 = {'my' 0.11 'ox'};
         
-        [block_p_points, p_move, p_slow, p_wrong, p_badpress] = Practice_TrialLoop(prac9,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,2,2.5,1,task,p_move,p_slow,p_wrong,p_badpress,p.speed);
-        [block_p_points, p_move, p_slow, p_wrong, p_badpress] = Practice_TrialLoop(prac10,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,1.5,4,0,task,p_move,p_slow,p_wrong,p_badpress,p.speed);
+        [block_p_points, p_move, p_slow, p_wrong, p_badpress] = Practice_TrialLoop(prac9,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,2,2.5,0,task,p_move,p_slow,p_wrong,p_badpress,p.speed);
+        [block_p_points, p_move, p_slow, p_wrong, p_badpress] = Practice_TrialLoop(prac10,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,1.5,4,1,task,p_move,p_slow,p_wrong,p_badpress,p.speed);
         [block_p_points, p_move, p_slow, p_wrong, p_badpress] = Practice_TrialLoop(prac11,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,1,3.5,1,task,p_move,p_slow,p_wrong,p_badpress,p.speed);
         [block_p_points, p_move, p_slow, p_wrong, p_badpress] = Practice_TrialLoop(prac12,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,ppc_adjust,win,color,x1,x2,yline,center,winRect,3.5,4,0,task,p_move,p_slow,p_wrong,p_badpress,p.speed);
         p_points = block_p_points + p_points;

@@ -2,7 +2,6 @@
 % relative time for more precision.
 % Modified from Cameron McKenzie's code
 % Tanks to Xiangrui Li for the codes for WaitTill and ReadKey.
-
 %make sure no Java problems
 PsychJavaTrouble;
 rng shuffle;

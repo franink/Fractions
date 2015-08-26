@@ -1,4 +1,4 @@
-function [trialTiming, trialResults] = TrialLoop(stim, points, left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, junk, task, start_t, end_ITI, end_consider, end_hold, end_decision, move, slow, wrong, badpress, speed)
+function [trialTiming, trialResults] = TrialLoop(stim, points, left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, junk, task, start_t, end_ITI, end_consider, end_hold, end_decision, slow, wrong, badpress)
 %Controls all stages of a single trial
 % This includes ITI, probe box, probe, hold signal, and decision
  
@@ -30,8 +30,6 @@ function [trialTiming, trialResults] = TrialLoop(stim, points, left_end, right_e
     WaitTill(end_consider); % Probe time
 
     trialTiming(3) = {GetSecs - start_t}; %hold_onset_real
-    % Check that mouse is not moved during 'XXX'
-    clearMouseInput;
     FlushEvents;
     HideCursor;
     while GetSecs < end_hold;

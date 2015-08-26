@@ -1,16 +1,16 @@
-function [block_p_points, p_move, p_slow, p_wrong, p_badpress] = NumLineSlow(stim, time, points, left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, junk, testX, p_move, p_slow, p_wrong, p_badpress, speed)
+function [block_p_points, p_move, p_slow, p_wrong, p_badpress] = NumLineSlow(stim, time, points, left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, junk, p_slow, p_wrong, p_badpress)
 %plots a line starting at x1, finishing at x2, with cursor starting on
 %either left (lrStart = 0) or right (lrStart = 1) side.
 
 
-    clearMouseInput;
+    KbReleaseWait;
 
     FlushEvents;
-    click = 0;
+    %click = 0;
     
 
     %set variables
-    mouse_pos = -1;
+    cursor_pos = -1;
     correct =-1;
     response = -1;
     RT = -1;
@@ -18,136 +18,155 @@ function [block_p_points, p_move, p_slow, p_wrong, p_badpress] = NumLineSlow(sti
     %time_left = 1;
     time_fix = 0.005;
     time_on = time - time_fix;
-    Click = -1;
+    Press = -1;
     RTHold = -1;
-    draw = 1;
+    Acc = -1
 
    
     %fractMag = fract(1)/fract(2);
     probe = num2str(stim(1));
     probeMag = stim(2);
 
-    trialResponse = {mouse_pos correct response RT error RTHold Click};
+    trialResponse = {cursor_pos correct response RT error Press points slow wrong badpress Acc};
 
     correct = probeMag;
     
     if junk ==1;
-        Click = 0;
+        Press = 0;
         correct = 0;
     else
-        Click = 1;
+        Press = 1;
     end;
-    % Log changes to control variables
-    trialResponse{2} = correct;
-    trialResponse{7} = Click;
-
+    
+    displacement = JitterCursor();
+    
+    trialResponse{1} = probeMag + displacement; %Cursor will always appear +/- 1-5 from correct position.
+    
+    
+   
     %yline = round(winRect(4)/2);
     
     HideCursor;
     
-    displacement = JitterCursor();
-    %trialResponse{1} = 0.5 + displacement; %Cursor will always appear outside of nline range.
-%     trialResponse{1} = probeMag + displacement; %Cursor will always appear +/- 20-40 from correct position.
-    % Only works if also nline has extended endpoints
-%     trialResponse{1} = 0.9*rand + 0.1; %If rand 0 cursonr starts at 0.1 if rand 1 starts at 0.9
-    trialResponse{1} = 0.5; %Fixed position
-
+  
     %Extended endpoints
-    extension = lineLength/2;
+    %extension = lineLength/2;
     xStart = x1; % - extension;
     xEnd = x2; % + extension;
     
-    MouseStartPosX = round(trialResponse{1}*(x2-x1) + x1); %Mouse starts in random position
+    CursorStartPosX = round(trialResponse{1}*(x2-x1) + x1); %cursor is +/- range in JitterCursor
 %     MouseStartPosX = round(0.5*(x2-x1) + x1) %Mouse position in center of line this can change
-    SetMouse(MouseStartPosX,yline,win);
+%     SetMouse(CursorStartPosX,yline,win);
 
     Screen('TextSize',win, 30);
     Screen('TextStyle',win, 1);
 
     t_start = GetSecs;
     t_end = t_start + time_on;
-    mouseResp = 0;
+    
+    if displacement < 0
+        correct = 1;
+    else
+        correct = 2;
+    end
+    
+    % Log changes to control variables
+    trialResponse{2} = correct;
+    trialResponse{6} = Press;
+    
+    
+    Resp = 0;
     
     %Remove the hold cue
     %Draw numberline
     DrawNline(left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, 1);
     %Draw probe
     DrawProbeBox('.', win, [0 255 0], yline, center, jitter, winRect);
+    
+    %Draw cursor line
+    lineSZc = round(35*ppc_adjust);
+    Screen('Drawline', win, [0 0 0 0], CursorStartPosX, yline - lineSZc/1.5, CursorStartPosX, yline + lineSZc/1.5, round(8*ppc_adjust));
+    %Draw arrow for junk trials
+    if junk == 1;
+        DrawArrow(round(probeMag*(x2-x1) + x1),yline,win,ppc_adjust);
+    end
+    
     Screen('Flip', win);
     
     block_p_points = points;
-    test = 0;
     
-    % Wait for subject to click mouse before displaying cursor
-    %[xPos_old, yPos_old] = GetMouse(win);
-    while ~test;
-        [xPos, yPos, click] = GetMouse(win);
-        click = sum(click);
-        %if or(xPos_old ~=xPos, yPos_old ~= yPos);
-        if click == 1;
-            test = 1;
-        end;
-        if GetSecs >= t_end - 0.001;
-            test = 1;
-            draw = 0;
-        end;
-    end;
+%     test = 0;
     
-    % Measure RT from the moment the hold signal is released until mouse is
-    % moved
-    RTHold = GetSecs - t_start;
-    trialResponse{6} = RTHold;
+%     % Wait for subject to click mouse before displaying cursor
+%     %[xPos_old, yPos_old] = GetMouse(win);
+%     while ~test;
+%         [xPos, yPos, click] = GetMouse(win);
+%         click = sum(click);
+%         %if or(xPos_old ~=xPos, yPos_old ~= yPos);
+%         if click == 1;
+%             test = 1;
+%         end;
+%         if GetSecs >= t_end - 0.001;
+%             test = 1;
+%             draw = 0;
+%         end;
+%     end;
     
-    clearMouseInput;
-
+   
+   
     FlushEvents;
-    click = 0;
-    SetMouse(MouseStartPosX,yline,win);
-    %xPos = MouseStartPosX;
-    while ~mouseResp;
+%     click = 0;
+%     SetMouse(CursorStartPosX,yline,win);
+%     %xPos = MouseStartPosX;
+    while ~Resp;
         %[xPos, yPos, click] = GetMouse(win);
-        [xPosNew, yPosNew, click] = GetMouse(win);
-        xPos = MouseStartPosX + (xPosNew-MouseStartPosX)* speed;
-        if ~isempty(click) || GetSecs >= t_end;
+        %[xPosNew, yPosNew, click] = GetMouse(win);
+        [key, secs] = WaitTill(time, {'1','2'});
+        if ~isempty(key) || GetSecs >= t_end;
            if GetSecs >= t_end;
                 %sprintf('timeout');
-                time_left = 0;
-                trialResponse{3} = 0;
+                %time_left = 0;
+                trialResponse{3} = 0; %Response
                 if junk;
-                    trialResponse{5} = 0;
+                    trialResponse{5} = 0; %Error
+                    trialResponse{11} = 1; %Acc
                 else
-                    trialResponse{5} = 1;
+                    trialResponse{5} = 1; %Error, didn't click when was needed
+                    trialResponse{11} = 0; %Acc
+                    trialResponse{8} = p_slow + 1; %Error for being slow
                     p_slow = p_slow + 1;
                 end
                 if abs(trialResponse{5}) <= 0.05;
                     block_p_points = points + 1;
                 end
-                if testX == 1;
-                    block_p_points = points;
-                    p_move = p_move + 1;
-                end
-                mouseResp = 1;
+%                 if testX == 1;
+%                     block_p_points = points;
+%                     p_move = p_move + 1;
+%                 end
+                Resp = 1;
            else
 
-                if xPos < xStart;
-                    xPos = xStart;
-                    xPosNew = xStart;
-                end
+% %                 if xPos < xStart;
+% %                     xPos = xStart;
+% %                     xPosNew = xStart;
+% %                 end
+% % 
+% %                 if xPos > xEnd;
+% %                     xPos = xEnd;
+% %                     xPosNew = xEnd;
+% %                 end
+% 
+%                 click = sum(click);
 
-                if xPos > xEnd;
-                    xPos = xEnd;
-                    xPosNew = xEnd;
-                end
-
-                click = sum(click);
-
-                if click == 1;
-                    trialResponse{4} = GetSecs - t_start;
-                    trialResponse{3} = (xPos - x1)/(x2-x1);
+                if ~isempty(key);
+                    trialResponse{4} = secs - t_start;
+                    trialResponse{3} = str2double(key);
                     if junk; % if catch trial do something if not catch trial do something else
-                        trialResponse{5} = 1;
+                        trialResponse{5} = 1; %Error clicked when should not
+                        trialResponse{11} = 0;
                     else
-                        trialResponse{5} = trialResponse{3} - correct;
+                        trialResponse{5} = abs(trialResponse{3} - correct);
+                        trialResponse{11} = 1 - abs(trialResponse{3} - correct);
                     end
                     if abs(trialResponse{5}) <= 0.05;
                         block_p_points = points + 1;
@@ -158,11 +177,11 @@ function [block_p_points, p_move, p_slow, p_wrong, p_badpress] = NumLineSlow(sti
                             p_wrong = p_wrong + 1;
                         end
                     end
-                    if testX == 1;
-                        block_p_points = points;
-                        p_move = p_move + 1;
-                    end
-                    mouseResp = 1;
+%                     if testX == 1;
+%                         block_p_points = points;
+%                         p_move = p_move + 1;
+%                     end
+                    Resp = 1;
                 end
 
 
@@ -172,16 +191,13 @@ function [block_p_points, p_move, p_slow, p_wrong, p_badpress] = NumLineSlow(sti
                 DrawProbeBox('.', win, [0 255 0], yline, center, jitter, winRect);
 %                 Screen('DrawText', win, probe, probeLeft, probeTop, color);
 
-                if draw == 1;
-                    %Draw cursor line
-                    lineSZc = round(35*ppc_adjust);
-                    Screen('Drawline', win, [0 0 0 0], xPos, yline - lineSZc/1.5, xPos, yline + lineSZc/1.5, round(8*ppc_adjust));
-                
-                
-                    %Draw arrow for junk trials
-                    if junk == 1;
-                        DrawArrow(round(probeMag*(x2-x1) + x1),yline,win,ppc_adjust);
-                    end
+                %Draw cursor line
+                lineSZc = round(35*ppc_adjust);
+                Screen('Drawline', win, [0 0 0 0], CursorStartPosX, yline - lineSZc/1.5, CursorStartPosX, yline + lineSZc/1.5, round(8*ppc_adjust));
+
+                %Draw arrow for junk trials
+                if junk == 1;
+                    DrawArrow(round(probeMag*(x2-x1) + x1),yline,win,ppc_adjust);
                 end
                 
                 Screen('Flip', win);

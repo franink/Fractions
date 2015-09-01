@@ -1,8 +1,8 @@
 function [displacement] = JitterCursor()
 %Returns a random number between +/- rangemin to rangemax in percent format
 
-    rangemin = 1;
-    rangemax = 5;
+    rangemin = 3;
+    rangemax = 6;
 %     rangemin = 60;
 %     rangemax = 90;
     plusminus = [1 -1];

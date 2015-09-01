@@ -82,18 +82,29 @@ function trialResponse = NumLineSlow_Abs(stim, points, left_end, right_end, line
     %Draw numberline
     DrawNline(left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, 1);
     %Draw probe
-    DrawProbeBox('.', win, [0 255 0], yline, center, jitter, winRect);
+    DrawProbeBox('.', win, color, yline, center, jitter, winRect);
     
+    line_start = GetSecs;
     %Draw cursor line
     lineSZc = round(35);
-    Screen('Drawline', win, [0 0 0 0], CursorStartPosX, yline - lineSZc/1.5, CursorStartPosX, yline + lineSZc/1.5, round(7));
+    if junk ==0;
+        Screen('Drawline', win, [0 0 0 0], CursorStartPosX, yline - lineSZc/1.5, CursorStartPosX, yline + lineSZc/1.5, round(7));
+    end
+    
     %Draw arrow for junk trials
     if junk == 1;
-        DrawArrow(round(probeMag*(x2-x1) + x1),yline,win,1);
+        %DrawArrow(round(probeMag*(x2-x1) + x1),yline,win,1);
     end
 
-
     Screen('Flip', win);
+    
+    WaitTill(t_start + 0.1);
+    
+    %Draw numberline
+    DrawNline(left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, 1);
+    DrawProbeBox('.', win, color, yline, center, jitter, winRect);
+    Screen('Flip', win);
+    %GetSecs - line_start
     
 %     test = 0;
 %     % Wait for subject to click mouse before displaying cursor
@@ -185,7 +196,17 @@ function trialResponse = NumLineSlow_Abs(stim, points, left_end, right_end, line
 %                         trialResponse{10} = move + 1;
 %                     end
         
+    %Draw numberline
+    DrawNline(left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, 1);
+    DrawProbeBox('.', win, [0 200 255], yline, center, jitter, winRect);
+    Screen('Flip', win);
+        %Screen('Flip', win);
+        %WaitSecs(0.07);
+        
     end
+    
+    
+    %GetSecs - line_start
 
 %     %Draw numberline
 %     DrawNline(left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, 1);

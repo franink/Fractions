@@ -54,8 +54,8 @@ try
         prac3 = [80 0.8];
         prac4 = [35 0.35];
         [block_p_points, p_slow, p_wrong, p_badpress] = Practice_TrialLoop(prac1,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,p.ppc_adjust,win,color,x1,x2,yline,center,winRect,3,3.5,0,task,p_slow,p_wrong,p_badpress);
-        [block_p_points, p_slow, p_wrong, p_badpress] = Practice_TrialLoop(prac2,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,p.ppc_adjust,win,color,x1,x2,yline,center,winRect,4,3,1,task,p_slow,p_wrong,p_badpress);
-        [block_p_points, p_slow, p_wrong, p_badpress] = Practice_TrialLoop(prac3,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,p.ppc_adjust,win,color,x1,x2,yline,center,winRect,1,4,0,task,p_slow,p_wrong,p_badpress);
+        [block_p_points, p_slow, p_wrong, p_badpress] = Practice_TrialLoop(prac2,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,p.ppc_adjust,win,color,x1,x2,yline,center,winRect,3,3,1,task,p_slow,p_wrong,p_badpress);
+        [block_p_points, p_slow, p_wrong, p_badpress] = Practice_TrialLoop(prac3,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,p.ppc_adjust,win,color,x1,x2,yline,center,winRect,2,4,0,task,p_slow,p_wrong,p_badpress);
         [block_p_points, p_slow, p_wrong, p_badpress] = Practice_TrialLoop(prac4,block_p_points,p.decision,left_end,right_end,lineLength,lineSZ,jitter,p.ppc_adjust,win,color,x1,x2,yline,center,winRect,2,3.5,1,task,p_slow,p_wrong,p_badpress);
         p_points = block_p_points + p_points;
         
@@ -136,21 +136,27 @@ try
             blockNbr_Nline = blockNbr_Nline+1;
             task = 1;
             %task = TestNline{(ii-1)*p.nStim + 1, 5, kk};
-            if task == 1;
-                taskname = '0 to 100 task';
-                left_end = '0';
-                right_end = '100';
-            end
-            if task == 2;
-                taskname = '-100 to 100 task';
-                left_end = '-100';
-                right_end = '100';
-            end
-            if task == 3;
-                taskname = 'Word task';
-                left_end = 'xx';
-                right_end = 'xx';
-            end
+%             if task == 1;
+%                 taskname = '0 to 100 task';
+%                 left_end = '0';
+%                 right_end = '100';
+%             end
+%             if task == 2;
+%                 taskname = '-100 to 100 task';
+%                 left_end = '-100';
+%                 right_end = '100';
+%             end
+%             if task == 3;
+%                 taskname = 'Word task';
+%                 left_end = 'xx';
+%                 right_end = 'xx';
+%             end
+
+
+            taskname = '0 to 100 task';
+            left_end = '0';
+            right_end = '100';
+              
             DrawTaskName(taskname,win,color,task_name_time, task); % Task name
             DrawNline(left_end, right_end, lineLength, lineSZ, 0, p.ppc_adjust,...
                 win, color, x1, x2, yline, center, winRect, 0);

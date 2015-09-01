@@ -4,7 +4,7 @@
 % Tanks to Xiangrui Li for the codes for WaitTill and ReadKey.
 
 %make sure no Java problems
-%Screen('Preference','SkipSyncTests',1);
+Screen('Preference','SkipSyncTests',1);
 PsychJavaTrouble;
 rng shuffle;
 
@@ -37,18 +37,19 @@ s_nbr = str2num(filename(7:11));
 % order [0] = match 1st; fraction comparison 2nd
 
 %Setup experiment parameters
-p.ramp_up = 14; %MUX2 with TR 2sec requires 16secs (8TRs) of rampup
+%p.ramp_up = 14; %MUX2 with TR 2sec requires 16secs (8TRs) of rampup
+p.ramp_up = 4; %MUX2 with TR 2sec requires 16secs (8TRs) of rampup
 
 p.Mean_ITI = 4.5; %average 5s This are with decision of 2
 p.Mean_hold = 4; %Average 4.5s
-p.decision = 3;
+p.decision = 1.5; %original study 3
 p.consider = 0.5;
 %Make sure that repeats is divisible by runs
 p.runs = 4; 
 p.nStim = 16;
-p.ntasks = 1;
+p.ntasks = 3; %really just 1 but convenient way of repeating stim 3 times
 %p.tasks = {'Nline', 'Negline', 'Control'};
-p.tasks = {'Nline', 'Negline', 'Control'};
+p.tasks = {'Nline', 'Nline', 'Nline'};
 p.trialSecs = p.consider + p.decision +p.Mean_hold + p.Mean_ITI;
 %p.speed = 6;
 
@@ -56,8 +57,8 @@ p.trialSecs = p.consider + p.decision +p.Mean_hold + p.Mean_ITI;
 
 %p.vDistCM = 277; %CNI
 %p.screenWidthCM = 58.6; % CNI
-p.vDistCM = 120; %desktop
-p.screenWidthCM = 40; % desktop
+p.vDistCM = 92; %120 desktop; 92 laptop
+p.screenWidthCM = 33; % 40 desktop; 33 laptop
 p.usedScreenSizeDeg = 12;
 p.lineLengthDeg = p.usedScreenSizeDeg;
 
@@ -107,7 +108,7 @@ NlineStim(:,2) = catch_run;
 %     WordStim{i,2} = catch_run(i);
 % end
 
-TestNline = cell(p.runs*p.ntasks*p.nStim,3); %probe, line_pct, catch, (catch syllable), (task)
+TestNline = cell(p.runs*p.ntasks*p.nStim,3); %probe, line_pct, catch, (originally 5) (catch syllable), (task)
 
 %Construct list of stimuli
 for ii = 1:p.runs;
@@ -160,10 +161,19 @@ end
 
 %First for Nline
 %For each repetition(indexed at nStim intervals), scramble the order within
-%that interval
+%that interval checking there are not two consecutive catch trials
 for ii = 1:p.runs
     for jj = 1:p.ntasks
-        TestNline((((ii-1)*p.nStim*p.ntasks) + (jj-1)*p.nStim)+1:(((ii-1)*p.nStim*p.ntasks) + (jj-1)*p.nStim)+p.nStim,:) = TestNline(randperm(p.nStim) + (p.nStim*(jj-1)) + ((ii-1)*p.nStim*p.ntasks),:);
+        move_on = 0;
+        while move_on == 0
+            TestNline((((ii-1)*p.nStim*p.ntasks) + (jj-1)*p.nStim)+1:(((ii-1)*p.nStim*p.ntasks) + (jj-1)*p.nStim)+p.nStim,:) = TestNline(randperm(p.nStim) + (p.nStim*(jj-1)) + ((ii-1)*p.nStim*p.ntasks),:);
+            move_on = 1;
+            for kk = ((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim)+1:((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim)+p.nStim -1
+                if TestNline{kk,3} == 1 && TestNline{kk+1,3} == 1
+                    move_on = 0;
+                end
+            end
+        end
     end
 end
 

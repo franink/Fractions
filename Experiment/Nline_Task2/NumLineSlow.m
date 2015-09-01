@@ -59,8 +59,7 @@ function [block_p_points, p_slow, p_wrong, p_badpress] = NumLineSlow(stim, time,
     Screen('TextSize',win, 30);
     Screen('TextStyle',win, 1);
 
-    t_start = GetSecs;
-    t_end = t_start + time_on;
+    
     
     if junk == 0
         if displacement < 0
@@ -76,21 +75,30 @@ function [block_p_points, p_slow, p_wrong, p_badpress] = NumLineSlow(stim, time,
     
     
    
-    
+    t_start = GetSecs;
+    t_end = t_start + time_on;
     %Remove the hold cue
     %Draw numberline
     DrawNline(left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, 1);
     %Draw probe
-    DrawProbeBox('.', win, [0 255 0], yline, center, jitter, winRect);
+    DrawProbeBox('.', win, color, yline, center, jitter, winRect);
     
     %Draw cursor line
     lineSZc = round(35);
-    Screen('Drawline', win, [0 0 0 0], CursorStartPosX, yline - lineSZc/1.5, CursorStartPosX, yline + lineSZc/1.5, round(7));
+    if junk ==0;
+        Screen('Drawline', win, [0 0 0 0], CursorStartPosX, yline - lineSZc/1.5, CursorStartPosX, yline + lineSZc/1.5, round(7));
+    end
     %Draw arrow for junk trials
     if junk == 1;
-        DrawArrow(round(probeMag*(x2-x1) + x1),yline,win,1);
+        %DrawArrow(round(probeMag*(x2-x1) + x1),yline,win,1);
     end
     
+    Screen('Flip', win);
+    
+    WaitTill(t_start + 0.1);
+    %Draw numberline
+    DrawNline(left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, 1);
+    DrawProbeBox('.', win, color, yline, center, jitter, winRect);
     Screen('Flip', win);
     
     block_p_points = points;
@@ -180,8 +188,15 @@ function [block_p_points, p_slow, p_wrong, p_badpress] = NumLineSlow(stim, time,
 %                         block_p_points = points;
 %                         p_move = p_move + 1;
 %                     end
+%             Screen('Flip', win);
+%             WaitSecs(0.07);
+        DrawNline(left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, 1);
+        DrawProbeBox('.', win, [0 200 255], yline, center, jitter, winRect);
+        Screen('Flip', win);
            
         end
+        
+    
 
 
 %                 %Draw numberline

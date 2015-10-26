@@ -57,7 +57,7 @@ function [p] = TrialLoop(p,t,r,stim,dimStim,end_ITI,end_Stim,start_t, win)
             break
         end
         %frmCnt
-        if ~p.null(t)
+        if ~p.null(t,r)
             if p.dimStim(t,r) && p.stimDimSequ(t,r,frmCnt) % if stim is dimmed right now, draw a dimStim
                 Screen('DrawTexture',win,dimStim(p.flickerSequ(1,frmCnt)),Screen('Rect',dimStim(p.flickerSequ(1,frmCnt))),stimRect);
             else % otherwise, draw a regular stim (both determined by flickerSequ)

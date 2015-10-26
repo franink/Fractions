@@ -190,7 +190,7 @@ p.Condition = zeros(p.nTrials,p.runs); %order left-right;up-down;center;null
     p.misses =      0;
     p.falseAlarms = 0;
     p.correctRejections = 0; % sum of these by end of expt = p.nTrials
-    p.rt =          nan(p.nTrials, p.runs);       % store the rt on each trial (from target onset in seconds)
+    p.rt =          zeros(p.nTrials, p.runs);       % store the rt on each trial (from target onset in seconds)
     p.resp =        zeros(p.nTrials, p.runs);     % store the response
     p.respTime =    zeros(p.nTrials, p.runs); %from stim onset in seconds
     p.respFrame =   zeros(p.nTrials, p.runs); %from stim onset in frames
@@ -240,26 +240,32 @@ for r= 1:p.runs
     
         % shuffle trial order
         
-%         % the following code is a potential fix for preventing
-%         % consecutive null trials
-%         move_on = 0;
-%         while move_on == 0
-%             move_on = 1;
-%             rndInd(:,rep) = randperm(p.TrialSet);
-%             stimLocsX(:,rep) = stimLocsX(rndInd(:,rep),rep);
-%             stimLocsY(:,rep) = stimLocsY(rndInd(:,rep),rep);
-%             null(:,rep) = null(rndInd(:,rep),rep);
-%             rep_test = null(1:end-1,rep) + null(2:end,rep);
-%             % if any item in rep_test >= 2 then move_on =0
-%             dimstim(:,rep) = dimstim(rndInd(:,rep),rep);
-%             condition(:,rep) = condition(rndInd(:,rep),rep);
-%         end
-        rndInd(:,rep) = randperm(p.TrialSet);
-        stimLocsX(:,rep) = stimLocsX(rndInd(:,rep),rep);
-        stimLocsY(:,rep) = stimLocsY(rndInd(:,rep),rep);
-        null(:,rep) = null(rndInd(:,rep),rep);
-        dimstim(:,rep) = dimstim(rndInd(:,rep),rep);
-        condition(:,rep) = condition(rndInd(:,rep),rep);
+        % the following code is a potential fix for preventing
+        % consecutive null trials
+        move_on = 0;
+        while move_on == 0
+            move_on = 1;
+            rndInd(:,rep) = randperm(p.TrialSet);
+            stimLocsX(:,rep) = stimLocsX(rndInd(:,rep),rep);
+            stimLocsY(:,rep) = stimLocsY(rndInd(:,rep),rep);
+            null(:,rep) = null(rndInd(:,rep),rep);
+            rep_test = null(1:end-1,rep) + null(2:end,rep);
+            dimstim(:,rep) = dimstim(rndInd(:,rep),rep);
+            condition(:,rep) = condition(rndInd(:,rep),rep);
+            % if any item in rep_test >= 2 then move_on =0
+            if sum(rep_test >= 2) >= 1
+              move_on = 0
+            end
+        end
+        
+
+
+%         rndInd(:,rep) = randperm(p.TrialSet);
+%         stimLocsX(:,rep) = stimLocsX(rndInd(:,rep),rep);
+%         stimLocsY(:,rep) = stimLocsY(rndInd(:,rep),rep);
+%         null(:,rep) = null(rndInd(:,rep),rep);
+%         dimstim(:,rep) = dimstim(rndInd(:,rep),rep);
+%         condition(:,rep) = condition(rndInd(:,rep),rep);
     end
     
     %Then combine all repetitioms in one line for each block

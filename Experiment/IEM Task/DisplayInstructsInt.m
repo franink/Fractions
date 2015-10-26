@@ -9,12 +9,12 @@ Instruct{1} = {%'This experiment is about 20 minutes long, broken into two 10 mi
                ' ',
                'PRESS BUTTON to go on to the next screen.'};
            
-Instruct{2} = {'Across all tasks, you will be paid for correct answers????.',
+Instruct{2} = {'Across all tasks, you will be paid for correct answers.',
                ' ',
                'When you answer correctly, you will receive 1 point.',
                ' ',
-               'We will keep track of these points and you will receive 5 cents per point????'
-               'at the end of the experiment, plus $6 for each section????',
+               'We will keep track of these points and you will receive 5 cents per point'
+               'at the end of the experiment, plus $4 for each section',
                ' ',
                ' ',
                'PRESS BUTTON to go on to the next screen.'};
@@ -45,6 +45,6 @@ for ii = 1:length(Instruct);
     TextDisplay(Instruct{ii}, win, color);
     Screen('Flip', win);
     WaitSecs(0.5);
-    %WaitTill({'1' '2' '3' '4' '6' '7' '8' '9'});
-    WaitTill({'1'});
+    WaitTill({'1','2','3','4','6','7','8','9'});
+    %WaitTill({'1'});
 end

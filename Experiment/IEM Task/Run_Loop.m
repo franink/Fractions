@@ -39,7 +39,7 @@ try
         Screen('Flip', win);
         
       
-        [prac, timeStamp] = ReadKey('1'); % buttons need to be decided
+        [prac, timeStamp] = ReadKey({'1','2','3','4','6','7','8','9'}); % buttons need to be decided
         if~isempty(prac);
             %pracResp;
             pracResp = 1;
@@ -57,7 +57,7 @@ try
     for r= pract:p.runs
         %Allow program to move to wait for scanner screen
         DrawCenteredNum('Waiting for experimenter', win, p, 0.3);
-        WaitTill('9');
+        WaitTill('0');
         %% Eye tracker section
         if p.eyetrack
             % Sending a 'TRIALID' message to mark the start of a trial in Data 
@@ -107,10 +107,10 @@ try
         
 %% Remember to uncomment this for the scanner        
         % Send trigger to scanner
-%         s = serial('/dev/tty.usbmodem12341', 'BaudRate', 57600);
-%         fopen(s);
-%         fprintf(s, '[t]');
-%         fclose(s);
+        s = serial('/dev/tty.usbmodem12341', 'BaudRate', 57600);
+        fopen(s);
+        fprintf(s, '[t]');
+        fclose(s);
 %% Uncomment above for scanner
         
         start_t = GetSecs;
@@ -142,7 +142,7 @@ try
     
     p.endExp = datestr(now);
     
-    catch
+catch
     ple
     ShowCursor;
     save([filename '_catch']);

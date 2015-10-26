@@ -2,7 +2,7 @@ function p = deg2pix(p)
 
 % figure out pixels per degree, p.sRect(1) is x coord for upper left of
 % screen, and p.sRect(3) is x coord for lower right corner of screen 
-p.ppd = pi * (p.sRect(3)-p.sRect(1)) / atan(p.screenWidthCM/p.vDistCM/2) / 360;    
+p.ppd = pi * (p.sRect(4)-p.sRect(2)) / atan(p.screenWidthCM/p.vDistCM/2) / 360;    
 
 % get name of each field in p
 s = fieldnames(p);

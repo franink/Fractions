@@ -121,10 +121,10 @@ try
         DrawCenteredNum('Waiting for scanner', win, color, 0.3);
         WaitTill('5'); %Use this only if used in a scanner that sends 5
 %         %% Uncomment for scanner
-        s = serial('/dev/tty.usbmodem12341', 'BaudRate', 57600);
-        fopen(s);
-        fprintf(s, '[t]');
-        fclose(s);
+%         s = serial('/dev/tty.usbmodem12341', 'BaudRate', 57600);
+%         fopen(s);
+%         fprintf(s, '[t]');
+%         fclose(s);
 %%
         start_t = GetSecs;
             

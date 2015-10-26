@@ -17,7 +17,7 @@ function [p] = TrialLoop(p,t,r,stim,dimStim,end_ITI,end_Stim,start_t, win)
     end
     
     p.stimLocsX(t,r) = xLoc;
-    p.stimsLocY(t,r) = yLoc;
+    p.stimLocsY(t,r) = yLoc;
     
     stimRect = [p.center(1) + p.radPix*(xLoc) - p.radPix, p.center(2) + p.radPix*(yLoc) - p.radPix,...
                 p.center(1) + p.radPix*(xLoc) + p.radPix, p.center(2) + p.radPix*(yLoc) + p.radPix];
@@ -78,11 +78,11 @@ function [p] = TrialLoop(p,t,r,stim,dimStim,end_ITI,end_Stim,start_t, win)
 
             % check response...
             
-            [resp, timeStamp] = ReadKey('1'); % buttons need to be decided
+            [resp, timeStamp] = ReadKey({'1','2','3','4','6','7','8','9'}); % buttons need to be decided
 %             [resp, timeStamp] = checkForResp(p.keys, p.escape); % checks both buttons...
             if~isempty(resp);
                 if p.resp(t,r) == 0; %Prevent that participant clicks more than once
-                    p.resp(t,r) = str2num(resp);
+                    p.resp(t,r) = 1; % I changed this if doesn't work replace back str2num(resp)
                     p.respTime(t,r) = (timeStamp - start_t) - p.stim_StartReal(t,r); %from stim onset in seconds
                     p.rt(t,r) = (timeStamp - start_t) - p.targOnTimeReal(t,r); %from stim dims time
                     p.respFrame(t,r) = frmCnt; %from stim onset in frames

@@ -32,6 +32,6 @@ for ii = 1:length(Instruct);
     TextDisplay(Instruct{ii}, win, p.textColor);
     Screen('Flip', win);
     WaitSecs(0.5);
-    %WaitTill({'1' '2' '3' '4' '6' '7' '8' '9'});
-    WaitTill({'1'});
+    WaitTill({'1' '2' '3' '4' '6' '7' '8' '9'});
+    %WaitTill({'1'});
 end

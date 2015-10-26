@@ -5,6 +5,7 @@
 % - attend checkerboards, detect contrast dimming on some trials
 
 %make sure no Java problems
+%Screen('Preference','SkipSyncTests',1); %comment out for scanner
 PsychJavaTrouble;
 rng shuffle;
 
@@ -86,10 +87,10 @@ ListenChar(2);
 
 % monitor stuff
 p.refreshRate = 60; % refresh rate is normally 100 but change this to 60 when on laptop!
-%p.vDistCM = 277; %CNI
-%p.screenWidthCM = 58.6; % CNI
-p.vDistCM = 120; %desktop
-p.screenWidthCM = 40; % desktop
+p.vDistCM = 277; %CNI
+p.screenWidthCM = 58.6; % CNI
+%p.vDistCM = 120; %desktop
+%.screenWidthCM = 40; % desktop
 p.usedScreenSizeDeg = 12;
 
 %stimulus geometry (in degrees, note that these vars have the phrase 'Deg'
@@ -100,7 +101,7 @@ p.sfDeg = .6785; %TS parameter value, might need to be changed
 p.backColor     = [128, 128, 128];      % background color
 
 %fixation point properties
-p.fixColor      = [180 180 180];%[155, 155, 155];
+p.fixColor      = [250, 1, 1];%[155, 155, 155];
 % p.fixSizeDeg    = .25 * .4523;                  % size of dot
 p.fixSizeDeg    = .1131;
 p.appSizeDeg    = p.fixSizeDeg * 4;     % size of apperture surrounding dot
@@ -121,7 +122,7 @@ p.textColor = p.LUT(p.textColor)';
 
 % Open a PTB Window on our screen
 try
-    screenid = min(Screen('Screens')); %Originally it was max instead of min changed it for testing purposes (max corresponds to secondary display)
+    screenid = max(Screen('Screens')); %Originally it was max instead of min changed it for testing purposes (max corresponds to secondary display)
     
     [win, p.sRect] = Screen('OpenWindow', screenid, WhiteIndex(screenid)/2);
     
@@ -238,6 +239,21 @@ for r= 1:p.runs
         
     
         % shuffle trial order
+        
+%         % the following code is a potential fix for preventing
+%         % consecutive null trials
+%         move_on = 0;
+%         while move_on == 0
+%             move_on = 1;
+%             rndInd(:,rep) = randperm(p.TrialSet);
+%             stimLocsX(:,rep) = stimLocsX(rndInd(:,rep),rep);
+%             stimLocsY(:,rep) = stimLocsY(rndInd(:,rep),rep);
+%             null(:,rep) = null(rndInd(:,rep),rep);
+%             rep_test = null(1:end-1,rep) + null(2:end,rep);
+%             % if any item in rep_test >= 2 then move_on =0
+%             dimstim(:,rep) = dimstim(rndInd(:,rep),rep);
+%             condition(:,rep) = condition(rndInd(:,rep),rep);
+%         end
         rndInd(:,rep) = randperm(p.TrialSet);
         stimLocsX(:,rep) = stimLocsX(rndInd(:,rep),rep);
         stimLocsY(:,rep) = stimLocsY(rndInd(:,rep),rep);
@@ -348,7 +364,7 @@ p.stimDimSequ = zeros(p.nTrials, p.runs, size(p.flickerSequ,2));
             end
         end
     end
-%% Start od eyetracker code (uncomment when using eyetracker)
+%% Start of eyetracker code (uncomment when using eyetracker)
 
     if p.eyetrack
         % Provide Eyelink with details about the graphics environment
@@ -450,7 +466,7 @@ p.stimDimSequ = zeros(p.nTrials, p.runs, size(p.flickerSequ,2));
 % Start of experiment
 %Introductory instructions
 DrawCenteredNum('Welcome', win, p, 0.5);
-WaitTill('9');
+WaitTill('0');
 DisplayInstructsInt; %% Need to write instructions
 
 %start run loop for start of scan
@@ -483,7 +499,7 @@ end
     
     
     
-DrawCenteredNum('Thank You', win, color, 2);
+DrawCenteredNum('Thank You', win, p, 2);
     
 %save results
 save(filename, 'p')

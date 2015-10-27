@@ -20,6 +20,7 @@ function [block_p_points, p_slow, p_wrong, p_badpress] = NumLineSlow(stim, time,
     time_on = time - time_fix;
     Press = -1;
     Acc = -1;
+    good =0;
 
    
     %fractMag = fract(1)/fract(2);

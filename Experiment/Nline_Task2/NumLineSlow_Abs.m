@@ -23,7 +23,7 @@ function trialResponse = NumLineSlow_Abs(stim, points, left_end, right_end, line
     time_fix = 0.005;
     Press = -1; %Does the trial require a key press?
     Acc = -1;
-    
+    good =0;
     probe = num2str(stim{1});
     probeMag = stim{2};
 

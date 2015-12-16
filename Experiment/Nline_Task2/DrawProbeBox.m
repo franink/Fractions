@@ -14,7 +14,7 @@ probeBox = Screen('TextBounds', win, probe);
 Box = CenterRectOnPoint(Box, center + jitter, yprobe);
 if probe == '.'
     Screen('TextSize',win, 60);
-    yprobe = yprobe +10; %-30
+    yprobe = yprobe -30;
     center = center - 5;
 end
 probeBox = CenterRectOnPoint(probeBox, center + jitter, yprobe);

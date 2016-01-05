@@ -67,6 +67,8 @@ load([root 'tst_cond.mat']);
 
 
 trn_cond(:,2) = trn_cond(:,2)*-1; % flip to cartesian coordinates to make life easier
+tst_cond(:,2) = tst_cond(:,2)*-1; % flip to cartesian coordinates to make life easier
+
 stim_size = 1.5; % radius
 
 % we also need to decide on a resolution at which to compute stimulus masks
@@ -155,7 +157,7 @@ for bb = 1:size(basis_set,2)
     % I've made a function (make2dcos) which we can use for generating each
     % individual basis function
     
-    basis_set(:,bb) = make2dcos(xx,yy,rfGridX(bb),rfGridY(bb),rfSize*2.5166,7);
+    basis_set(:,bb) = make2dcos(xx,yy,rfGridX(bb),rfGridY(bb),1*rfSize*2.5166,7);
 end
 
 % let's look at the basis set
@@ -260,8 +262,8 @@ fprintf('Rank of design matrix: %i\n',rank(trnX));
 A = [1:49];
 reshape(A,7,7);
 B = zeros(7,7);
-B(4,:) = 1;
-B(:,4) = 1;
+B(3:4,:) = 1;
+B(:,4:5) = 1;
 Mask = A(B==1);
 trnX_Masked = trnX(:,Mask);
 
@@ -319,6 +321,12 @@ chan_resp_ips0_masked = (inv(w_ips0*w_ips0')*w_ips0*ips0_tst').';
 chan_resp_v1_masked = (inv(w_v1*w_v1')*w_v1*v1_tst').';
 % or can write as chan_resp = (w.'\tst.').'
 
+
+% % This is just to see if I recover the training set as debugging
+% chan_resp_ips0_masked = (inv(w_ips0*w_ips0')*w_ips0*ips0_trn').';
+% chan_resp_v1_masked = (inv(w_v1*w_v1')*w_v1*v1_trn').';
+
+
 % "chan_resp" is now the estimated channel responses for a novel dataset
 % which was never used to estimate any encoding properties (that is, "tst"
 % was never used in the computation of "w"). Each column of chan_resp
@@ -326,6 +334,10 @@ chan_resp_v1_masked = (inv(w_v1*w_v1')*w_v1*v1_tst').';
 % each row corresponds to a trial.
 chan_resp_ips0 = zeros(size(ips0_tst,1),bb);
 chan_resp_v1 = zeros(size(v1_tst,1),bb);
+
+% % This is just to see if I recover the training set as debugging
+% chan_resp_ips0 = zeros(size(ips0_trn,1),bb);
+% chan_resp_v1 = zeros(size(v1_trn,1),bb);
 
 chan_resp_ips0(:,Mask) = chan_resp_ips0_masked;
 chan_resp_v1(:,Mask) = chan_resp_v1_masked;
@@ -344,15 +356,9 @@ chan_resp_v1(:,Mask) = chan_resp_v1_masked;
 %Undo mask
 
 
-thisidx = tst_cond(:,1)>=-1 & tst_cond(:,2)==0;
+thisidx = tst_cond(:,1)<=-2.5 & tst_cond(:,2)==0;
 %V1
 avg_chan_resp = mean(chan_resp_v1(thisidx,:),1);
-figure;ax(1)=subplot(1,2,1);
-imagesc(rfPtsX,rfPtsY,reshape(avg_chan_resp,length(rfPtsY),length(rfPtsX)));
-title('Left, high-contrast, attended stimuli');
-axis equal xy off;
-%IPS0
-avg_chan_resp = mean(chan_resp_ips0(thisidx,:),1);
 figure;ax(1)=subplot(1,2,1);
 imagesc(rfPtsX,rfPtsY,reshape(avg_chan_resp,length(rfPtsY),length(rfPtsX)));
 title('Left, high-contrast, attended stimuli');
@@ -361,8 +367,8 @@ axis equal xy off;
 % now compare to trials when the stimulus was on the right
 
 clear thisidx avg_chan_resp;
-thisidx = tst_conds(:,1)==2 & tst_conds(:,2)==6 & tst_conds(:,3)==2 & tst_conds(:,4)==0;
-avg_chan_resp = mean(chan_resp(thisidx,:),1);
+thisidx = tst_cond(:,1)>=2.5 & tst_cond(:,2)==0;
+avg_chan_resp = mean(chan_resp_v1(thisidx,:),1);
 ax(2)=subplot(1,2,2);
 imagesc(rfPtsX,rfPtsY,reshape(avg_chan_resp,length(rfPtsY),length(rfPtsX)));
 title('Right, high-contrast, attended stimuli');
@@ -375,6 +381,36 @@ axis equal xy off;
 
 match_clim(ax);
 
+
+%IPS0
+thisidx = tst_cond(:,1)<=-2.5 & tst_cond(:,2)==0;
+
+avg_chan_resp = mean(chan_resp_ips0(thisidx,:),1);
+figure;ax(1)=subplot(1,2,1);
+imagesc(rfPtsX,rfPtsY,reshape(avg_chan_resp,length(rfPtsY),length(rfPtsX)));
+title('Left, high-contrast, attended stimuli');
+axis equal xy off;
+
+% now compare to trials when the stimulus was on the right
+
+clear thisidx avg_chan_resp;
+thisidx = tst_cond(:,1)>=2.5 & tst_cond(:,2)==0;
+avg_chan_resp = mean(chan_resp_ips0(thisidx,:),1);
+ax(2)=subplot(1,2,2);
+imagesc(rfPtsX,rfPtsY,reshape(avg_chan_resp,length(rfPtsY),length(rfPtsX)));
+title('Right, high-contrast, attended stimuli');
+axis equal xy off;
+
+% importantly, we want to be sure all the axes are on the same color-scale.
+% I wrote a function you can use for that called "match_clim", which takes
+% a set of axis handles as inputs, and optionally a new set of clim values
+% as a second argument. 
+
+match_clim(ax);
+
+
+
+
 % It should be clear that the channels with RFs near the attended stimulus
 % position are those which are most active when that sitmulus is present &
 % attended.
@@ -385,25 +421,22 @@ match_clim(ax);
 % right.
 ax = [];
 task_str = {'Attn fix','Attn stim'};
+sides = [1 -1];
 
-for stim_side = 1:2
-    figs(stim_side) = figure;
-    for attn_cond = 1:2
-        for stim_contrast = 1:6
-            ax(end+1) = subplot(6,2,attn_cond+(stim_contrast-1)*2);
-            thisidx = tst_conds(:,1)==stim_side & tst_conds(:,2)==stim_contrast & tst_conds(:,3)==attn_cond & tst_conds(:,4)==0;
-            avg_chan_resp = mean(chan_resp(thisidx,:),1);
-            imagesc(rfPtsX,rfPtsY,reshape(avg_chan_resp,length(rfPtsY),length(rfPtsX)));
-            axis equal xy tight;
-            if stim_contrast == 1
-                title(task_str{attn_cond});
-            end
-            if attn_cond==1
-                ylabel(sprintf('Contrast %i',stim_contrast));
-            end
-            set(gca,'XTick',[],'YTick',[]); % turn off xtick/yticks
-            clear thisidx avg_chan_resp;
+for stim_side = 1:2;
+    for attn_cond = 1:3
+        ax(end+1) = subplot(2,3,attn_cond+(3*(stim_side-1)));
+        if stim_side ==1
+            thisidx = tst_cond(:,2)<=sides(stim_side)*attn_cond & tst_cond(:,1)==0;
         end
+        if stim_side ==2
+            thisidx = tst_cond(:,2)>=sides(stim_side)*attn_cond & tst_cond(:,1)==0;
+        end
+        avg_chan_resp = mean(chan_resp_v1(thisidx,:),1);
+        imagesc(rfPtsX,rfPtsY,reshape(avg_chan_resp,length(rfPtsY),length(rfPtsX)));
+        axis equal xy tight;
+        set(gca,'XTick',[],'YTick',[]); % turn off xtick/yticks
+        clear thisidx avg_chan_resp;
     end
 end
 match_clim(ax);

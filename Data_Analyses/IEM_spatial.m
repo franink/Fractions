@@ -358,6 +358,7 @@ chan_resp_v1(:,Mask) = chan_resp_v1_masked;
 
 thisidx = tst_cond(:,1)<=-2.5 & tst_cond(:,2)==0;
 thisidx = tst_cond(:,3)==2;
+%For training set
 %thisidx = trn_cond(:,3)==2;
 thisidx = 5;
 %V1
@@ -372,6 +373,7 @@ axis equal xy off;
 clear thisidx avg_chan_resp;
 thisidx = tst_cond(:,1)>=2.5 & tst_cond(:,2)==0;
 thisidx = tst_cond(:,3)==11;
+%For training set
 %thisidx = trn_cond(:,3)==11;
 thisidx = 6;
 avg_chan_resp = mean(chan_resp_v1(thisidx,:),1);

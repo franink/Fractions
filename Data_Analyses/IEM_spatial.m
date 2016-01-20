@@ -12,6 +12,7 @@ close all;
 
 %root = '/Users/frankanayet/Google Drive/NLineData/Serences/Serences_IEM_tutorial/';
 %addpath([root 'mFiles/']);
+%root = '/Users/frankanayet/Google Drive/NLineData/fMRIResults/Peter_RSA/Peter_ROI_IEM/';
 root = '/fMRI/NLine-Space/s_03001/Peter_ROI_IEM/';
 
 

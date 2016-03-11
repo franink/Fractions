@@ -201,7 +201,7 @@ end
 % run and particular task
 
 ITI_Jits = [3.5:0.5:7 repmat(3:0.5:4.5,1,2)]; % Make sure to change this to values for fMRI
-Hold_Jits = [3:0.5:6.5 repmat(2.5:0.5:4,1,2)];% Make sure to change this to values for fMRI
+Hold_Jits = [3:00000.5:6.5 repmat(2.5:0.5:4,1,2)];% Make sure to change this to values for fMRI
 
 for jj = 1:p.runs
     end_ramp_up = p.ramp_up; % after ramp_up the first nline begins

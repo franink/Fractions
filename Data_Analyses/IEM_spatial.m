@@ -137,12 +137,13 @@ title(sprintf('Visual field coverage'));
 % parameters. 
 
 % Let's set the center points:
-rfPtsX = [-3:3] * stim_size;
-rfPtsY = [-3:3] * stim_size;
+step_size = 1;
+rfPtsX = [-3:step_size:3] * stim_size;
+rfPtsY = [-3:step_size:3] * stim_size;
 [rfGridX,rfGridY] = meshgrid(rfPtsX,rfPtsY); 
 rfGridX = reshape(rfGridX,numel(rfGridX),1);rfGridY = reshape(rfGridY,numel(rfGridY),1);
-rfSize = 1.25*stim_size;   % for the filter shape we use (see below), this size/spacing ratio works well (see Sprague & Serences, 2013)
-
+rfSize = 1.25*step_size*stim_size;   % for the filter shape we use (see below), this size/spacing ratio works well (see Sprague & Serences, 2013)
+%rfSize = 1.25*stim_size
 
 % because we're projecting a stimulus mask onto a lower-dimensional set of
 % filters, we call the set of filters (or information channels) our basis
@@ -261,11 +262,13 @@ fprintf('Rank of design matrix: %i\n',rank(trnX));
 
 %Need to pick only the cross as design matrix
 %create a mask
-A = [1:49];
-reshape(A,7,7);
-B = zeros(7,7);
-B(3,:) = 1;
-B(:,4) = 1;
+num_channels = length(rfPtsX)^2;
+A = [1:num_channels];
+mat_length = length(rfPtsX);
+reshape(A,mat_length,mat_length);
+B = zeros(mat_length,mat_length);
+B(7:8,:) = 1;
+B(:,7:8) = 1;
 Mask = A(B==1);
 trnX_Masked = trnX(:,Mask);
 
@@ -303,7 +306,8 @@ for rr = 1:n_runs
     for ii = 1:size(v1,2)
         v1_ps(ii) = anova1(v1(trnIdx,ii),cond(trnIdx,3),'off');
     end
-
+    % Look at which voxels are most significant with the anova in the
+    % cortex
     which_vox_v1 = v1_ps <= prctile(v1_ps,vox_prctile);
 
     v1_trn = v1(trnIdx,which_vox_v1);

@@ -2,6 +2,7 @@
 % relative time for more precision.
 % Modified from Cameron McKenzie's code
 % Tanks to Xiangrui Li for the codes for WaitTill and ReadKey.
+%Screen('Preference','SkipSyncTests',1); %comment this out in scanner
 %make sure no Java problems
 PsychJavaTrouble;
 rng shuffle;
@@ -99,7 +100,7 @@ for i = 1:length(catch_run)
 end
 
 TestNline = cell(p.runs*p.ntasks*p.nStim,5); %probe, line_pct, catch, catch syllable, task
-
+%% construct runs
 %Construct list of stimuli
 for ii = 1:p.runs;
     word_tmp = WordStim(randperm(length(WordStim)),1);
@@ -147,7 +148,7 @@ for ii = 1:p.runs;
         end
     end
 end
-
+%%
 %Shuffle trials within block
 
 %First for Nline

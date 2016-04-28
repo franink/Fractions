@@ -22,8 +22,12 @@ function trialResponse = NumLineSlow_Abs(stim, points, left_end, right_end, line
     draw = 1;
     mousetrack = [];
     
-    probe = num2str(stim{1});
-    probeMag = stim{2};
+    %checkerboar location
+    yprobe = yline - 250;
+    Left = [Center, yprobe];
+    
+    %probe = num2str(stim{1});
+    probeMag = 50;
 
     %Initialize log
     trialResponse = {mouse_pos correct response RT error RTHold Click testX points move slow wrong badpress mousetrack};
@@ -74,7 +78,7 @@ function trialResponse = NumLineSlow_Abs(stim, points, left_end, right_end, line
     %Draw numberline
     DrawNline(left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, Center, winRect, 1);
     %Draw probe
-    DrawProbeBox('.', win, [0 255 0], yline, Center, jitter, winRect);
+    Screen('DrawDots', win, [0,0], p.fixSizePix, [0 255 0], Left, 0); % green fixation
     Screen('Flip', win);
     
     test = 0;
@@ -106,8 +110,9 @@ function trialResponse = NumLineSlow_Abs(stim, points, left_end, right_end, line
     mousetrack = [(MouseStartPosX - x1)/(x2-x1)];
     %xPos = MouseStartPosX;
     
-    stimRect = [Center - p.radPix, yline - p.radPix,...
-                Center + p.radPix, yline + p.radPix];
+    stimRect = [Center - p.radPix, yprobe - p.radPix,...
+                Center + p.radPix, yprobe + p.radPix];
+    
     frmCnt=1; %frame count
     while frmCnt<=p.stimExposeDec % if we want multiple exposure durations, add that here
         if GetSecs >= end_decision - time_fix;
@@ -131,7 +136,7 @@ function trialResponse = NumLineSlow_Abs(stim, points, left_end, right_end, line
         end
         
         Screen('DrawTexture',win,stim(p.flickerSequDec(1,frmCnt)),Screen('Rect',stim(p.flickerSequDec(1,frmCnt))),stimRect);
-        Screen('DrawDots', win, [0,0], p.fixSizePix, p.fixColor, left, 0); %change fixation point
+        Screen('DrawDots', win, [0,0], p.fixSizePix, p.fixColor, Left, 0); %change fixation point
         DrawNline(left_end, right_end, lineLength, lineSZ, 0, ppc_adjust, win, color, x1, x2, yline, Center, winRect, 0);
         Screen('DrawingFinished', win); % Tell PTB that no further drawing commands will follow before Screen('Flip')
         Screen('Flip', win);

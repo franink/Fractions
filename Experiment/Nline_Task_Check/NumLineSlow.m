@@ -1,4 +1,4 @@
-function [block_p_points, p_move, p_slow, p_wrong, p_badpress] = NumLineSlow(stim, time, points, left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, junk, testX, p_move, p_slow, p_wrong, p_badpress, speed)
+function [block_p_points, p_move, p_slow, p_wrong, p_badpress] = NumLineSlow(stim, time, points, left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, Center, winRect, junk, testX, p_move, p_slow, p_wrong, p_badpress, speed, p)
 %plots a line starting at x1, finishing at x2, with cursor starting on
 %either left (lrStart = 0) or right (lrStart = 1) side.
 
@@ -13,7 +13,7 @@ function [block_p_points, p_move, p_slow, p_wrong, p_badpress] = NumLineSlow(sti
     mouse_pos = -1;
     correct =-1;
     response = -1;
-    RT = -1;
+    RT = -1;sx
     error = -1;
     %time_left = 1;
     time_fix = 0.005;
@@ -22,10 +22,13 @@ function [block_p_points, p_move, p_slow, p_wrong, p_badpress] = NumLineSlow(sti
     RTHold = -1;
     draw = 1;
 
-   
+   %checkerboar location
+    yprobe = yline - 250;
+    Left = [Center, yprobe];
+    
     %fractMag = fract(1)/fract(2);
-    probe = num2str(stim(1));
-    probeMag = stim(2);
+    %probe = num2str(stim(1));
+    probeMag = 50;
 
     trialResponse = {mouse_pos correct response RT error RTHold Click};
 
@@ -70,9 +73,9 @@ function [block_p_points, p_move, p_slow, p_wrong, p_badpress] = NumLineSlow(sti
     
     %Remove the hold cue
     %Draw numberline
-    DrawNline(left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, 1);
+    DrawNline(left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, Center, winRect, 1);
     %Draw probe
-    DrawProbeBox('.', win, [0 255 0], yline, center, jitter, winRect);
+    Screen('DrawDots', win, [0,0], p.fixSizePix, [0 255 0], Left, 0); % green fixation
     Screen('Flip', win);
     
     block_p_points = points;
@@ -104,89 +107,36 @@ function [block_p_points, p_move, p_slow, p_wrong, p_badpress] = NumLineSlow(sti
     click = 0;
     SetMouse(MouseStartPosX,yline,win);
     %xPos = MouseStartPosX;
-    while ~mouseResp;
-        %[xPos, yPos, click] = GetMouse(win);
-        [xPosNew, yPosNew, click] = GetMouse(win);
-        xPos = MouseStartPosX + (xPosNew-MouseStartPosX)* speed;
-        if ~isempty(click) || GetSecs >= t_end;
-           if GetSecs >= t_end;
-                %sprintf('timeout');
-                time_left = 0;
-                trialResponse{3} = 0;
-                if junk;
-                    trialResponse{5} = 0;
-                else
-                    trialResponse{5} = 1;
-                    p_slow = p_slow + 1;
-                end
-                if abs(trialResponse{5}) <= 0.05;
-                    block_p_points = points + 1;
-                end
-                if testX == 1;
-                    block_p_points = points;
-                    p_move = p_move + 1;
-                end
-                mouseResp = 1;
-           else
-
-                if xPos < xStart;
-                    xPos = xStart;
-                    xPosNew = xStart;
-                end
-
-                if xPos > xEnd;
-                    xPos = xEnd;
-                    xPosNew = xEnd;
-                end
-
-                click = sum(click);
-
-                if click == 1;
-                    trialResponse{4} = GetSecs - t_start;
-                    trialResponse{3} = (xPos - x1)/(x2-x1);
-                    if junk; % if catch trial do something if not catch trial do something else
-                        trialResponse{5} = 1;
-                    else
-                        trialResponse{5} = trialResponse{3} - correct;
-                    end
-                    if abs(trialResponse{5}) <= 0.05;
-                        block_p_points = points + 1;
-                    else
-                        if junk;
-                            p_badpress = p_badpress + 1;
-                        else
-                            p_wrong = p_wrong + 1;
-                        end
-                    end
-                    if testX == 1;
-                        block_p_points = points;
-                        p_move = p_move + 1;
-                    end
-                    mouseResp = 1;
-                end
-
-
-                %Draw numberline
-                DrawNline(left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, center, winRect, 1);
-                %Draw probe
-                DrawProbeBox('.', win, [0 255 0], yline, center, jitter, winRect);
-%                 Screen('DrawText', win, probe, probeLeft, probeTop, color);
-
-                if draw == 1;
-                    %Draw cursor line
-                    lineSZc = round(35*ppc_adjust);
-                    Screen('Drawline', win, [0 0 0 0], xPos, yline - lineSZc/1.5, xPos, yline + lineSZc/1.5, round(8*ppc_adjust));
-                
-                
-                    %Draw arrow for junk trials
-                    if junk == 1;
-                        DrawArrow(round(probeMag*(x2-x1) + x1),yline,win,ppc_adjust);
-                    end
-                end
-                
-                Screen('Flip', win);
-           end
+    stimRect = [Center - p.radPix, yprobe - p.radPix,...
+                Center + p.radPix, yprobe + p.radPix];
+    frmCnt=1; %frame count
+    while frmCnt<=p.stimExposeDec % if we want multiple exposure durations, add that here
+        if GetSecs >= t_end;
+            break
         end
+       %sprintf('timeout');
+        time_left = 0;
+        trialResponse{3} = 0;
+        if junk;
+            trialResponse{5} = 0;
+        else
+            trialResponse{5} = 1;
+            p_slow = p_slow + 1;
+        end
+        if abs(trialResponse{5}) <= 0.05;
+            block_p_points = points + 1;
+        end
+        if testX == 1;
+            block_p_points = points;
+            p_move = p_move + 1;
+        end
+        
+        Screen('DrawTexture',win,stim(p.flickerSequDec(1,frmCnt)),Screen('Rect',stim(p.flickerSequDec(1,frmCnt))),stimRect);
+        Screen('DrawDots', win, [0,0], p.fixSizePix, p.fixColor, Left, 0); %change fixation point
+        DrawNline(left_end, right_end, lineLength, lineSZ, 0, ppc_adjust, win, color, x1, x2, yline, Center, winRect, 0);
+        Screen('DrawingFinished', win); % Tell PTB that no further drawing commands will follow before Screen('Flip')
+        Screen('Flip', win);
+        frmCnt = frmCnt + 1;
     end
     
     WaitTill(t_end);

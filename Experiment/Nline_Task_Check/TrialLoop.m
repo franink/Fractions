@@ -5,6 +5,7 @@ function [trialTiming, trialResults] = TrialLoop(stim, points, left_end, right_e
     
     trialTiming = {0 0 0 0 0};
     trialTiming(1) = {GetSecs - start_t}; %ITI_onset_real
+    yprobe = yline - 250;
     DrawNline(left_end, right_end, lineLength, lineSZ, 0, ppc_adjust, win, color, x1, x2, yline, Center, winRect, 0);
     Screen('Flip', win);
     WaitTill(end_ITI); % Last 500ms of the ITI
@@ -13,17 +14,17 @@ function [trialTiming, trialResults] = TrialLoop(stim, points, left_end, right_e
     DrawNline(left_end, right_end, lineLength, lineSZ, 0, ppc_adjust, win, color, x1, x2, yline, Center, winRect, 0);
     
     
-    stimRect = [Center - p.radPix, yline - p.radPix,...
-                Center + p.radPix, yline + p.radPix];
+    stimRect = [Center - p.radPix, yprobe - p.radPix,...
+                Center + p.radPix, yprobe + p.radPix];
     
-    left = [Center(1), Center(2)];        
+    Left = [Center, yprobe];        
     frmCnt=1; %frame count
     while frmCnt<=p.stimExposeCon % if we want multiple exposure durations, add that here
         if GetSecs >= end_consider;
             break
         end
         Screen('DrawTexture',win,stim(p.flickerSequCon(1,frmCnt)),Screen('Rect',stim(p.flickerSequCon(1,frmCnt))),stimRect);
-        Screen('DrawDots', win, Center, p.fixSizePix, p.fixColor, left, 0); %change fixation point
+        Screen('DrawDots', win, [0,0], p.fixSizePix, p.fixColor, Left, 0); %change fixation point
         DrawNline(left_end, right_end, lineLength, lineSZ, 0, ppc_adjust, win, color, x1, x2, yline, Center, winRect, 0);
         Screen('DrawingFinished', win); % Tell PTB that no further drawing commands will follow before Screen('Flip')
         Screen('Flip', win);
@@ -42,7 +43,7 @@ function [trialTiming, trialResults] = TrialLoop(stim, points, left_end, right_e
     while GetSecs < end_hold;
         [xPos, yPos] = GetMouse(win);
         DrawNline(left_end, right_end, lineLength, lineSZ, 0, ppc_adjust, win, color, x1, x2, yline, Center, winRect, 0);
-        DrawProbeBox('.', win, [255 0 0], yline, Center, jitter, winRect);
+        Screen('DrawDots', win, [0,0], p.fixSizePix, p.fixColor, Left, 0); %change fixation point
         Screen('Flip', win);
         if or(abs(xPos_fix - xPos) > 10, abs(yPos_fix - yPos) > 10);
             testX = 1;
@@ -50,7 +51,7 @@ function [trialTiming, trialResults] = TrialLoop(stim, points, left_end, right_e
     end
     
     trialTiming(4) = {GetSecs - start_t}; %Decision_onset_real
-    trialResults = NumLineSlow_Abs([stim(1), stim(2)], points, left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, Center, winRect, junk, testX, end_decision, move, slow, wrong, badpress, speed, p); %decision
+    trialResults = NumLineSlow_Abs(stim, points, left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, Center, winRect, junk, testX, end_decision, move, slow, wrong, badpress, speed, p); %decision
     WaitTill(end_decision - 0.001);
     trialTiming(5) = {GetSecs - start_t};
     

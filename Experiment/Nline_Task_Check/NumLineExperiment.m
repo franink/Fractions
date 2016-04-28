@@ -37,7 +37,7 @@ s_nbr = str2num(filename(7:11));
 % order [0] = match 1st; fraction comparison 2nd
 
 %Setup experiment parameters
-p.ramp_up = 14; 
+p.ramp_up = 4; %original 14
 
 p.Mean_ITI = 4.5; %average 5s This are with decision of 2
 p.Mean_hold = 4; %Average 4.5s
@@ -47,7 +47,7 @@ p.consider = 1; %Includes the time for the box in original design
 p.runs = 4; 
 p.nStim = 16;
 p.ntasks = 3;
-p.tasks = {'Nline', 'Negline', 'Control'}; 
+p.tasks = {'Nline'}; 
 p.trialSecs = p.consider + p.decision +p.Mean_hold + p.Mean_ITI;
 p.lineLength = 1500;
 p.speed = 6;
@@ -91,24 +91,13 @@ p.fixColor = p.LUT(p.fixColor)';
 p.textColor = p.LUT(p.textColor)';
 %% END of checkerboard parameters
 
-order_random = datasample([1,2,3,4,5,6],p.runs,'Replace',false);
-orders = [[1 2 3];...
-    [1 3 2];...
-    [2 1 3];...
-    [2 3 1];...
-    [3 1 2];...
-    [3 2 1]];
-% orders = {{'Nline', 'Negline', 'Control'}...
-%     {'Nline', 'Control', 'Negline'}...
-%     {'Negline', 'Nline', 'Control'}...
-%     {'Negline', 'Control', 'Nline'}...
-%     {'Control', 'Nline', 'Negline'}...
-%     {'Control', 'Negline', 'Nline'}};
+orders = [1 1 1];
+
 
 p.run_order = zeros(p.runs,p.ntasks);
 for i = 1:p.runs
     %p.run_order(i,:) = [3 1 2];
-    p.run_order(i,:) = orders(order_random(i),:);
+    p.run_order(i,:) = orders;
 end
 
 
@@ -129,56 +118,19 @@ ctch_nbr = p.runs * p.nStim/4;
 catch_run = [zeros(1, p.nStim - ctch_nbr) repmat(1:p.runs,1,p.nStim/4)];
 catch_run = catch_run(randperm(length(catch_run)));
 NlineStim(:,2) = catch_run;
-catch_run = catch_run(randperm(length(catch_run)));
-NeglineStim(:,2) = catch_run;
-catch_run = catch_run(randperm(length(catch_run)));
-for i = 1:length(catch_run)
-    WordStim{i,2} = catch_run(i);
-end
 
 TestNline = cell(p.runs*p.ntasks*p.nStim,5); %probe, line_pct, catch, catch syllable, task
 
 %Construct list of stimuli
 for ii = 1:p.runs;
-    word_tmp = WordStim(randperm(length(WordStim)),1);
     for jj = 1:p.ntasks;
-        for kk = 1:p.nStim;
-            
+        for kk = 1:p.nStim;    
             if p.run_order(ii,jj) == 1;
                 TestNline(((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim) + kk, 1:2) = [{NlineStim(kk,1)}, {NlineStim(kk,1)/100}];
                 if NlineStim(kk,2) == ii
                     TestNline(((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim) + kk, 3) = {1};
                 else
                     TestNline(((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim) + kk, 3) = {0};
-                end
-                TestNline(((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim) + kk, 5) = {p.run_order(ii,jj)};
-            end
-            
-            if p.run_order(ii,jj) == 2;
-                TestNline(((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim) + kk, 1:2) = [{NeglineStim(kk,1)}, {abs(-100 - NeglineStim(kk,1))/200}];
-                if NeglineStim(kk,2) == ii
-                    TestNline(((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim) + kk, 3) = {1};
-                else
-                    TestNline(((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim) + kk, 3) = {0};
-                end
-                TestNline(((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim) + kk, 5) = {p.run_order(ii,jj)};
-            end
-            
-            if p.run_order(ii,jj) == 3;
-                tmp = {word_tmp{kk,1} NlineStim(kk,1)/100};
-                TestNline(((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim) + kk, 1:2) = [tmp(1) tmp{2}]; %Note this is a cell and has to be changed in loop and ControlSlow_Abs
-                if WordStim{kk,2} == ii
-                    TestNline(((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim) + kk, 3) = {1};
-                    diff = 0;
-                    while ~diff;
-                        TestNline(((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim) + kk, 4) = datasample(WordStim(:,1),1);
-                        if TestNline{((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim) + kk, 4} ~= TestNline{((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim) + kk, 1};
-                            diff =1;
-                        end
-                    end               
-                else
-                    TestNline(((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim) + kk, 3) = {0};
-                    TestNline(((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim) + kk, 4) = tmp(1);
                 end
                 TestNline(((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim) + kk, 5) = {p.run_order(ii,jj)};
             end

@@ -5,19 +5,21 @@ function [trialTiming, trialResults] = TrialLoop(stim, points, left_end, right_e
     
     trialTiming = {0 0 0 0 0};
     trialTiming(1) = {GetSecs - start_t}; %ITI_onset_real
-    yprobe = yline - 250;
-    DrawNline(left_end, right_end, lineLength, lineSZ, 0, ppc_adjust, win, color, x1, x2, yline, Center, winRect, 0);
+    yprobe = yline - 150;
+    Left = [Center, yprobe];
+    Screen('DrawDots', win, [0,0], p.fixSizePix, p.fixColor, Left, 0); %change fixation point
+    %DrawNline(left_end, right_end, lineLength, lineSZ, 0, ppc_adjust, win, color, x1, x2, yline, Center, winRect, 0);
     Screen('Flip', win);
     WaitTill(end_ITI); % Last 500ms of the ITI
     
     trialTiming(2) = {GetSecs - start_t}; %Consider_onset_real
-    DrawNline(left_end, right_end, lineLength, lineSZ, 0, ppc_adjust, win, color, x1, x2, yline, Center, winRect, 0);
+    %DrawNline(left_end, right_end, lineLength, lineSZ, 0, ppc_adjust, win, color, x1, x2, yline, Center, winRect, 0);
     
     
     stimRect = [Center - p.radPix, yprobe - p.radPix,...
                 Center + p.radPix, yprobe + p.radPix];
     
-    Left = [Center, yprobe];        
+            
     frmCnt=1; %frame count
     while frmCnt<=p.stimExposeCon % if we want multiple exposure durations, add that here
         if GetSecs >= end_consider;
@@ -25,7 +27,7 @@ function [trialTiming, trialResults] = TrialLoop(stim, points, left_end, right_e
         end
         Screen('DrawTexture',win,stim(p.flickerSequCon(1,frmCnt)),Screen('Rect',stim(p.flickerSequCon(1,frmCnt))),stimRect);
         Screen('DrawDots', win, [0,0], p.fixSizePix, p.fixColor, Left, 0); %change fixation point
-        DrawNline(left_end, right_end, lineLength, lineSZ, 0, ppc_adjust, win, color, x1, x2, yline, Center, winRect, 0);
+        %DrawNline(left_end, right_end, lineLength, lineSZ, 0, ppc_adjust, win, color, x1, x2, yline, Center, winRect, 0);
         Screen('DrawingFinished', win); % Tell PTB that no further drawing commands will follow before Screen('Flip')
         Screen('Flip', win);
         frmCnt = frmCnt + 1;
@@ -42,11 +44,11 @@ function [trialTiming, trialResults] = TrialLoop(stim, points, left_end, right_e
     [xPos_fix, yPos_fix] = GetMouse(win);
     while GetSecs < end_hold;
         [xPos, yPos] = GetMouse(win);
-        DrawNline(left_end, right_end, lineLength, lineSZ, 0, ppc_adjust, win, color, x1, x2, yline, Center, winRect, 0);
+        %DrawNline(left_end, right_end, lineLength, lineSZ, 0, ppc_adjust, win, color, x1, x2, yline, Center, winRect, 0);
         Screen('DrawDots', win, [0,0], p.fixSizePix, p.fixColor, Left, 0); %change fixation point
         Screen('Flip', win);
         if or(abs(xPos_fix - xPos) > 10, abs(yPos_fix - yPos) > 10);
-            testX = 1;
+            testX = 0;
         end
     end
     

@@ -23,7 +23,7 @@ function trialResponse = NumLineSlow_Abs(stim, points, left_end, right_end, line
     mousetrack = [];
     
     %checkerboar location
-    yprobe = yline - 250;
+    yprobe = yline - 150;
     Left = [Center, yprobe];
     
     %probe = num2str(stim{1});
@@ -76,9 +76,13 @@ function trialResponse = NumLineSlow_Abs(stim, points, left_end, right_end, line
 
 %Remove the hold cue
     %Draw numberline
-    DrawNline(left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, Center, winRect, 1);
+    %DrawNline(left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, Center, winRect, 1);
     %Draw probe
-    Screen('DrawDots', win, [0,0], p.fixSizePix, [0 255 0], Left, 0); % green fixation
+    if junk == 0
+        Screen('Flip', win);
+        WaitSecs(0.09);
+    end
+    Screen('DrawDots', win, [0,0], p.fixSizePix, p.fixColor, Left, 0); % green fixation
     Screen('Flip', win);
     
     test = 0;
@@ -90,6 +94,7 @@ function trialResponse = NumLineSlow_Abs(stim, points, left_end, right_end, line
         %if or(xPos_old ~=xPos, yPos_old ~= yPos);
         if click == 1;
             test = 1;
+            trialResponse{8} = 1;
         end;
         if GetSecs >= end_decision - 0.001;
             test = 1;
@@ -135,10 +140,10 @@ function trialResponse = NumLineSlow_Abs(stim, points, left_end, right_end, line
             trialResponse{10} = move + 1;
         end
         
-        Screen('DrawTexture',win,stim(p.flickerSequDec(1,frmCnt)),Screen('Rect',stim(p.flickerSequDec(1,frmCnt))),stimRect);
+        %Screen('DrawTexture',win,stim(p.flickerSequDec(1,frmCnt)),Screen('Rect',stim(p.flickerSequDec(1,frmCnt))),stimRect);
         Screen('DrawDots', win, [0,0], p.fixSizePix, p.fixColor, Left, 0); %change fixation point
-        DrawNline(left_end, right_end, lineLength, lineSZ, 0, ppc_adjust, win, color, x1, x2, yline, Center, winRect, 0);
-        Screen('DrawingFinished', win); % Tell PTB that no further drawing commands will follow before Screen('Flip')
+        %DrawNline(left_end, right_end, lineLength, lineSZ, 0, ppc_adjust, win, color, x1, x2, yline, Center, winRect, 0);
+        %Screen('DrawingFinished', win); % Tell PTB that no further drawing commands will follow before Screen('Flip')
         Screen('Flip', win);
         frmCnt = frmCnt + 1;
     end

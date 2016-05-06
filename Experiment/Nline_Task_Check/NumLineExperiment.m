@@ -2,6 +2,9 @@
 % relative time for more precision.
 % Modified from Cameron McKenzie's code
 % Tanks to Xiangrui Li for the codes for WaitTill and ReadKey.
+
+%Screen('Preference','SkipSyncTests',1); %comment this out in scanner
+
 %make sure no Java problems
 PsychJavaTrouble;
 rng shuffle;
@@ -37,12 +40,12 @@ s_nbr = str2num(filename(7:11));
 % order [0] = match 1st; fraction comparison 2nd
 
 %Setup experiment parameters
-p.ramp_up = 4; %original 14
+p.ramp_up = 14; %original 14
 
 p.Mean_ITI = 4.5; %average 5s This are with decision of 2
 p.Mean_hold = 4; %Average 4.5s
 p.decision = 3;
-p.consider = 1; %Includes the time for the box in original design
+p.consider = 0.5; %Includes the time for the box in original design
 %Make sure that repeats is divisible by runs
 p.runs = 4; 
 p.nStim = 16;
@@ -67,7 +70,7 @@ p.usedScreenSizeDeg = 12;
 
 %stimulus geometry (in degrees, note that these vars have the phrase 'Deg'
 %in them, used by pix2deg below)
-p.radDeg = p.usedScreenSizeDeg/8; %edge of stim touches borders of screen
+p.radDeg = p.usedScreenSizeDeg/4; %edge of stim touches borders of screen
 p.sfDeg = .6785; %TS parameter value, might need to be changed
 
 p.backColor     = [128, 128, 128];      % background color
@@ -116,8 +119,23 @@ load WordStim;
 
 ctch_nbr = p.runs * p.nStim/4;
 catch_run = [zeros(1, p.nStim - ctch_nbr) repmat(1:p.runs,1,p.nStim/4)];
-catch_run = catch_run(randperm(length(catch_run)));
-NlineStim(:,2) = catch_run;
+catch_run = repmat(catch_run,2,1);
+catch_run(1,:) = catch_run(randperm(length(catch_run)));
+repeat = 1;
+while repeat
+    catch_run(2,:) = catch_run(randperm(length(catch_run)));
+    repeat_2 = 0;
+    for i =1:length(catch_run)
+        if catch_run(1,i) == catch_run(2,i)
+            repeat_2 = repeat_2 +1;
+        end
+    end
+    if repeat_2 == 0
+        repeat = 0;
+    end
+end
+NlineStim(:,2) = catch_run(1,:);
+NlineStim(:,3) = catch_run(2,:);
 
 TestNline = cell(p.runs*p.ntasks*p.nStim,5); %probe, line_pct, catch, catch syllable, task
 
@@ -131,6 +149,9 @@ for ii = 1:p.runs;
                     TestNline(((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim) + kk, 3) = {1};
                 else
                     TestNline(((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim) + kk, 3) = {0};
+                end
+                if NlineStim(kk,3) == ii
+                    TestNline(((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim) + kk, 3) = {1};
                 end
                 TestNline(((ii-1)*p.nStim*p.ntasks) + ((jj-1)*p.nStim) + kk, 5) = {p.run_order(ii,jj)};
             end
@@ -176,7 +197,7 @@ end
 
 % Open a PTB Window on our screen
 try
-    screenid = min(Screen('Screens')); %Originally it was max instead of min changed it for testing purposes (max corresponds to secondary display)
+    screenid = max(Screen('Screens')); %Originally it was max instead of min changed it for testing purposes (max corresponds to secondary display)
 
     [win, winRect] = Screen('OpenWindow', screenid, WhiteIndex(screenid)/2);
     
@@ -208,7 +229,7 @@ if abs(p.fps-p.refreshRate)>5
 end
 
 % convert relevant timing stuff to vid frames for stim presentation
-p.stimExposeCon = round((p.consider*1000)./(1000/p.refreshRate));
+p.stimExposeCon = round((2*1000)./(1000/p.refreshRate));
 p.stimExposeDec = round((p.decision*1000)./(1000/p.refreshRate));
 
 % set the priority up way high to discourage interruptions
@@ -261,7 +282,7 @@ for jj = 1:p.runs
             current_time = current_time + ITI; %end of ITI 
             p.NlineResults((ii+1) + ((kk-1)*p.nStim),24,jj) = {current_time - 0.5}; %consider onset -0.5 accounts for the moment box appears
             current_time = current_time + p.consider; %end of consider
-            p.NlineResults((ii+1) + ((kk-1)*p.nStim),25,jj) = {current_time}; %hold onset
+            p.NlineResults((ii+1) + ((kk-1)*p.nStim),25,jj) = {current_time + 1}; %hold onset (+1 account for 2 second consider)
             HOLD = Hold_Jits(ii);
             p.NlineResults((ii+1) + ((kk-1)*p.nStim),6,jj) = {HOLD};
             current_time = current_time + HOLD; %end of hold

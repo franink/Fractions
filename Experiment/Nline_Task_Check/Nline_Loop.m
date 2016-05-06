@@ -12,6 +12,8 @@ try
     winRect = Screen('Rect', win);
     yline = round(winRect(4)/2);
     Center = winRect(3)/2;
+    yprobe = yline - 150;
+    Left = [Center, yprobe];
     
     ppc_adjust = 23/38;
   
@@ -82,10 +84,10 @@ try
         DrawCenteredNum('Waiting for scanner', win, color, 0.3);
         WaitTill('5'); %Use this only if used in a scanner that sends 5
         %% Uncomment this!!!
-%         s = serial('/dev/tty.usbmodem12341', 'BaudRate', 57600);
-%         fopen(s);
-%         fprintf(s, '[t]');
-%         fclose(s);
+        s = serial('/dev/tty.usbmodem12341', 'BaudRate', 57600);
+        fopen(s);
+        fprintf(s, '[t]');
+        fclose(s);
 %% -------------------------------------------------------------------------
         start_t = GetSecs;
             
@@ -113,8 +115,9 @@ try
                 right_end = 'xx';
             end
             DrawTaskName(taskname,win,color,task_name_time, task); % Task name
-            DrawNline(left_end, right_end, lineLength, lineSZ, 0, ppc_adjust,...
-                win, color, x1, x2, yline, Center, winRect, 0);
+%             DrawNline(left_end, right_end, lineLength, lineSZ, 0, ppc_adjust,...
+%                 win, color, x1, x2, yline, Center, winRect, 0);
+            Screen('DrawDots', win, [0,0], p.fixSizePix, p.fixColor, Left, 0); %change fixation point
             Screen('Flip', win);
             WaitTill(start_t + p.ramp_up);
             for jj = 1:p.nStim;

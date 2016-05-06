@@ -23,7 +23,7 @@ function [block_p_points, p_move, p_slow, p_wrong, p_badpress] = NumLineSlow(sti
     draw = 1;
 
    %checkerboar location
-    yprobe = yline - 250;
+    yprobe = yline - 150;
     Left = [Center, yprobe];
     
     %fractMag = fract(1)/fract(2);
@@ -73,9 +73,13 @@ function [block_p_points, p_move, p_slow, p_wrong, p_badpress] = NumLineSlow(sti
     
     %Remove the hold cue
     %Draw numberline
-    DrawNline(left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, Center, winRect, 1);
+    %DrawNline(left_end, right_end, lineLength, lineSZ, jitter, ppc_adjust, win, color, x1, x2, yline, Center, winRect, 1);
     %Draw probe
-    Screen('DrawDots', win, [0,0], p.fixSizePix, [0 255 0], Left, 0); % green fixation
+    if junk == 0
+        Screen('Flip', win);
+        WaitSecs(0.09);
+    end
+    Screen('DrawDots', win, [0,0], p.fixSizePix, p.fixColor, Left, 0); % green fixation
     Screen('Flip', win);
     
     block_p_points = points;
@@ -131,9 +135,9 @@ function [block_p_points, p_move, p_slow, p_wrong, p_badpress] = NumLineSlow(sti
             p_move = p_move + 1;
         end
         
-        Screen('DrawTexture',win,stim(p.flickerSequDec(1,frmCnt)),Screen('Rect',stim(p.flickerSequDec(1,frmCnt))),stimRect);
+        %Screen('DrawTexture',win,stim(p.flickerSequDec(1,frmCnt)),Screen('Rect',stim(p.flickerSequDec(1,frmCnt))),stimRect);
         Screen('DrawDots', win, [0,0], p.fixSizePix, p.fixColor, Left, 0); %change fixation point
-        DrawNline(left_end, right_end, lineLength, lineSZ, 0, ppc_adjust, win, color, x1, x2, yline, Center, winRect, 0);
+        %DrawNline(left_end, right_end, lineLength, lineSZ, 0, ppc_adjust, win, color, x1, x2, yline, Center, winRect, 0);
         Screen('DrawingFinished', win); % Tell PTB that no further drawing commands will follow before Screen('Flip')
         Screen('Flip', win);
         frmCnt = frmCnt + 1;

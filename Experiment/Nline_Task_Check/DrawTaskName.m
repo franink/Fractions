@@ -24,7 +24,7 @@ fbox11 = Screen('TextBounds', Window, Fract);
 fbox11 = CenterRectOnPoint(fbox11, w/2,h/2);
 
 %Add another box for reminder
-reminder = 'Remember to visualize the number position during RED dot';
+reminder = 'When fixation flickers press button';
 if task == 3
     reminder = 'Remember to hold word in memory during RED dot';
 end
@@ -39,7 +39,7 @@ x22 = fbox22(RectLeft);
 y22 = fbox22(RectTop);
 
 %Draw number
-Screen('DrawText', Window, Fract, x11, y11, color);
+%Screen('DrawText', Window, Fract, x11, y11, color);
 
 %Write reminder
 Screen('DrawText', Window, reminder, x22, y22, color);

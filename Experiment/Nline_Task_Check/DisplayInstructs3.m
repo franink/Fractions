@@ -7,13 +7,6 @@ error_txt = sprintf('Too soon: %d    Too slow: %d    Wrong position: %d    Shoul
 
 Instruct{1} = {'REST BREAK',
                ' ',
-               pts_txt,
-               ' ',
-               block_pts_txt,
-               ' ',
-               ' ',
-               ' ',
-               error_txt,
                ' ',
                ' ',
               'CLICK MOUSE to continue the experiment.'};

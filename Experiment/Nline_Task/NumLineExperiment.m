@@ -2,7 +2,7 @@
 % relative time for more precision.
 % Modified from Cameron McKenzie's code
 % Tanks to Xiangrui Li for the codes for WaitTill and ReadKey.
-%Screen('Preference','SkipSyncTests',1); %comment this out in scanner
+Screen('Preference','SkipSyncTests',1); %comment this out in scanner
 %make sure no Java problems
 PsychJavaTrouble;
 rng shuffle;
